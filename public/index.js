@@ -1,3 +1,4 @@
+/*
 const path = require("path");
 const hbs = require("hbs");
 const express = require("express");
@@ -27,3 +28,5 @@ app.get("", async (req, res) => {
 app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
+
+*/
