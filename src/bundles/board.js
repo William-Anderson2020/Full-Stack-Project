@@ -1,4 +1,4 @@
-import DOMELEMENTS from DOMELEMENTS.js;
+import { DOMELEMENTS } from "./domElements";
 
 let tileArray;
 DOMELEMENTS.boardCont.children.forEach(el => {
