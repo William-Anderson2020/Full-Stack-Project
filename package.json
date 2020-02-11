@@ -23,14 +23,18 @@
     "webpack": "^4.41.5"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
     "hbs": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.2",
     "mongoose": "^5.8.11",
     "sass": "^1.25.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
+    "validator": "^12.2.0",
     "webpack-cli": "^3.3.10"
   }
 }
