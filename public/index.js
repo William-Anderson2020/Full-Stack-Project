@@ -13,6 +13,8 @@ app.set("view engine", "hbs");
 app.set("views", viewsPath); //telling express to get templates from templates/views folder
 hbs.registerPartials(partialsPath);
 
+
+
 app.use(express.static(publicDirectoryPath));
 app.get("", async (req, res) => {
   try {

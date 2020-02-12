@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node public/index",
-    "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\"",
+    "dev":  "nodemon public/index.js",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {
@@ -26,6 +26,7 @@
     "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
+    "g": "^2.0.1",
     "hbs": "^4.1.0",
     "mongoose": "^5.8.11",
     "sass": "^1.25.0",
