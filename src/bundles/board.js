@@ -1,5 +1,7 @@
 import { DOMELEMENTS } from "./domElements";
 
+console.log('link')
+
 let tileArray;
 DOMELEMENTS.tiles.forEach(el => {
     let tile = {
