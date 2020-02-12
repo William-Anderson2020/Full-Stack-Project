@@ -1,4 +1,3 @@
-/*
 const path = require("path");
 const hbs = require("hbs");
 const express = require("express");
@@ -17,8 +16,8 @@ hbs.registerPartials(partialsPath);
 app.use(express.static(publicDirectoryPath));
 app.get("", async (req, res) => {
   try {
-    res.render("index", {
-      title: "Our First Express App"
+    res.render("map", {
+      title: "Game?"
     });
   } catch {
     res.status(500).send();
@@ -29,4 +28,3 @@ app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
 
-*/
