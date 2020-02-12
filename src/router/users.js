@@ -1,6 +1,6 @@
-//upload, profilepics
+//upload, profilepics,multer
 const express = require("express");
-const multer = require("multer");
+//const multer = require("multer");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 //const upload = require("../middleware/upload")
