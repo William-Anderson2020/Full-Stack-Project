@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const JWT_PASSWORD = require("../secrets");
+const secrets = require("../secrets");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -47,7 +47,20 @@ const userSchema = new mongoose.Schema({
   ],
   profilePic: {
     type: Buffer
-  }
+  },
+  score:[
+    {
+      winLosses: {
+        type:Number
+      },
+      win: {
+        type:Number
+      },
+      losses: {
+        type:Number
+      }
+    }
+  ]
 });
 userSchema.methods.toJSON = function () {
   const user = this;
@@ -58,7 +71,7 @@ userSchema.methods.toJSON = function () {
 }
 userSchema.methods.generateToken = async function() {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString()}, JWT_PASSWORD);
+  const token = jwt.sign({ _id: user._id.toString()}, secrets.JWT_PASSWORD);
   user.tokens = user.tokens.concat({token});
   await user.save();
   return token;

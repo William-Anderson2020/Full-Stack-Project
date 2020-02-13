@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const MONGODB_URL = require("../secrets")
-mongoose.connect(MONGODB_URL,
+const secrets = require("../secrets")
+mongoose.connect(secrets.MONGODB_URL,
     {
         useNewUrlParser: true,
         useCreateIndex: true,
