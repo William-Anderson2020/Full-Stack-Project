@@ -3,6 +3,7 @@ require("./db/mongoose");
 const app = express();
 const characterRouter = require("./routers/character")
 app.use(express.json());
+app.use(characterRouter)
 
 app.listen(3000, ()=>{
     console.log("3000");
