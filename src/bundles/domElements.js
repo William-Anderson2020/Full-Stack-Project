@@ -1,5 +1,5 @@
 const DOMELEMENTS = {
-    //board: document.getElementById('%boardCont%'),
+    board: document.getElementById("container"),
     tiles: document.querySelectorAll(".tile")
 };
 
