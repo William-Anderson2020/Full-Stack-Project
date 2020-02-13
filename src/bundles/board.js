@@ -27,7 +27,6 @@ function getTile(el){ // Checks value of dom element and returns corrosponding t
 tileArray.forEach(el => { //Shows tiles within range.
     el.dom.addEventListener("mouseover", el => {
         el = getTile(el.target);
-        console.log(el);
         tileArray.forEach(tile => {
             if (Math.abs(tile.x - el.x) + Math.abs(tile.y - el.y) <= 2){
                 tile.dom.classList.add("viable");
