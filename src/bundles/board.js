@@ -14,11 +14,22 @@ DOMELEMENTS.tiles.forEach(el => {
     tileArray.push(tile);
 });
 
+function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
+    let match;
+    tileArray.forEach(tile => {
+        if(tile.x == el.getAttribute('x') && tile.y == el.getAttribute('y')){
+            match = tile;
+        }
+    });
+    return match;
+}
+
 tileArray.forEach(el => { //Shows tiles within range.
     el.dom.addEventListener("mouseover", el => {
-        el = el.target;
+        el = getTile(el.target);
+        console.log(el);
         tileArray.forEach(tile => {
-            if (Math.abs(tile.x - el.getAttribute('x')) + Math.abs(tile.y - el.getAttribute('y')) <= 2){
+            if (Math.abs(tile.x - el.x) + Math.abs(tile.y - el.y) <= 2){
                 tile.dom.classList.add("viable");
             }
         });
@@ -27,9 +38,9 @@ tileArray.forEach(el => { //Shows tiles within range.
 
 tileArray.forEach(el => { //Removes highlight when mouse moved off of tile.
     el.dom.addEventListener("mouseout", el => {
-        el = el.target;
+        el = getTile(el.target);
         tileArray.forEach(tile => {
-            if (Math.abs(tile.x - el.getAttribute('x')) + Math.abs(tile.y - el.getAttribute('y')) <= 2){
+            if (Math.abs(tile.x - el.x) + Math.abs(tile.y - el.y) <= 2){
                 tile.dom.classList.remove("viable");
             }
         });
