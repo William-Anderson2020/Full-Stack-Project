@@ -4,19 +4,23 @@ const characterSchema = new mongoose.Schema({
     stats:{
         health:{
             type:Number,
-            required:true
+            required:true,
+            min:0
         },
         attack:{
             type:Number,
-            required:true
+            required:true, 
+            min:0
         },
         defense:{
             type:Number,
-            required:true
+            required:true,
+            min:0
         },
         speed:{
             type:Number,
-            required:true
+            required:true,
+            min:0
         },
     },
     weapon:{
