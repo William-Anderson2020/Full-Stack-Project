@@ -3,7 +3,7 @@ import { clickListener } from "./clickListener";
 
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 
-function mapGen(xlim, ylim){
+function mapGen(xlim, ylim){ //Generate grid
     for(let ytile = 0; ytile < ylim; ytile++){
         DOMELEMENTS.board.insertAdjacentHTML("afterbegin", `<div id="row${ytile}" class="row"></div>`);
         for(let xtile = 0; xtile < xlim; xtile++){
@@ -12,9 +12,11 @@ function mapGen(xlim, ylim){
     }
 }
 
-mapGen(20,20);
+mapGen(30,60);
 
-document.querySelectorAll(".tile").forEach(el => {
+let tiles = document.querySelectorAll(".tile");
+
+tiles.forEach(el => {
     let tile = {
         dom: el,
         x: parseInt(el.getAttribute("x")),
@@ -47,15 +49,13 @@ function tilesInRange(tile, dist){
 }
 
 tileArray.forEach(el => { //Shows tiles within range.
+    const range = 2;
     el.dom.addEventListener("mouseover", el => {
         el = getTile(el.target);
-        tilesInRange(el, 2).forEach(tile => tile.dom.classList.add("viable"));
+        tilesInRange(el, range).forEach(tile => tile.dom.classList.add("viable"));
     });
-});
-
-tileArray.forEach(el => { //Removes highlight when mouse moved off of tile.
     el.dom.addEventListener("mouseout", el => {
         el = getTile(el.target);
-        tilesInRange(el, 2).forEach(tile => tile.dom.classList.remove("viable"));
+        tilesInRange(el, range).forEach(tile => tile.dom.classList.remove("viable"));
     })
 });
