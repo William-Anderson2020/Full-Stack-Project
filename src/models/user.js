@@ -60,7 +60,10 @@ const userSchema = new mongoose.Schema({
         type:Number
       }
     }
-  ]
+  ],
+  inventory: {
+    type: Object
+  }
 });
 userSchema.methods.toJSON = function () {
   const user = this;
