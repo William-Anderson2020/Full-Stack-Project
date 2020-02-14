@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node public/index",
-    "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\"",
+    "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\" \"npm run build\"",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {

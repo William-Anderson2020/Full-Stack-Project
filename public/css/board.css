@@ -4,6 +4,9 @@
   border-width: 0.5px;
   border-color: black;
   border-style: solid;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .viable {
@@ -12,6 +15,12 @@
 
 #container {
   display: flex;
+}
+
+.board_sprite {
+  height: 3rem;
+  width: auto;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=board.css.map */
