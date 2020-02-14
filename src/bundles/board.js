@@ -14,8 +14,8 @@ function mapGen(xlim, ylim){ //Generate grid
 
 mapGen(10,10);
 
-const testUnit = {
-    "img": "./img/testUnit.png",
+const amelia = {
+    "img": "./img/ameliaIdle.png",
     "name": "Amelia",
     "stats":{
         "mvt": 2
@@ -25,6 +25,18 @@ const testUnit = {
         "y": 1
     }
 };
+
+const erika = {
+    "img": "./img/erikaIdle.png",
+    "name": "Erika",
+    "stats":{
+        "mvt": 3
+    },
+    "pos": {
+        "x": 3,
+        "y": 6
+    }
+}
 
 let tiles = document.querySelectorAll(".tile");
 
@@ -60,7 +72,8 @@ function dispUnit(unit){
     turnInit();
 };
 
-dispUnit(testUnit);
+dispUnit(amelia);
+dispUnit(erika);
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
@@ -76,7 +89,7 @@ function tilesInRange(tile, dist){
     //console.log(tile, dist)
     let tilesInRange = [];
     tileArray.forEach(el => {
-        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist){
+        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist && el.occupied.isOccupied == false){
             tilesInRange.push(el);
         }
     });
@@ -104,12 +117,29 @@ function turnInit(){
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
                     tiles.dom.classList.add("viable")
                 });
+                function moveUnit(unitDest){
+                    console.log(unitDest);
+                    unitDest = getTile(unitDest.target);
+                    unit.pos.x = unitDest.x;
+                    unit.pos.y = unitDest.y;
+                    dispUnit(unit);
+                    tileArray.forEach(otherDest => {
+                        if(otherDest.dom.classList.contains("viable") && unitStart != tile){
+                            otherDest.dom.removeEventListener(moveUnit);
+                        }
+                    });
+                    tileArray.forEach(deselector => {
+                        console.log(deselector);
+                        deselector.dom.removeEventListener("click", el => moveUnit(el));
+                    });
+                };
                 tileArray.forEach(tiles => {
                     if(tiles != tile){
                         function deselect(){
                             tileArray.forEach(dis => {
                             dis.dom.classList.remove("viable");
                             tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveUnit));
                             });
                         };
                         tiles.dom.addEventListener("click", deselect);
@@ -117,60 +147,10 @@ function turnInit(){
                 });
                 tileArray.forEach(unitStart => {
                     if(unitStart.dom.classList.contains("viable") && unitStart != tile){
-                        function moveUnit(unitDest){
-                            unitDest = getTile(unitDest.target);
-                            unit.pos.x = unitDest.x;
-                            unit.pos.y = unitDest.y;
-                            dispUnit(unit);
-                            tileArray.forEach(otherDest => {
-                                if(otherDest.dom.classList.contains("viable") && unitStart != tile){
-                                    otherDest.dom.removeEventListener(moveUnit);
-                                }
-                            });
-                        };
-                        unitStart.dom.addEventListener("click", unitDest => {moveUnit(unitDest)});
+                        unitStart.dom.addEventListener("click", el => moveUnit(el));
                     };
                 });
             });
         };
     });
 };
-
-/* tileArray.forEach(el => {
-    if(el.occupied.isOccupied == true){
-        el.dom.addEventListener("click", domTile => {
-            const tile = getTile(domTile.target);
-            const unit = tile.occupied.unit;
-            tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
-                tiles.dom.classList.add("viable")
-            });
-            tileArray.forEach(tiles => {
-                if(tiles != tile){
-                    function deselect(){
-                        tileArray.forEach(dis => {
-                        dis.dom.classList.remove("viable");
-                        tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
-                        });
-                    };
-                    tiles.dom.addEventListener("click", deselect);
-                };
-            });
-            tileArray.forEach(unitStart => {
-                if(unitStart.dom.classList.contains("viable") && unitStart != tile){
-                    function moveUnit(unitDest){
-                        unitDest = getTile(unitDest.target);
-                        unit.pos.x = unitDest.x;
-                        unit.pos.y = unitDest.y;
-                        dispUnit(unit);
-                        tileArray.forEach(otherDest => {
-                            if(otherDest.dom.classList.contains("viable") && unitStart != tile){
-                                otherDest.dom.removeEventListener(moveUnit);
-                            }
-                        });
-                    };
-                    unitStart.dom.addEventListener("click", unitDest => {moveUnit(unitDest)});
-                };
-            });
-        });
-    };
-}); */
