@@ -16,18 +16,31 @@ body {
 
 }
 
+.header{
+  text-align: center;
+  font-family: 'Lemonada', cursive;
+}
 .container {
   padding: 1rem;
   background-color white;
   box-shadow: 0 0.5rem 0.5rem rgba(46, 34, 34, 0.5);
-  width: 50rem;
+  width: 65rem;
+  height: 50rem;
 
-  position: absolute;
-  top: 5%;
- 
- 
+  margin: 0 auto;
+  margin-top: 5rem;
+
   border-radius: 2rem;
+
+  text-align: center;
+  display: inline-block;
+
+
+  display: flex;
+  justify-content: space-around;
+  padding: 3rem;
 }
+
 
 .center{
   margin-top: 1.5rem;
@@ -35,19 +48,68 @@ body {
   text-align: center;
 }
 
-header {
-    font-family: 'Lemonada', cursive;
-    position: absolute;
-  	top: 5%;
-}
-  
 .map{
   width: 30rem;
   height: 30rem;
   background: url("/img/maps/map1.png");
   background-size: cover;
   margin: auto;
-  margin-top: 15rem;
+  margin-top: 3rem;
 
 }
   
+.party-section{
+ 
+  width: 30rem;
+
+}
+.character-cards{
+  padding: 2rem;
+
+  
+}
+
+.party-divider{
+  width: 20rem;
+
+
+}
+
+.card-side{
+
+  height:10rem;
+	width: 20rem;
+  color: skyblue;
+  border-radius: 1rem;
+  
+	backface-visibility: hidden;
+	box-shadow: 0 1.5rem 4rem rgba(0,0,0,.15);
+	perspective: 150rem;
+  -moz-perspective:150rem;
+  
+
+	margin-right: auto;
+	margin-left: auto;
+  perspective: 150rem;
+  
+}
+
+.character_front1, .character_back1{
+  position: absolute;
+}
+.character_front1{
+
+}
+
+.character_back1{
+  
+}
+
+.card_1:hover .character_front1{
+	transform: rotateX(-180deg);
+}
+
+.card_1:hover .character_back1{
+	transform: rotateX(0deg);
+}
+
