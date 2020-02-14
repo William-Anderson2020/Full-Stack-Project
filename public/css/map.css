@@ -4,15 +4,50 @@ html {
     margin: 0;
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
-  }
+}
   
-  body {
+body {
     font-family: 'Sriracha', cursive;
     letter-spacing: 1rem;
     font-weight: 700;
-  }
+    box-sizing: border-box;
+    padding: 0;
+    
 
-  header {
+}
+
+.container {
+  padding: 1rem;
+  background-color white;
+  box-shadow: 0 0.5rem 0.5rem rgba(46, 34, 34, 0.5);
+  width: 50rem;
+
+  position: absolute;
+  top: 5%;
+ 
+ 
+  border-radius: 2rem;
+}
+
+.center{
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+header {
     font-family: 'Lemonada', cursive;
-  }
+    position: absolute;
+  	top: 5%;
+}
+  
+.map{
+  width: 30rem;
+  height: 30rem;
+  background: url("/img/maps/map1.png");
+  background-size: cover;
+  margin: auto;
+  margin-top: 15rem;
+
+}
   

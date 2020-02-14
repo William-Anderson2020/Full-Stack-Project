@@ -11,146 +11,50 @@
        <title>Map of Game</title>
 
 </head>
-
-
 <body> 
-    <header>
-        {{>header}}
-    </header>
+    {{!-- OUTLINE
+    
+    Header/nav bar
+    Map Tile set
+    -insert chracter interactions like a visual novel- 
+    Character profiles
 
-    <div id="container">
-        <div class="rows" >
-            <div class="tile" x="0" y="9"></div>
-            <div class="tile" x="1" y="9"></div>
-            <div class="tile" x="2" y="9"></div>
-            <div class="tile" x="3" y="9"></div>
-            <div class="tile" x="4" y="9"></div>
-            <div class="tile" x="5" y="9"></div>
-            <div class="tile" x="6" y="9"></div>
-            <div class="tile" x="7" y="9"></div>
-            <div class="tile" x="8" y="9"></div>
-            <div class="tile" x="9" y="9"></div>
-        </div>
+     --}}
 
-        <div class="rows" >
-            <div class="tile" x="0" y="8"></div>
-            <div class="tile" x="1" y="8"></div>
-            <div class="tile" x="2" y="8"></div>
-            <div class="tile" x="3" y="8"></div>
-            <div class="tile" x="4" y="8"></div>
-            <div class="tile" x="5" y="8"></div>
-            <div class="tile" x="6" y="8"></div>
-            <div class="tile" x="7" y="8"></div>
-            <div class="tile" x="8" y="8"></div>
-            <div class="tile" x="9" y="8"></div>
-        </div>
-          <div class="rows" >
-            <div class="tile" x="0" y="7"></div>
-            <div class="tile" x="1" y="7"></div>
-            <div class="tile" x="2" y="7"></div>
-            <div class="tile" x="3" y="7"></div>
-            <div class="tile" x="4" y="7"></div>
-            <div class="tile" x="5" y="7"></div>
-            <div class="tile" x="6" y="7"></div>
-            <div class="tile" x="7" y="7"></div>
-            <div class="tile" x="8" y="7"></div>
-            <div class="tile" x="9" y="7"></div>
-        </div>
+    <div class="container">
+        <header>
+            {{>header}} 
+        </header>
 
-        <div class="rows" >
-            <div class="tile" x="0" y="6"></div>
-            <div class="tile" x="1" y="6"></div>
-            <div class="tile" x="2" y="6"></div>
-            <div class="tile" x="3" y="6"></div>
-            <div class="tile" x="4" y="6"></div>
-            <div class="tile" x="5" y="6"></div>
-            <div class="tile" x="6" y="6"></div>
-            <div class="tile" x="7" y="6"></div>
-            <div class="tile" x="8" y="6"></div>
-            <div class="tile" x="9" y="6"></div>
-        </div>
+        {{>tiles}} 
 
-          <div class="rows" >
-            <div class="tile" x="0" y="5"></div>
-            <div class="tile" x="1" y="5"></div>
-            <div class="tile" x="2" y="5"></div>
-            <div class="tile" x="3" y="5"></div>
-            <div class="tile" x="4" y="5"></div>
-            <div class="tile" x="5" y="5"></div>
-            <div class="tile" x="6" y="5"></div>
-            <div class="tile" x="7" y="5"></div>
-            <div class="tile" x="8" y="5"></div>
-            <div class="tile" x="9" y="5"></div>
-        </div>
+        <section class= "Character Cards">
 
-        <div class="rows" >
-            <div class="tile" x="0" y="4"></div>
-            <div class="tile" x="1" y="4"></div>
-            <div class="tile" x="2" y="4"></div>
-            <div class="tile" x="3" y="4"></div>
-            <div class="tile" x="4" y="4"></div>
-            <div class="tile" x="5" y="4"></div>
-            <div class="tile" x="6" y="4"></div>
-            <div class="tile" x="7" y="4"></div>
-            <div class="tile" x="8" y="4"></div>
-            <div class="tile" x="9" y="4"></div>
-        </div>
+            <h class=""Party-Header id="malaysia"> Party </h>
+            <img class="malaysiaheader_border" src="dividers/flower2a.png">
+            
+            <div class="card-container">
+                        <div class="card_1">
+                                <div class="card-side malaysiacard_front1">
+                                    <p class="introduction">
+                                            Visit
+                                    </p>
+                                </div>
+                                <div class="card-side malaysiacard_back1">
+                                    <img class="locationsymbol" src="forcards/location.png">
+                                    <p class="flipcard_questions"> </p>
+                                    <p class="flipcard_intro">  Cameron Highlands, Malaysia
+                                        <br>
+                                    <span class="flipcard_caption"> Highland Plateau Resort Area</span>
+                                    </p>
+                                    
+                        </div>
 
-          <div class="rows" >
-            <div class="tile" x="0" y="3"></div>
-            <div class="tile" x="1" y="3"></div>
-            <div class="tile" x="2" y="3"></div>
-            <div class="tile" x="3" y="3"></div>
-            <div class="tile" x="4" y="3"></div>
-            <div class="tile" x="5" y="3"></div>
-            <div class="tile" x="6" y="3"></div>
-            <div class="tile" x="7" y="3"></div>
-            <div class="tile" x="8" y="3"></div>
-            <div class="tile" x="9" y="3"></div>
-        </div>
-
-        <div class="rows" >
-            <div class="tile" x="0" y="2"></div>
-            <div class="tile" x="1" y="2"></div>
-            <div class="tile" x="2" y="2"></div>
-            <div class="tile" x="3" y="2"></div>
-            <div class="tile" x="4" y="2"></div>
-            <div class="tile" x="5" y="2"></div>
-            <div class="tile" x="6" y="2"></div>
-            <div class="tile" x="7" y="2"></div>
-            <div class="tile" x="8" y="2"></div>
-            <div class="tile" x="9" y="2"></div>
-        </div>
-
-          <div class="rows" >
-            <div class="tile" x="0" y="1"></div>
-            <div class="tile" x="1" y="1"></div>
-            <div class="tile" x="2" y="1"></div>
-            <div class="tile" x="3" y="1"></div>
-            <div class="tile" x="4" y="1"></div>
-            <div class="tile" x="5" y="1"></div>
-            <div class="tile" x="6" y="1"></div>
-            <div class="tile" x="7" y="1"></div>
-            <div class="tile" x="8" y="1"></div>
-            <div class="tile" x="9" y="1"></div>
-        </div>
-
-        <div class="rows" >
-            <div class="tile" x="0" y="0"></div>
-            <div class="tile" x="1" y="0"></div>
-            <div class="tile" x="2" y="0"></div>
-            <div class="tile" x="3" y="0"></div>
-            <div class="tile" x="4" y="0"></div>
-            <div class="tile" x="5" y="0"></div>
-            <div class="tile" x="6" y="0"></div>
-            <div class="tile" x="7" y="0"></div>
-            <div class="tile" x="8" y="0"></div>
-            <div class="tile" x="9" y="0"></div>
-        </div>
-          
-
+                    </div>
+                
+        </section>
     </div>
-   
+
 
 
     <script src="/js/map.js"></script>
