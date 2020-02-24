@@ -59,7 +59,7 @@ function dispUnit(unit){
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             if(tile.occupied.isOccupied == true){
-
+                return;
             };
             tile.occupied = {"isOccupied": true, "unit":unit};
             tile.dom.innerHTML = `<img class="board_sprite" src=${unit.img}>`;
@@ -68,7 +68,6 @@ function dispUnit(unit){
                     oldTile.occupied.isOccupied = false;
                     oldTile.occupied.unit = {};
                     if(oldTile.x < tile.x || (oldTile.x == tile.x && oldTile.dom.style.transform == "scaleX(-1)")){
-                        console.log('flip');
                         tile.dom.style.transform = "scaleX(-1)";
                     }
                     oldTile.dom.innerHTML = '';
