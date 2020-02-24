@@ -30,7 +30,6 @@ try {
 }
 });
 router.post("/users/logout", auth, async(req,res) =>{
-    //console.log(token.token);
     try {
         req.user.tokens = req.user.tokens.filter(token => {
             console.log(token.token);
@@ -41,7 +40,7 @@ router.post("/users/logout", auth, async(req,res) =>{
     } catch (error) {
         res.status(500).send(error);
     }
-})
+});
 router.get("/users", async (req, res) => {
     try{
         let users = await User.find({});
