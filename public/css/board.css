@@ -16,15 +16,15 @@
 
 #container {
   display: flex;
-  flex-direction: column;
-}
-
-.row {
-  display: flex;
   flex-direction: row;
-  width: 15rem;
 }
 
+/* .row{
+    display: flex;
+    flex-direction: row;
+    width: 15rem;
+}
+ */
 .board_sprite {
   height: 3rem;
   width: auto;

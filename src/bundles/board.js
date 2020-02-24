@@ -4,10 +4,10 @@ import { clickListener } from "./clickListener";
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 
 function mapGen(xlim, ylim){ //Generate grid
-    for(let ytile = 0; ytile < ylim; ytile++){
-        DOMELEMENTS.board.insertAdjacentHTML("afterbegin", `<div id="row${ytile}" class="row"></div>`);
-        for(let xtile = 0; xtile < xlim; xtile++){
-            document.getElementById(`row${ytile}`).insertAdjacentHTML("beforeend", `<div class="tile" x="${xtile}" y="${ytile}"></div>`)
+    for(let xtile = xlim; xtile > 0; xtile--){
+        DOMELEMENTS.board.insertAdjacentHTML("afterbegin", `<div id="row${xtile}" class="row"></div>`);
+        for(let ytile = ylim; ytile > 0; ytile--){
+            document.getElementById(`row${xtile}`).insertAdjacentHTML("beforeend", `<div class="tile" x="${xtile}" y="${ytile}"></div>`)
         }
     }
 }
@@ -103,23 +103,6 @@ function tilesInRange(tile, dist){
     return tilesInRange;
 }
 
-/* tileArray.forEach(el => { //Shows tiles within range.
-    const range = 2;
-    el.dom.addEventListener("mouseover", el => {
-        el = getTile(el.target);
-        tilesInRange(el, range).forEach(tile => tile.dom.classList.add("viable"));
-    });
-    el.dom.addEventListener("mouseout", el => {
-        el = getTile(el.target);
-        tilesInRange(el, range).forEach(tile => tile.dom.classList.remove("viable"));
-    })
-}); */
-
-function test(e){
-    console.log('test', e.target);
-    tileArray.forEach(el => el.dom.removeEventListener("click", test));
-}
-
 function turnInit(){
     tileArray.forEach(el => {
         if(el.occupied.isOccupied == true){
@@ -128,6 +111,20 @@ function turnInit(){
                 const unit = tile.occupied.unit;
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
                     tiles.dom.classList.add("viable")
+                });
+
+                tileArray.forEach(tiles => {
+                    function deselect(){
+                        tileArray.forEach(dis => {
+                            dis.dom.classList.remove("viable");
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
+                            turnInit();
+                        });
+                    };
+                    if(!tiles.dom.classList.contains("viable")){
+                        tiles.dom.addEventListener("click", deselect);
+                    };
                 });
 
                 function moveunit(e){
@@ -152,12 +149,7 @@ function turnInit(){
                         deselector.dom.classList.remove("viable");
                     });
                 };
-
-                /* function move(e){
-                    console.log('firing', e);
-                } */
-
-                tileArray.forEach(tiles => {
+                /* tileArray.forEach(tiles => {
                     function deselect(){
                         tileArray.forEach(dis => {
                             dis.dom.classList.remove("viable");
@@ -165,9 +157,9 @@ function turnInit(){
                             tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
                         });
                     };
-                    //tiles.dom.addEventListener("click", deselect);
+                    tiles.dom.addEventListener("click", deselect);
                     
-                });
+                }); */
                 tileArray.forEach(unitStart => {
                     if(unitStart.dom.classList.contains("viable") && unitStart != tile){
                         unitStart.dom.addEventListener("click", moveunit);
