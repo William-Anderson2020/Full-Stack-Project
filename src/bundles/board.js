@@ -59,7 +59,7 @@ function dispUnit(unit){
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             if(tile.occupied.isOccupied == true){
-                return;
+                //return;
             };
             tile.occupied = {"isOccupied": true, "unit":unit};
             tile.dom.innerHTML = `<img class="board_sprite" src=${unit.img}>`;
@@ -109,7 +109,7 @@ function turnInit(){
                 const tile = getTile(domTile.target);
                 const unit = tile.occupied.unit;
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
-                    tiles.dom.classList.add("viable")
+                    tiles.dom.classList.add("viable");
                 });
 
                 tileArray.forEach(tiles => {
@@ -118,6 +118,7 @@ function turnInit(){
                             dis.dom.classList.remove("viable");
                             tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
                             tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
+                            selector.dom.removeEventListener("click", turnRes);
                             turnInit();
                         });
                     };
@@ -145,6 +146,7 @@ function turnInit(){
                     tileArray.forEach(deselector => {
                         //console.log(deselector);
                         deselector.dom.removeEventListener("click", moveunit);
+                        deselector.dom.removeEventListener("click", turnRes);
                         deselector.dom.classList.remove("viable");
                     });
                 };
