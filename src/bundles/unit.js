@@ -1,4 +1,4 @@
-class Unit{
+/* class Unit{
     constructor(stats, start){
         this.stats = stats;
         this.pos = {
@@ -7,4 +7,4 @@ class Unit{
         }
     }
     active
-}
+} */

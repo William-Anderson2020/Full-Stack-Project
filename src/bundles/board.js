@@ -21,8 +21,8 @@ const amelia = {
         "mvt": 2
     },
     "pos": {
-        "x": 1,
-        "y": 1
+        "x": 2,
+        "y": 2
     }
 };
 
@@ -33,8 +33,8 @@ const erika = {
         "mvt": 3
     },
     "pos": {
-        "x": 3,
-        "y": 6
+        "x": 9,
+        "y": 9
     }
 }
 
@@ -71,6 +71,7 @@ function dispUnit(unit){
                         tile.dom.style.transform = "scaleX(-1)";
                     }
                     oldTile.dom.innerHTML = '';
+                    console.log(tile, oldTile);
                 };
             });
         };
@@ -104,27 +105,12 @@ function tilesInRange(tile, dist){
 
 function turnInit(){
     tileArray.forEach(el => {
-        if(el.occupied.isOccupied == true){
+        if(el.occupied.isOccupied == true && el.occupied.unit != {}){
             function turnRes(domTile){
                 const tile = getTile(domTile.target);
                 const unit = tile.occupied.unit;
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
                     tiles.dom.classList.add("viable");
-                });
-
-                tileArray.forEach(tiles => {
-                    function deselect(){
-                        tileArray.forEach(dis => {
-                            dis.dom.classList.remove("viable");
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
-                            selector.dom.removeEventListener("click", turnRes);
-                            turnInit();
-                        });
-                    };
-                    if(!tiles.dom.classList.contains("viable")){
-                        tiles.dom.addEventListener("click", deselect);
-                    };
                 });
 
                 function moveunit(e){
@@ -166,6 +152,22 @@ function turnInit(){
                         unitStart.dom.addEventListener("click", moveunit);
                     };
                 });
+
+                tileArray.forEach(tiles => {
+                    function deselect(){
+                        tileArray.forEach(dis => {
+                            dis.dom.classList.remove("viable");
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
+                            tileArray.forEach(selector => selector.dom.removeEventListener("click", turnRes));
+                            turnInit();
+                        });
+                    };
+                    if(tiles.dom.classList.contains("viable") == false){
+                        tiles.dom.addEventListener("click", deselect);
+                    };
+                });
+
             }
 
             el.dom.addEventListener("click", turnRes);
