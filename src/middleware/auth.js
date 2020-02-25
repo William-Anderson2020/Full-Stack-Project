@@ -6,13 +6,16 @@ const jwt = require("jsonwebtoken");
 const auth = async (req, res, next) => {
     try {
         const token = req.header("Authorization").replace("Bearer ", "");
+       
        const decoded = jwt.verify(token, secrets.JWT_PASSWORD);
        const user = await User.findOne({
            _id: decoded._id,
            "tokens.token": token       
         });
         if(!user) {
+            console.log('not working');
             throw new Error();
+            
         }
         req.token = token;
         req.user = user; //rout handler will not have to fetch user account
