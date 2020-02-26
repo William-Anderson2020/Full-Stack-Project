@@ -1,9 +1,8 @@
-//upload, profilepics,multer
 const express = require("express");
-//const multer = require("multer");
+const multer = require("multer");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
-//const upload = require("../middleware/upload")
+const upload = require("../middleware/upload")
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -81,7 +80,7 @@ router.patch("/users/:id", auth, async (req, res) => {
         res.status(500).send(error);
     }
 });
-/* router.post("/users/me/profilePic",
+router.post("/users/me/profilePic",
     auth,
     upload.single("profilePic"),
     async(req, res) =>{
@@ -105,5 +104,5 @@ router.get("/user/:id/profilePic", async(req, res) => {
     } catch (error) {
         res.status(404).send(error);
     }
-}) */
+})
 module.exports = router;

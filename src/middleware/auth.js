@@ -13,7 +13,6 @@ const auth = async (req, res, next) => {
            "tokens.token": token       
         });
         if(!user) {
-            console.log('not working');
             throw new Error();
             
         }
