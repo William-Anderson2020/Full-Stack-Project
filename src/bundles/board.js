@@ -71,13 +71,21 @@ function dispUnit(unit){
                         tile.dom.style.transform = "scaleX(-1)";
                     }
                     oldTile.dom.innerHTML = '';
-                    console.log(tile, oldTile);
                 };
             });
         };
     });
+    tileArray.forEach(tile => {removeListeners(tile)});
     turnInit();
 };
+
+function removeListeners(tile){
+    tile = tile.dom;
+    tile.classList.remove("viable");
+    tile.removeEventListener("click", removeListeners);
+    //tile.removeEventListener("click", moveunit);
+    //tile.removeEventListener("click", turnRes);
+}
 
 dispUnit(amelia);
 dispUnit(erika);
@@ -129,12 +137,7 @@ function turnInit(){
                             otherDest.dom.removeEventListener("click", moveUnit);
                         }
                     }); */
-                    tileArray.forEach(deselector => {
-                        //console.log(deselector);
-                        deselector.dom.removeEventListener("click", moveunit);
-                        deselector.dom.removeEventListener("click", turnRes);
-                        deselector.dom.classList.remove("viable");
-                    });
+                    tileArray.forEach(removeListeners);
                 };
                 /* tileArray.forEach(tiles => {
                     function deselect(){
@@ -154,17 +157,8 @@ function turnInit(){
                 });
 
                 tileArray.forEach(tiles => {
-                    function deselect(){
-                        tileArray.forEach(dis => {
-                            dis.dom.classList.remove("viable");
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", turnRes));
-                            turnInit();
-                        });
-                    };
                     if(tiles.dom.classList.contains("viable") == false){
-                        tiles.dom.addEventListener("click", deselect);
+                        tiles.dom.addEventListener("click", removeListeners);
                     };
                 });
 
