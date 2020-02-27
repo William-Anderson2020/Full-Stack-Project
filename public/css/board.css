@@ -32,4 +32,8 @@
   z-index: 1;
 }
 
+.flip {
+  transform: scaleX(-1);
+}
+
 /*# sourceMappingURL=board.css.map */

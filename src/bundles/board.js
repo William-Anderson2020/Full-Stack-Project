@@ -67,25 +67,17 @@ function dispUnit(unit){
                 if(oldTile.occupied.unit == tile.occupied.unit && oldTile.occupied.unit != {} && oldTile != tile){
                     oldTile.occupied.isOccupied = false;
                     oldTile.occupied.unit = {};
-                    if(oldTile.x < tile.x || (oldTile.x == tile.x && oldTile.dom.style.transform == "scaleX(-1)")){
-                        tile.dom.style.transform = "scaleX(-1)";
+                    if((oldTile.x < tile.x) || (oldTile.x == tile.x && oldTile.dom.classList.contains('flip'))){
+                        tile.dom.classList.add("flip");
                     }
-                    oldTile.dom.innerHTML = '';
+                    oldTile.dom.innerHTML = "";
+                    oldTile.dom.classList.remove("flip");
                 };
             });
         };
     });
-    tileArray.forEach(tile => {removeListeners(tile)});
     turnInit();
 };
-
-function removeListeners(tile){
-    tile = tile.dom;
-    tile.classList.remove("viable");
-    tile.removeEventListener("click", removeListeners);
-    //tile.removeEventListener("click", moveunit);
-    //tile.removeEventListener("click", turnRes);
-}
 
 dispUnit(amelia);
 dispUnit(erika);
@@ -132,13 +124,19 @@ function turnInit(){
                     unit.pos.x = unitDest.x;
                     unit.pos.y = unitDest.y;
                     dispUnit(unit);
-                    /* tileArray.forEach(otherDest => {
-                        if(otherDest.dom.classList.contains("viable") && unitStart != tile){
-                            otherDest.dom.removeEventListener("click", moveUnit);
-                        }
-                    }); */
                     tileArray.forEach(removeListeners);
                 };
+
+                function removeListeners(tile){
+                    if(tile.dom){
+                        tile = tile.dom;
+                        tile.classList.remove("viable");
+                        tile.removeEventListener("click", removeListeners);
+                        tile.removeEventListener("click", moveunit);
+                        tile.removeEventListener("click", turnRes);
+                    }
+                }
+
                 /* tileArray.forEach(tiles => {
                     function deselect(){
                         tileArray.forEach(dis => {
