@@ -33,8 +33,8 @@ const erika = {
         "mvt": 3
     },
     "pos": {
-        "x": 9,
-        "y": 9
+        "x": 3,
+        "y": 3
     }
 }
 
@@ -109,8 +109,20 @@ function turnInit(){
             function turnRes(domTile){
                 const tile = getTile(domTile.target);
                 const unit = tile.occupied.unit;
+                tileArray.forEach(t => {
+                    if(t.occupied.isOccupied == true && t.occupied.unit != unit){
+                        t.dom.classList.add('test');
+                        removeListeners(t);
+                    }
+                });
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
                     tiles.dom.classList.add("viable");
+                });
+
+                tileArray.forEach(t => {
+                    if(!t.dom.classList.contains("viable")){
+                        t.dom.addEventListener("click", removeListeners);
+                    }
                 });
 
                 function moveunit(e){
@@ -128,8 +140,13 @@ function turnInit(){
                 };
 
                 function removeListeners(tile){
+                    if(tile.target){
+                        tile = getTile(tile.target);
+                        console.log('prime');
+                    }
                     if(tile.dom){
                         tile = tile.dom;
+                        console.log('fire');
                         tile.classList.remove("viable");
                         tile.removeEventListener("click", removeListeners);
                         tile.removeEventListener("click", moveunit);
@@ -137,17 +154,6 @@ function turnInit(){
                     }
                 }
 
-                /* tileArray.forEach(tiles => {
-                    function deselect(){
-                        tileArray.forEach(dis => {
-                            dis.dom.classList.remove("viable");
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", deselect));
-                            tileArray.forEach(selector => selector.dom.removeEventListener("click", moveunit));
-                        });
-                    };
-                    tiles.dom.addEventListener("click", deselect);
-                    
-                }); */
                 tileArray.forEach(unitStart => {
                     if(unitStart.dom.classList.contains("viable") && unitStart != tile){
                         unitStart.dom.addEventListener("click", moveunit);
@@ -161,7 +167,6 @@ function turnInit(){
                 });
 
             }
-
             el.dom.addEventListener("click", turnRes);
         };
     });
