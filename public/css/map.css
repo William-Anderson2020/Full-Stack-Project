@@ -12,6 +12,13 @@ body {
     font-weight: 700;
     box-sizing: border-box;
     padding: 0;
+    background-image: linear-gradient(
+      to bottom,
+     rgba(255, 246, 197, 0.32),
+     rgba(255, 182, 46, 0.22)),
+    url('../img/background.jpg');
+    
+    background-size: cover;
     
 
 }
@@ -35,7 +42,7 @@ body {
 }
 .container {
   padding: 1rem;
-  background-color white;
+  background-color: white;
   box-shadow: 0 0.5rem 0.5rem rgba(46, 34, 34, 0.5);
   width: 85rem;
   
@@ -95,7 +102,7 @@ body {
 .card-side{
 
   height:15rem;
-	width: 24rem;
+	width: 30rem;
   color: skyblue;
   border-radius: 1rem;
   
@@ -114,7 +121,7 @@ body {
 .character_front1, .character_back1{
   position: absolute;
   margin-top: 2rem;
-  margin-left: -2rem;
+  margin-left: -5rem;
 }
 .character_front1{
 
@@ -138,5 +145,11 @@ body {
 
 .card_1:hover .character_back1{
 	transform: rotateX(0deg);
+}
+
+.info{
+  display: flex;
+  justify-content: space-around;
+ 
 }
 
