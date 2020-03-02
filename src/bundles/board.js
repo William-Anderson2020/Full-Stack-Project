@@ -110,19 +110,12 @@ function turnInit(){
                 const tile = getTile(domTile.target);
                 const unit = tile.occupied.unit;
                 tileArray.forEach(t => {
-                    if(t.occupied.isOccupied == true && t.occupied.unit != unit){
-                        t.dom.classList.add('test');
-                        removeListeners(t);
+                    if(t.occupied.isOccupied == true && t != tile){
+                        removeAllListeners();
                     }
                 });
                 tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
                     tiles.dom.classList.add("viable");
-                });
-
-                tileArray.forEach(t => {
-                    if(!t.dom.classList.contains("viable")){
-                        t.dom.addEventListener("click", removeListeners);
-                    }
                 });
 
                 function moveunit(e){
@@ -135,23 +128,25 @@ function turnInit(){
                     });
                     unit.pos.x = unitDest.x;
                     unit.pos.y = unitDest.y;
+                    removeAllListeners();
                     dispUnit(unit);
-                    tileArray.forEach(removeListeners);
                 };
 
                 function removeListeners(tile){
                     if(tile.target){
                         tile = getTile(tile.target);
-                        console.log('prime');
                     }
-                    if(tile.dom){
-                        tile = tile.dom;
-                        console.log('fire');
-                        tile.classList.remove("viable");
-                        tile.removeEventListener("click", removeListeners);
-                        tile.removeEventListener("click", moveunit);
-                        tile.removeEventListener("click", turnRes);
-                    }
+                    tile = tile.dom;
+                    tile.classList.remove("viable");
+                    tile.removeEventListener("click", removeListeners);
+                    tile.removeEventListener("click", moveunit);
+                    tile.removeEventListener("click", turnRes);
+                
+                }
+
+                function removeAllListeners(){
+                    tileArray.forEach(removeListeners);
+                    turnInit();
                 }
 
                 tileArray.forEach(unitStart => {
@@ -161,8 +156,8 @@ function turnInit(){
                 });
 
                 tileArray.forEach(tiles => {
-                    if(tiles.dom.classList.contains("viable") == false){
-                        tiles.dom.addEventListener("click", removeListeners);
+                    if(!tiles.dom.classList.contains("viable")){
+                        tiles.dom.addEventListener("click", removeAllListeners);
                     };
                 });
 
