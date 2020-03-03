@@ -106,7 +106,7 @@ function tilesInRange(tile, dist){
 function turnInit(){
     tileArray.forEach(el => {
         if(el.occupied.isOccupied == true && el.occupied.unit != {}){
-            function turnRes(domTile){
+            function turnres(domTile){
                 const tile = getTile(domTile.target);
                 const unit = tile.occupied.unit;
                 tileArray.forEach(t => {
@@ -123,7 +123,7 @@ function turnInit(){
                     //console.log(unitDest);
                     tileArray.forEach(unitStart => {
                         if(unitStart.x == unit.pos.x && unitStart.y == unit.pos.y){
-                            unitStart.dom.removeEventListener("click", turnRes);
+                            unitStart.dom.removeEventListener("click", turnres);
                         }
                     });
                     unit.pos.x = unitDest.x;
@@ -132,20 +132,22 @@ function turnInit(){
                     dispUnit(unit);
                 };
 
-                function removeListeners(tile){
+                function removelisteners(tile){
                     if(tile.target){
                         tile = getTile(tile.target);
                     }
                     tile = tile.dom;
                     tile.classList.remove("viable");
-                    tile.removeEventListener("click", removeListeners);
+                    tile.dom.parentNode.replaceChild(tile.cloneNode(true), tile);
+
+                    /* tile.removeEventListener("click", removelisteners);
                     tile.removeEventListener("click", moveunit);
-                    tile.removeEventListener("click", turnRes);
+                    tile.removeEventListener("click", turnres); */
                 
                 }
 
                 function removeAllListeners(){
-                    tileArray.forEach(removeListeners);
+                    tileArray.forEach(removelisteners);
                     turnInit();
                 }
 
@@ -162,7 +164,7 @@ function turnInit(){
                 });
 
             }
-            el.dom.addEventListener("click", turnRes);
+            el.dom.addEventListener("click", turnres);
         };
     });
 };
