@@ -138,11 +138,13 @@ function turnInit(){
                     }
                     tile = tile.dom;
                     tile.classList.remove("viable");
-                    tile.dom.parentNode.replaceChild(tile.cloneNode(true), tile);
+                    //tile = tile.cloneNode(true);
+                    let clone = tile.cloneNode(true);
+                    tile.parentNode.replaceChild(clone, tile);
 
-                    /* tile.removeEventListener("click", removelisteners);
+                    tile.removeEventListener("click", removelisteners);
                     tile.removeEventListener("click", moveunit);
-                    tile.removeEventListener("click", turnres); */
+                    tile.removeEventListener("click", turnres);
                 
                 }
 
