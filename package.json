@@ -2,10 +2,10 @@
   "name": "full-stack-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node public/index",
-    "dev": "nodemon public/index.js",
+    "start": "node public/app",
+    "dev": "nodemon public/app.js",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {

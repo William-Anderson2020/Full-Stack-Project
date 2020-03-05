@@ -5,10 +5,10 @@ const auth = require("../middleware/auth");
 const upload = require("../middleware/upload")
 const router = new express.Router();
 
-
-router.get('/login', auth, (req, res) => res.render('login'));
-
-router.get('/register', auth, (req, res) => res.render('register'));
+//Login Page
+router.get('/login', (req, res) => res.send('login'));
+//Register Page
+router.get('/register', (req, res) => res.send('register'));
 
 router.post("/users", async (req, res) => {
     try{
