@@ -4,6 +4,9 @@ html {
     margin: 0;
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
+            
+  
+
 }
   
 body {
@@ -101,10 +104,11 @@ body {
 
 .card-side{
 
-  height:15rem;
-	width: 30rem;
+  height:18rem;
+	width: 34rem;
   color: skyblue;
   border-radius: 1rem;
+  border: solid rgb(187, 231, 248) 0.2rem;
   
 	backface-visibility: hidden;
 	box-shadow: 0 1.5rem 2rem rgba(0,0,0,.15);
@@ -118,10 +122,11 @@ body {
   
 }
 
+
 .character_front1, .character_back1{
   position: absolute;
   margin-top: 2rem;
-  margin-left: -5rem;
+  margin-left: -7rem;
 }
 .character_front1{
 
@@ -149,6 +154,7 @@ body {
 
 .character-portrait{
   clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+  padding: 1rem;
 }
 .info{
   display: flex;
@@ -158,6 +164,27 @@ body {
   font-family: 'Roboto Slab', serif;
 
 
+
+ 
+}
+
+.row{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.column2{
+  margin: 0 auto;
+  align-items: center;
+
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-evenly;
+ 
+  top: 50%;
+ 
  
 }
 
@@ -166,26 +193,51 @@ body {
   background: #999;
   border: #999 solid 1px;
   border-radius: 10px;
-  margin: 15px;
+  margin: 10px;
   box-shadow: 0px 0px 0px 1px #fff inset;
+
+ 
+  width: 9rem;
+  padding-top:0.8rem;
+  padding-bottom: 0.8rem;
+
+  text-align: center;
+  display: block;
+
+}
+
+.skills-btn{
+  background: rgb(248, 227, 187);
+  border: #999 solid 1px;
+  border-radius: 10px;
+  margin: 0 auto;
+  box-shadow: 0px 0px 0px 1px #fff inset;
+
+ 
+  width: 10rem;
+  height: 4rem;
+
+  padding-bottom: 0.8rem;
+
+  text-align: center;
+
+}
+
+.hp{
+  width: 18rem;
 
 }
 
 .weapon{
-  height: 1.5rem;
-  width: 8rem;
+
+
 
 }
 
 .name{
   
-  height: 1.5rem;
-  width: 6rem;
+ 
 
-
-
-	padding:1rem;
-	margin-top:4rem;
 
 }
 
