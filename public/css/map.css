@@ -207,7 +207,7 @@ body {
 }
 
 .skills-btn{
-  background: rgb(248, 227, 187);
+  background: #f8e8d8;
   border: #999 solid 1px;
   border-radius: 10px;
   margin: 0 auto;
@@ -218,11 +218,17 @@ body {
   height: 4rem;
 
   padding-bottom: 0.8rem;
+ 
 
   text-align: center;
 
-}
+  display:flex;
+  flex-direction: row;
 
+}
+.skills{
+  width: 1rem;
+}
 .hp{
   width: 18rem;
 
