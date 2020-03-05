@@ -67,6 +67,7 @@ function dispUnit(unit){
                 if(oldTile.occupied.unit == tile.occupied.unit && oldTile.occupied.unit != {} && oldTile != tile){
                     oldTile.occupied.isOccupied = false;
                     oldTile.occupied.unit = {};
+                    oldTile.dom.classList.remove("active");
                     if((oldTile.x < tile.x) || (oldTile.x == tile.x && oldTile.dom.classList.contains('flip'))){
                         tile.dom.classList.add("flip");
                     }
@@ -106,67 +107,84 @@ function tilesInRange(tile, dist){
 function turnInit(){
     tileArray.forEach(el => {
         if(el.occupied.isOccupied == true && el.occupied.unit != {}){
-            function turnres(domTile){
-                const tile = getTile(domTile.target);
-                const unit = tile.occupied.unit;
-                tileArray.forEach(t => {
-                    if(t.occupied.isOccupied == true && t != tile){
-                        removeAllListeners();
-                    }
+            function turnRes(domTile){
+                let active;
+                tileArray.forEach(tile => {
+                    if(tile.dom.classList.contains("active")){
+                        active = tile;
+                    };
                 });
-                tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
-                    tiles.dom.classList.add("viable");
-                });
+                if(active){
+                    active.dom.classList.remove("active");
+                    //removeAllListeners();
+                    //turnRes(domTile);
+                    //console.log(domTile, active);
+                    return;
+                }else{
+                    const tile = getTile(domTile.target);
+                    const unit = tile.occupied.unit;
+                    tile.dom.classList.add("active");
 
-                function moveunit(e){
-                    let unitDest = getTile(e.target);
-                    //console.log(unitDest);
-                    tileArray.forEach(unitStart => {
-                        if(unitStart.x == unit.pos.x && unitStart.y == unit.pos.y){
-                            unitStart.dom.removeEventListener("click", turnres);
+                    /* tileArray.forEach(t => {
+                        if(t.occupied.isOccupied == true && t != tile){
+                            removeAllListeners();
                         }
+                    }); */
+
+                    tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
+                        tiles.dom.classList.add("viable");
                     });
-                    unit.pos.x = unitDest.x;
-                    unit.pos.y = unitDest.y;
-                    removeAllListeners();
-                    dispUnit(unit);
-                };
 
-                function removelisteners(tile){
-                    if(tile.target){
-                        tile = getTile(tile.target);
+                    function moveunit(e){
+                        let unitDest = getTile(e.target);
+                        tileArray.forEach(unitStart => {
+                            if(unitStart.x == unit.pos.x && unitStart.y == unit.pos.y){
+                                unitStart.dom.removeEventListener("click", turnRes);
+                            }
+                        });
+                        unit.pos.x = unitDest.x;
+                        unit.pos.y = unitDest.y;
+                        removeAllListeners();
+                        dispUnit(unit);
+                    };
+
+                    function removelisteners(tile){
+                        if(tile.target){
+                            tile = getTile(tile.target);
+                        }
+                        tile = tile.dom;
+                        tile.classList.remove("viable");
+                        tile.classList.remove("active");
+                        //tile = tile.cloneNode(true);
+                        /* let clone = tile.cloneNode(true);
+                        tile.parentNode.replaceChild(clone, tile); */
+
+                        //tile.removeEventListener("click", removelisteners);
+                        tile.removeEventListener("click", moveunit);
+                        //tile.removeEventListener("click", turnRes);
+                    
                     }
-                    tile = tile.dom;
-                    tile.classList.remove("viable");
-                    //tile = tile.cloneNode(true);
-                    let clone = tile.cloneNode(true);
-                    tile.parentNode.replaceChild(clone, tile);
 
-                    tile.removeEventListener("click", removelisteners);
-                    tile.removeEventListener("click", moveunit);
-                    tile.removeEventListener("click", turnres);
-                
-                }
+                    function removeAllListeners(){
+                        tileArray.forEach(removelisteners);
+                        turnInit();
+                    }
 
-                function removeAllListeners(){
-                    tileArray.forEach(removelisteners);
-                    turnInit();
-                }
+                    tileArray.forEach(unitStart => {
+                        if(unitStart.dom.classList.contains("viable") && unitStart != tile){
+                            unitStart.dom.addEventListener("click", moveunit);
+                        };
+                    });
 
-                tileArray.forEach(unitStart => {
-                    if(unitStart.dom.classList.contains("viable") && unitStart != tile){
-                        unitStart.dom.addEventListener("click", moveunit);
-                    };
-                });
+                    tileArray.forEach(tiles => {
+                        if(!tiles.dom.classList.contains("viable")){
+                            tiles.dom.addEventListener("click", removeAllListeners);
+                        };
+                    });
 
-                tileArray.forEach(tiles => {
-                    if(!tiles.dom.classList.contains("viable")){
-                        tiles.dom.addEventListener("click", removeAllListeners);
-                    };
-                });
-
-            }
-            el.dom.addEventListener("click", turnres);
+                };
+            };
+            el.dom.addEventListener("click", turnRes);
         };
     });
 };
