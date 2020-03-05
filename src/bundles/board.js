@@ -49,7 +49,10 @@ tiles.forEach(el => {
             "isOccupied": false,
             "unit": {}
         },
-        terrain: {}
+        terrain: {},
+        listeners: {
+            turnListener: false,
+        }
     };
     //console.log(tile.x, tile.y);
     tileArray.push(tile);
@@ -184,7 +187,14 @@ function turnInit(){
 
                 };
             };
-            el.dom.addEventListener("click", turnRes);
+            if(el.listeners.turnListener == false){
+                el.dom.addEventListener("click", turnRes);
+                el.listeners.turnListener = true;
+                console.log(el);
+            }
         };
+        if(el.turnListener){
+            el.dom.removeEventListener(turnRes);
+        }
     });
 };
