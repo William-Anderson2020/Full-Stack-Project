@@ -115,6 +115,8 @@ body {
 	perspective: 150rem;
   -moz-perspective:150rem;
   
+  background: linear-gradient(90deg, #e5fffd 0%, #d9e7ff 100%);
+  
 
 	margin-right: auto;
 	margin-left: auto;
@@ -176,6 +178,7 @@ body {
 
 .column2{
   margin: 0 auto;
+  margin-top:1rem;
   align-items: center;
 
   display: flex;
@@ -183,21 +186,32 @@ body {
   align-content: center;
   justify-content: space-evenly;
  
-  top: 50%;
+
  
  
 }
 
 .btn{
 
-  background: #999;
-  border: #999 solid 1px;
+  background: linear-gradient(90deg, rgba(100,179,212,1) 35%, rgba(97,169,184,1) 100%);
+  border: rgba(100,179,212,1) solid 2px;
   border-radius: 10px;
-  margin: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   box-shadow: 0px 0px 0px 1px #fff inset;
+
+  color:white;
+  font-family: 'Roboto', sans-serif;
+font-family: 'Oxanium', cursive;
+font-family: 'Lato', sans-serif;
+
+
 
  
   width: 9rem;
+  height:2rem;
   padding-top:0.8rem;
   padding-bottom: 0.8rem;
 
@@ -215,9 +229,9 @@ body {
 
  
   width: 10rem;
-  height: 4rem;
+  height: 3rem;
 
-  padding-bottom: 0.8rem;
+
  
 
   text-align: center;
@@ -227,7 +241,11 @@ body {
 
 }
 .skills{
-  width: 1rem;
+
+  
+  width: 8rem;
+  clip-path: circle(45% at 50% 50%);
+  background-color: skyblue;
 }
 .hp{
   width: 18rem;
