@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 // Welcome Page
-router.get('/', (req, res) => res.render('../views/welcome'));
+router.get('/', (req, res) => res.render('welcome'));
 
 module.exports = router;
 /* // Dashboard

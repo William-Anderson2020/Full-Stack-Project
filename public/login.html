@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Game Competition</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+    <div class="login">
+        <p class="login-title">Login</p>
+        <div class="user-input">
+            <form action="/users/login" method="POST" id="form">
+                <div class="login-input">
+                    <label for="email"> Email</label>
+                    <input type="text" id="email" class="text-box">
+                </div>
+                <div class="login-input">
+                    <label for="password"> Password</label>
+                    <input type="text" id="password" class="text-box">
+                </div>
+                <div class="login-input">
+                    <input type="submit" value="Login" class="btn btn-blue">
+                </div>
+            </form>
+            <div class="new-user">
+                <span>New user?</span> <a href="/users">Register</a>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

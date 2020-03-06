@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Game Competition</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="register">
+        <p class="register-title">Register</p>
+        <div class="user-input">
+            <form action="/users" method="POST" id="form">
+                <div class="register-input">
+                    <label for="name"> Full Name</label>
+                    <input type="text" id="name" class="text-box"  placeholder="Enter Name"
+                    value="<%= typeof name != 'undefined' ? name : '' %>" />
+                </div>
+                <div class="register-input">
+                    <label for="email"> Email</label>
+                    <input type="text" id="email" class="text-box" placeholder="Enter Email"
+                    value="<%= typeof email != 'undefined' ? email : '' %>">
+                </div>
+                <div class="register-input">
+                    <label for="password"> Password</label>
+                    <input type="text" id="password" class="text-box" placeholder="Enter Email"
+                    value="<%= typeof email != 'undefined' ? email : '' %>">
+                </div>
+                <div class="register-input">
+                    <input type="submit" value="Register" class="btn btn-blue">
+                </div>
+            </form>
+            <div class="old-user">
+                <span>Already have an account?</span> <a href="/users/login">Login</a>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
