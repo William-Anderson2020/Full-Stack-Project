@@ -9,8 +9,12 @@ const router = new express.Router();
 router.get('/login', (req, res) => res.render('login'));
 //Register Page
 router.get('/register', (req, res) => res.render('register'));
-
-router.post("/users", async (req, res) => {
+//Register
+router.post('/users/register', (req,res) => {
+    console.log(req.body)
+    res.send('hello');
+});
+/* router.post("/users", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
@@ -109,5 +113,5 @@ router.get("/user/:id/profilePic", async(req, res) => {
     } catch (error) {
         res.status(404).send(error);
     }
-})
+}) */
 module.exports = router;
