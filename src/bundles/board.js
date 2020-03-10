@@ -21,24 +21,28 @@ const amelia = {
     "img": "./img/ameliaIdle.png",
     "name": "Amelia",
     "stats":{
-        "mvt": 2
+        "mvt": 2,
+        "rng": 1
     },
     "pos": {
         "x": 2,
         "y": 2
-    }
+    },
+    "owner": "Player 1"
 };
 
 const erika = {
     "img": "./img/erikaIdle.png",
     "name": "Erika",
     "stats":{
-        "mvt": 3
+        "mvt": 3,
+        "rng": 1
     },
     "pos": {
         "x": 3,
         "y": 3
-    }
+    },
+    "owner": "Player 2"
 };
 
 let tiles = document.querySelectorAll(".tile");
@@ -102,94 +106,12 @@ function tilesInRange(tile, dist){
     //console.log(tile, dist)
     let tilesInRange = [];
     tileArray.forEach(el => {
-        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist && el.occupied.isOccupied == false){
+        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist /*&& el.occupied.isOccupied == false*/){
             tilesInRange.push(el);
         }
     });
     return tilesInRange;
 }
-
-function turnRes(domTile){
-    let active;
-    tileArray.forEach(tile => {
-        if(tile.dom.classList.contains("active")){
-            active = tile;
-        };
-    });
-    if(active){
-        active.dom.classList.remove("active");
-        //removeAllListeners();
-        //turnRes(domTile);
-        //console.log(domTile, active);
-        return;
-    }else{
-        const tile = getTile(domTile.target);
-        unitTileArray.forEach(el => {
-            if(el != tile){
-                clearListeners(el);
-            }
-        });
-        const unit = tile.occupied.unit;
-        tile.dom.classList.add("active");
-
-        /* tileArray.forEach(t => {
-            if(t.occupied.isOccupied == true && t != tile){
-                removeAllListeners();
-            }
-        }); */
-
-        tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
-            tiles.dom.classList.add("viable");
-        });
-
-        function moveunit(e){
-            let unitDest = getTile(e.target);
-            tileArray.forEach(unitStart => {
-                if(unitStart.x == unit.pos.x && unitStart.y == unit.pos.y){
-                    unitStart.dom.removeEventListener("click", turnRes);
-                }
-            });
-            unit.pos.x = unitDest.x;
-            unit.pos.y = unitDest.y;
-            dispUnit(unit);
-        };
-
-        function removelisteners(tile){
-            if(tile.target){
-                tile = getTile(tile.target);
-            }
-            tile = tile.dom;
-            tile.classList.remove("viable");
-            tile.classList.remove("active");
-            //tile = tile.cloneNode(true);
-            /* let clone = tile.cloneNode(true);
-            tile.parentNode.replaceChild(clone, tile); */
-
-            //tile.removeEventListener("click", removelisteners);
-            tile.removeEventListener("click", moveunit);
-            //tile.removeEventListener("click", turnRes);
-        
-        }
-
-        function removeAllListeners(){
-            tileArray.forEach(removelisteners);
-            turnInit();
-        }
-
-        tileArray.forEach(unitStart => {
-            if(unitStart.dom.classList.contains("viable") && unitStart != tile){
-                unitStart.dom.addEventListener("click", moveunit);
-            };
-        });
-
-        tileArray.forEach(tiles => {
-            if(!tiles.dom.classList.contains("viable")){
-                tiles.dom.addEventListener("click", removeAllListeners);
-            };
-        });
-
-    };
-};
 
 function gameInit(){
     tileArray.forEach(el =>{
@@ -205,17 +127,12 @@ function turnInit(el){
     if(tile.occupied.isOccupied == true){
         unit = tile.occupied.unit;
         tileArray.forEach(r => {
-            r.dom.classList.remove("viable");
+            r.dom.classList.remove("viable", "atkViable");
         });
     }
 
     function moveUnit(e){
         let unitDest = e /* getTile(e.target); */
-        tileArray.forEach(unitStart => {
-            if(unitStart.x == unit.pos.x && unitStart.y == unit.pos.y){
-                unitStart.dom.removeEventListener("click", turnRes);
-            }
-        });
         unit.pos.x = unitDest.x;
         unit.pos.y = unitDest.y;
         viableTiles = false;
@@ -223,8 +140,8 @@ function turnInit(el){
 
         //tilesInRange(tile, unit.stats.mvt)
         tileArray.forEach(tiles => {
-            tiles.dom.classList.remove("viable");
-            tiles.dom.removeEventListener("click", moveUnit)
+            tiles.dom.classList.remove("viable", "atkViable");
+            tiles.dom.removeEventListener("click", moveUnit);
         });
     };
 
@@ -240,15 +157,17 @@ function turnInit(el){
     };
 
     tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
-        tiles.dom.classList.add("viable");
+        if(tiles.occupied.isOccupied == false){
+            tiles.dom.classList.add("viable");
+        };
         viableTiles = true;
     });
 
-    /* tileArray.forEach(unitStart => {
-        if(unitStart.dom.classList.contains("viable") && unitStart != tile){
-            unitStart.dom.addEventListener("click", moveUnit);
+    tilesInRange(tile, (unit.stats.mvt + unit.stats.rng)).forEach(atkTile => {
+        if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
+            atkTile.dom.classList.add("atkViable");
         };
-    }); */
+    });
 
 }
 

@@ -5,14 +5,14 @@ class Unit{
             x: start.x,
             y: start.y
         };
-        this.owner = owner
+        this.owner = owner;
         this.active= true;
-        this.weapon=null
+        this.weapon=null;
     }
     active(){
-        this.active=!(this.active)
+        this.active=!(this.active);
     }
     weapon(weapon){
-        this.weapon=weapon
+        this.weapon=weapon;
     }
 }
