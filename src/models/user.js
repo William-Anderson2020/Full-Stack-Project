@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
         throw new Error('password cannot contain "password');
       }
     }
-  }/* ,
+  } ,
   tokens: [
     {
       token: {
@@ -60,8 +60,8 @@ const userSchema = new mongoose.Schema({
   ],
   inventory: {
     type: Object
-  } */
-});/* 
+  } 
+});
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
@@ -96,7 +96,7 @@ userSchema.statics.findByCredentials = async (email, password) =>{
     throw new Error("incorrect password");
   }
   return user;
-} */
+} 
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
