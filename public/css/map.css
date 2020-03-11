@@ -64,6 +64,7 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 3rem;
+ 
 }
 
 
@@ -201,8 +202,9 @@ body {
   font-family: 'Oxanium', cursive;
   font-family: 'Lato', sans-serif;
 
-  height:2rem;
-  padding:0.8rem;
+
+  padding-bottom:1.25rem;
+  padding-top: 1.25rem;
   padding-left:3rem;
   padding-right: 3rem;
   letter-spacing: 0.5rem;
@@ -217,6 +219,8 @@ body {
   top: 0;
   left: 0;
   height: 3.5rem;
+
+  z-index:0;
   
 }
 .decor-right{
@@ -224,6 +228,9 @@ body {
   top: 0;
   right: 1;
   height: 3.5rem;
+  z-index:0;
+
+  
   
 }
 
@@ -255,6 +262,41 @@ body {
   background-color: skyblue;
 }
 
+.stats{
+  word-spacing: 3rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  color: white;
+  text-shadow: -1px 0 #3b50cc, 0 1px #3b50cc, 1px 0 #3b50cc, 0 -1px #3b50cc;
+
+ 
+  
+}
+
+.stat-text{
+  position: relative;
+  z-index: 1;
+
+  margin-left: -1.5rem;
+  margin-right: 1rem;
+}
+.stat-decor{
+  position:absolute;
+  top: 0;
+  left: 2;
+  height: 3.5rem;
+  z-index: 0;
+}
+
+.stat-decor2{
+  position:absolute;
+  top: 0;
+  right: 3rem;
+  height: 3.5rem;
+  z-index: 0;
+}
+
 .hp{
   width: 18rem;
 
@@ -266,6 +308,7 @@ body {
 }
 
 .name{
+
 
 
 
