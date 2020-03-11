@@ -11,6 +11,9 @@ function attack(attacker, defender){
         }
     }
     }
+    
+    AP=defender.stats.attack +defender.weapon.attack
+    DP=attacker.stats.defense
     randomEvent{
     if randomEvent{
         attacker.stats.health=attacker.stats.health-(DP-AP*2)
@@ -19,4 +22,7 @@ function attack(attacker, defender){
         attacker.stats.health=attacker.stats.health-(DP-AP)
         }
     }
+}
+heal(attacker,defender){
+    defender.stats.health+= attacker.move.heal + attacker.stats.heal
 }
