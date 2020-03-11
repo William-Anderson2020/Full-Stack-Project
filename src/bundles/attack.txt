@@ -3,10 +3,20 @@ function attack(attacker, defender){
     DP=defender.stats.defense
     for(attack.stats.speed/defender.stats.speed){
     randomEvent{
-        defender.stats.health=defender.stats.health-(DP-AP)
-        randomEvent{
+        if randomEvent{
         defender.stats.health=defender.stats.health-(DP-AP*2)
         }
+        else(){
+        defender.stats.health=defender.stats.health-(DP-AP)
+        }
     }
-}
+    }
+    randomEvent{
+    if randomEvent{
+        defender.stats.health=defender.stats.health-(DP-AP*2)
+        }
+        else(){
+        defender.stats.health=defender.stats.health-(DP-AP)
+        }
+    }
 }
