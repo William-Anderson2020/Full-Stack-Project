@@ -1,0 +1,12 @@
+function attack(attacker, defender){
+    AP=attacker.stats.attack +attacker.weapon.attack
+    DP=defender.stats.defense
+    for(attack.stats.speed/defender.stats.speed){
+    randomEvent{
+        defender.stats.health=defender.stats.health-(DP-AP)
+        randomEvent{
+        defender.stats.health=defender.stats.health-(DP-AP*2)
+        }
+    }
+}
+}
