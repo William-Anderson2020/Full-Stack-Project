@@ -13,10 +13,10 @@ function attack(attacker, defender){
     }
     randomEvent{
     if randomEvent{
-        defender.stats.health=defender.stats.health-(DP-AP*2)
+        attacker.stats.health=attacker.stats.health-(DP-AP*2)
         }
         else(){
-        defender.stats.health=defender.stats.health-(DP-AP)
+        attacker.stats.health=attacker.stats.health-(DP-AP)
         }
     }
 }
