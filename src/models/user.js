@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 const secrets = require("../secrets");
 const validator = require("validator");
@@ -61,7 +60,7 @@ const userSchema = new mongoose.Schema({
   inventory: {
     type: Object
   } 
-});
+});/* 
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
@@ -96,7 +95,7 @@ userSchema.statics.findByCredentials = async (email, password) =>{
     throw new Error("incorrect password");
   }
   return user;
-} 
+}  */
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

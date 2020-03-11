@@ -11,20 +11,18 @@ router.get('/login', (req, res) => res.render('login'));
 //Register Page
 router.get('/register', (req, res) => res.render('register'));
 //Register
-router.post('/register', async (req,res) => {
+router.post('/register', (req, res) => {
     const { name, email, password} = req.body;
     let errors = [];
   
-    //Check required fields
     if (!name || !email || !password) {
       errors.push({ msg: 'Please enter all fields' });
     }
   
-    if (password.length < 6) {
+    /* if (password.length < 6) {
       errors.push({ msg: 'Password must be at least 6 characters' });
     }
   
-    //check pass length
     if (errors.length > 0) {
       res.render('register', {
         errors,
@@ -32,7 +30,7 @@ router.post('/register', async (req,res) => {
         email,
         password
       });
-    } else {
+    }  */else {
       User.findOne({ email: email }).then(user => {
         if (user) {
           errors.push({ msg: 'Email already exists' });
@@ -43,16 +41,13 @@ router.post('/register', async (req,res) => {
             password
           });
         } else {
-            res.send("pass");
-        }
-});
-          /* const newUser = new User({
+          const newUser = new User({
             name,
             email,
             password
           });
   
-          bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.genSalt(2, (err, salt) => {
             bcrypt.hash(newUser.password, salt, (err, hash) => {
               if (err) throw err;
               newUser.password = hash;
@@ -70,7 +65,8 @@ router.post('/register', async (req,res) => {
           });
         }
       });
-    }; */
+    }
+  });
 
 //Login
  router.post('/login', (req,res) => {
@@ -79,7 +75,7 @@ router.post('/register', async (req,res) => {
 }); 
 
 
-/* router.post("/users", async (req, res) => {
+/*  router.post("/users", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
@@ -178,5 +174,5 @@ router.get("/user/:id/profilePic", async(req, res) => {
     } catch (error) {
         res.status(404).send(error);
     }
-}) */
+})  */
 module.exports = router;
