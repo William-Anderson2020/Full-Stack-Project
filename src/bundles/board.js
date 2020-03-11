@@ -26,7 +26,8 @@ const amelia = {
     },
     "pos": {
         "x": 2,
-        "y": 2
+        "y": 2,
+        "tile": {}
     },
     "owner": "Player 1"
 };
@@ -40,7 +41,8 @@ const erika = {
     },
     "pos": {
         "x": 3,
-        "y": 3
+        "y": 3,
+        "tile": {}
     },
     "owner": "Player 2"
 };
@@ -65,10 +67,8 @@ tiles.forEach(el => {
 function dispUnit(unit){
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
-            if(tile.occupied.isOccupied == true){
-                //return;
-            };
             tile.occupied = {"isOccupied": true, "unit":unit};
+            unit.pos.tile = tile
             tile.dom.innerHTML = `<img class="board_sprite" src=${unit.img}>`;
             unitTileArray.push(tile);
             tileArray.forEach(oldTile => {
@@ -123,13 +123,35 @@ let unit;
 
 function turnInit(el){
     let tile = getTile(el.target);
+
+    function battleRes(attacker, defender){
+        //console.log(attacker, defender);
+        let movementTiles = tilesInRange(defender.pos.tile, attacker.stats.rng);
+        let atkTile = movementTiles[0];
+        if(Math.abs((attacker.pos.x + attacker.pos.y) - (defender.pos.x + defender.pos.y)) > 1){
+            console.log('move in range')
+            movementTiles.forEach(m => {
+                if(m.dom.classList.contains("viable") && Math.abs((m.x + m.y)-(attacker.pos.x + attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
+                    atkTile = m;
+                };
+            });
+            attacker.pos.x = atkTile.x;
+            attacker.pos.y = atkTile.y;
+            dispUnit(attacker);
+        }
+    };
     
     if(tile.occupied.isOccupied == true){
-        unit = tile.occupied.unit;
+        if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){
+            //console.log('battle function here');
+            battleRes(unit, tile.occupied.unit);
+        }else{
+            unit = tile.occupied.unit;
+        }
         tileArray.forEach(r => {
             r.dom.classList.remove("viable", "atkViable");
         });
-    }
+    };
 
     function moveUnit(e){
         let unitDest = e /* getTile(e.target); */
@@ -150,7 +172,7 @@ function turnInit(el){
             moveUnit(tile);
         };
         tileArray.forEach(r => {
-            r.dom.classList.remove("viable");
+            r.dom.classList.remove("viable", "atkViable");
             viableTiles = false;
         });
         return;
