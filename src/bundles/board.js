@@ -34,6 +34,7 @@ const amelia = {
 
 const erika = {
     "img": "./img/erikaIdle.png",
+    "anim": "./img/erikaAtk.gif",
     "name": "Erika",
     "stats":{
         "mvt": 3,
@@ -68,7 +69,7 @@ function dispUnit(unit){
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             tile.occupied = {"isOccupied": true, "unit":unit};
-            unit.pos.tile = tile
+            unit.pos.tile = tile;
             tile.dom.innerHTML = `<img class="board_sprite" src=${unit.img}>`;
             unitTileArray.push(tile);
             tileArray.forEach(oldTile => {
@@ -128,17 +129,22 @@ function turnInit(el){
         //console.log(attacker, defender);
         let movementTiles = tilesInRange(defender.pos.tile, attacker.stats.rng);
         let atkTile = movementTiles[0];
-        if(Math.abs((attacker.pos.x + attacker.pos.y) - (defender.pos.x + defender.pos.y)) > 1){
-            console.log('move in range')
+        if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > 1){
             movementTiles.forEach(m => {
-                if(m.dom.classList.contains("viable") && Math.abs((m.x + m.y)-(attacker.pos.x + attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
+                if(m.dom.classList.contains("viable") && ( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
                     atkTile = m;
                 };
             });
+            console.log(atkTile);
             attacker.pos.x = atkTile.x;
             attacker.pos.y = atkTile.y;
+            if(defender.pos.x > attacker.pos.x && !attacker.pos.tile.dom.classList.contains("flip")){
+                attacker.pos.tile.dom.classList.add("flip");
+                console.log("flip");
+            }
             dispUnit(attacker);
-        }
+        };
+        attacker.pos.tile.dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.anim}">`;
     };
     
     if(tile.occupied.isOccupied == true){
