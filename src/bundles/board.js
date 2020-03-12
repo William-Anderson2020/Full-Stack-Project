@@ -19,6 +19,7 @@ mapGen(10,10);
 
 const amelia = {
     "img": "./img/ameliaIdle.png",
+    "anim": "./img/ameliaAtk.gif",
     "name": "Amelia",
     "stats":{
         "mvt": 2,
