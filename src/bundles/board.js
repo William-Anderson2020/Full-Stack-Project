@@ -26,8 +26,8 @@ const amelia = {
         "rng": 1
     },
     "pos": {
-        "x": 2,
-        "y": 2,
+        "x": 4,
+        "y": 5,
         "tile": {}
     },
     "owner": "Player 1"
@@ -42,8 +42,8 @@ const erika = {
         "rng": 1
     },
     "pos": {
-        "x": 3,
-        "y": 3,
+        "x": 6,
+        "y": 5,
         "tile": {}
     },
     "owner": "Player 2"
@@ -141,11 +141,15 @@ function turnInit(el){
             attacker.pos.y = atkTile.y;
             if(defender.pos.x > attacker.pos.x && !attacker.pos.tile.dom.classList.contains("flip")){
                 attacker.pos.tile.dom.classList.add("flip");
-                console.log("flip");
             }
             dispUnit(attacker);
         };
         attacker.pos.tile.dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.anim}">`;
+        if(attacker.pos.x < defender.pos.x){
+            attacker.pos.tile.dom.innerHTML.classList.add("flip");
+        };
+        setTimeout(r => {dispUnit(attacker)}, 1600);
+
     };
     
     if(tile.occupied.isOccupied == true){
