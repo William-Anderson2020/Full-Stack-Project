@@ -1,4 +1,4 @@
-const express = require("express");
+/* const express = require("express");
 const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
@@ -11,7 +11,7 @@ router.get('/login', (req, res) => res.render('login'));
 //Register Page
 router.get('/register', (req, res) => res.render('register'));
 //Register
-/* router.post('/register', (req, res) => {
+router.post('/register', (req, res) => {
     const { name, email, password} = req.body;
     let errors = [];
   
@@ -19,7 +19,18 @@ router.get('/register', (req, res) => res.render('register'));
       errors.push({ msg: 'Please enter all fields' });
     }
   
-    else {
+    if (password.length < 6) {
+      errors.push({ msg: 'Password must be at least 6 characters' });
+    }
+  
+    if (errors.length > 0) {
+      res.render('register', {
+        errors,
+        name,
+        email,
+        password
+      });
+    } else {
       User.findOne({ email: email }).then(user => {
         if (user) {
           errors.push({ msg: 'Email already exists' });
@@ -56,25 +67,25 @@ router.get('/register', (req, res) => res.render('register'));
       });
     }
   });
- */
+
 //Login
  router.post('/login', (req,res) => {
    console.log(req.body)
    res.send("hello");
-}); 
+});  */
 
-router.post("/register", async (req, res) => {
+
+/*  router.post("/users", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
-        /* const token = await user.generateToken(); //lowercase so that token is generated for only this user
-        res.send({user, token}); */
-        res.redirect('/users/login');
+        const token = await user.generateToken(); //lowercase so that token is generated for only this user
+        res.send({user, token});
     }catch (error){
         res.status(500).send(error);
     }
 });
-/*router.post("/users/login", async (req, res) =>{
+router.post("/users/login", async (req, res) =>{
 try {
     const user = await User.findByCredentials(
         req.body.email,
@@ -164,4 +175,4 @@ router.get("/user/:id/profilePic", async(req, res) => {
         res.status(404).send(error);
     }
 })  */
-module.exports = router;
+/* module.exports = router; */

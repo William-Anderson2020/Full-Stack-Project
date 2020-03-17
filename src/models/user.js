@@ -16,24 +16,24 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    validate(value) {
+    /* validate(value) {
       if (!validator.isEmail(value)) {
         throw new Error("Email is invalid");
       }
-    }
+    } */
   },
   password: {
     type: String,
     required: true,
     trim: true,
     minLength: 6,
-    validate(value){
+    /* validate(value){
       if (value.toLowerCase().includes("password")){
         throw new Error('password cannot contain "password');
       }
-    }
-  } ,
-  tokens: [
+    } */
+  } /*,
+   tokens: [
     {
       token: {
         type:String,
@@ -59,22 +59,22 @@ const userSchema = new mongoose.Schema({
   ],
   inventory: {
     type: Object
-  } 
-});/* 
+  }  */
+});
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
-  delete userObject.tokens;
+  /* delete userObject.tokens; */
   delete userObject.password;
   return userObject;
 }
-userSchema.methods.generateToken = async function() {
+/* userSchema.methods.generateToken = async function() {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString()}, secrets.JWT_PASSWORD);
   user.tokens = user.tokens.concat({token});
   await user.save();
   return token;
-};
+}; */
 
 userSchema.pre("save", async function(next){
   const user = this;
@@ -95,7 +95,7 @@ userSchema.statics.findByCredentials = async (email, password) =>{
     throw new Error("incorrect password");
   }
   return user;
-}  */
+} 
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
