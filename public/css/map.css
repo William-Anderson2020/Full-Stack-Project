@@ -12,7 +12,7 @@ html {
 body {
     font-family: 'Sriracha', cursive;
     letter-spacing: 1rem;
-    font-weight: 700;
+   
     box-sizing: border-box;
     padding: 0;
     background-size: cover;
@@ -20,7 +20,7 @@ body {
       to bottom,
      rgba(255, 246, 197, 0.32),
      rgba(255, 182, 46, 0.22)),
-    url('../img/backgroundfe1.png');
+    url('../img/backgrounds/backgroundfe1.png');
     
 
     
@@ -30,30 +30,18 @@ body {
 
 .map-dialogue-section{
   text-align: center;
-  font-family: 'Lemonada', cursive;
+  font-family: 'Lato', cursive;
 }
 
-.dialogue{
-  margin-top: 3rem;
-  height:10rem;
-	width: 40rem;
-  color: skyblue;
-  border-radius: 1rem;
-  
 
-	box-shadow: 0 1.5rem 2rem rgba(0,0,0,.15);
-
-
-}
 .container {
-  padding: 1rem;
   background-color: white;
   box-shadow: 0 0.5rem 0.5rem rgba(46, 34, 34, 0.5);
-  width: 85rem;
-  
+
+  width:100rem;
 
   margin: 0 auto;
-  margin-top: 5rem;
+  margin-top: 3rem;
 
   border-radius: 2rem;
 
@@ -63,7 +51,10 @@ body {
 
   display: flex;
   justify-content: space-around;
-  padding: 3rem;
+  padding: 4rem;
+  padding-right: 0rem;
+
+ 
  
 }
 
@@ -75,8 +66,8 @@ body {
 }
 
 .map{
-  width: 40rem;
-  height: 40rem;
+  width: 50rem;
+  height: 50rem;
   background: url("/img/maps/map1.png");
   background-size: cover;
   margin: auto;
@@ -128,8 +119,9 @@ body {
 }
 
 .card-side:hover {
-  -webkit-transform: rotateY(10deg);
-  transform: rotateY(10deg);
+  -webkit-transform: rotateX(15deg);
+  transform: rotateX(15deg);
+
   box-shadow: 0 20px 20px rgba(50,50,50,.2);
   cursor: pointer;
 }
@@ -139,9 +131,13 @@ body {
 
 .character_front1{
   
-  position: absolute;
+ margin-top: 3rem;
+ 
+ box-sizing: border-box;
+ padding-left: 1.5rem;
+ padding-right: 1.5rem;
 
-  margin: 3rem;
+
 
   
 
@@ -156,9 +152,10 @@ body {
 
 .info{
   display: flex;
-  
-	font-size:1rem;
-  font-family: 'Roboto Slab', serif;
+  font-family: 'Lato', cursive;
+  font-size: 1.12rem;
+
+ 
 
 
 
@@ -256,14 +253,13 @@ body {
 }
 .skills{
 
-  
   width: 8rem;
   clip-path: circle(45% at 50% 50%);
   background-color: skyblue;
 }
 
 .stats{
-  word-spacing: 3rem;
+  word-spacing: -0.5rem;
   padding-left: 2rem;
   padding-right: 2rem;
 
@@ -272,6 +268,11 @@ body {
 
  
   
+}
+
+.value{
+  position: relative;
+  z-index: 2;
 }
 
 .stat-text{
@@ -298,23 +299,63 @@ body {
 }
 
 .hp{
+  padding-bottom: 0.9rem;
   width: 18rem;
+  font-weight: 600;
+  font-size: 1.3rem;
 
 }
 
-.weapon{
-
+.weapon + .name {
+  font-weight: 600;
 
 }
 
-.name{
+.atk-val + .def-val{
+padding-right: 1rem;
+}
 
 
 
+
+.dialogue{
+  display: flex;
+  justify-content: space-evenly;
+  height: 15rem;
+  width: 50rem;
+  align-items: center;
+  margin-top: 3rem;
+ 
+  
+  border-radius: 1rem;
+  border: solid rgb(187, 231, 248) 0.2rem;
+
+	backface-visibility: hidden;
+	box-shadow: 0 1.5rem 2rem rgba(0,0,0,.15);
+  
+  background: linear-gradient(90deg, #e5fffd 0%, #d9e7ff 100%);
+
+
+
+}
+ 
+
+
+.chibi{
+  height: 100%;
+}
+
+.text{
+  font-family: 'Roboto', serif;
+  font-size: 1.5rem;
+  color: gray;
+  letter-spacing: normal;
+
+  box-sizing: border-box;
+  
+  padding-right: 2rem;
 
   
 
 
-
 }
-
