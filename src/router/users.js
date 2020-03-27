@@ -59,35 +59,36 @@ router.get('/register', (req, res) => res.render('register'));
  */
 //Login
  router.post('/login', (req,res) => {
-   console.log(req.body)
-   res.send("hello");
+   console.log(req.body);
+   res.redirect("/users/dashboard");
 }); 
 
 router.post("/register", async (req, res) => {
     try{
         const user = new User(req.body);
-        await user.save();
-        /* const token = await user.generateToken(); //lowercase so that token is generated for only this user
+        await user.save();/* 
+        const token = await user.generateToken(); //lowercase so that token is generated for only this user
         res.send({user, token}); */
         res.redirect('/users/login');
     }catch (error){
         res.status(500).send(error);
     }
 });
-/*router.post("/users/login", async (req, res) =>{
+/* router.post("/login", async (req, res) =>{
 try {
     const user = await User.findByCredentials(
         req.body.email,
         req.body.password
     );
     const token = await user.generateToken();
-
+   
     res.send({user, token});
+    res.redirect("/users/dashboard");
 } catch (error) {
     res.status(500).send(error);
 }
-});
-router.post("/users/logout", auth, async(req,res) =>{
+}); */
+/*router.post("/users/logout", auth, async(req,res) =>{
     try {
         req.user.tokens = req.user.tokens.filter(token => {
             console.log(token.token);
