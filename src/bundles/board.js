@@ -27,7 +27,9 @@ const amelia = {
         "atk": 3,
         "def": 2,
         "mvt": 2,
-        "rng": 1
+        "rng": 1,
+        "lck": 2,
+        "dex": 3
     },
     "pos": {
         "x": 4,
@@ -54,7 +56,9 @@ const erika = {
         "atk": 2,
         "def": 1,
         "mvt": 3,
-        "rng": 1
+        "rng": 1,
+        "dex": 20,
+        "lck": 30
     },
     "pos": {
         "x": 6,
@@ -284,15 +288,19 @@ function damageCalc(attacker, defender){
     }
 
 
-    if(Math.trunc(Math.random()*100) < (attacker.cStats.luck + attacker.cStats.luck - defender.cStats.luck)/2 ){ /*crit calc*/
+    if(Math.trunc(Math.random()*100) < (attacker.cStats.lck + attacker.cStats.dex - defender.cStats.lck)/2 ){ /*crit calc*/
         crit = 1.5;
     }
 
-    damage = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
+    dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
+    if(dmg < 0){dmg = 0};
     console.log(damage);
-    defender.hp -= damage;
+    defender.hp -= dmg;
 
     console.log(attacker.hp, defender.hp);
+    if(crit > 1){
+        console.log("Critical!");
+    };
 };
 
 function battleRes(attacker, defender){
