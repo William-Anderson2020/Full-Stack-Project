@@ -1,7 +1,7 @@
 .tile{
     width: 1.5rem;
     height: 1.5rem;
-    border-width: .5px;
+    border-width: .1px;
     border-color: black;
     border-style: solid;
     display: flex;
@@ -11,16 +11,20 @@
 }
 
 .viable{
-    background-color: blue;
+    background-color: rgba(0, 0, 255, .3);
 }
 
 .atkViable{
-    background-color: red;
+    background-color: rgba(255, 0, 0, .3);
 }
 
 #container{
+    height: fit-content;
+    width: fit-content;
     display: flex;
     flex-direction: row;
+    background-image: url("../img/maps/map1.png");
+    background-size: cover;
 }
 
 /* .row{

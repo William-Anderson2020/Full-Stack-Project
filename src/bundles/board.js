@@ -1,10 +1,13 @@
 //import { DOMELEMENTS } from "./domElements";
 //import { clickListener } from "./clickListener";
 
+import{ maps } from "./maps"
+
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = [];
 let unitTileArray = [];
 let viableTiles = false;
+let map = maps[0];
 
 function mapGen(xlim, ylim){ //Generate grid
     for(let xtile = xlim; xtile > 0; xtile--){
@@ -32,7 +35,7 @@ const amelia = {
         "dex": 3
     },
     "pos": {
-        "x": 4,
+        "x": 3,
         "y": 5,
         "tile": {}
     },
@@ -61,13 +64,13 @@ const erika = {
         "lck": 30
     },
     "pos": {
-        "x": 6,
-        "y": 5,
+        "x": 7,
+        "y": 7,
         "tile": {}
     },
-    item:{
-        name: "Wooden Shield",
-        stats: {
+    "item":{
+        "name": "Wooden Shield",
+        "stats": {
             "atk": 1,
             "def": 2
         }
@@ -76,20 +79,29 @@ const erika = {
 };
 
 let tiles = document.querySelectorAll(".tile");
-
+console.log(map);
 tiles.forEach(el => {
     let tile = {
-        dom: el,
-        x: parseInt(el.getAttribute("x")),
-        y: parseInt(el.getAttribute("y")),
-        occupied: {
+        "dom": el,
+        "x": parseInt(el.getAttribute("x")),
+        "y": parseInt(el.getAttribute("y")),
+        "occupied": {
             "isOccupied": false,
             "unit": {}
         },
-        terrain: {
-            stats: {}
+        "terrain": {
+            "type": "",
+            "stats": {
+                "movementCost": 1
+            }
         }
     };
+    map.tiles.forEach(mT => {
+        //console.log(mT);
+        if(mT.x == tile.x && mT.y == tile.y){
+            tile.terrain = mT.terrain;
+        };
+    });
     //console.log(tile.x, tile.y);
     tileArray.push(tile);
 });
@@ -141,7 +153,31 @@ function tilesInRange(tile, dist){
         }
     });
     return tilesInRange;
-}
+};
+
+function moveCheck(unit){
+    let viableTiles = [];
+
+    tilesInRange(unit.pos.tile, 1).forEach(el => {
+        if(el.terrain.type == "Mountain" || (el.occupied.isOccupied == true && el.occupied.unit.owner != unit.owner)){
+            return;
+        };
+        for(let mP = unit.stats.mvt; mP > 0;){
+            let checkTiles = tilesInRange(el, 1);
+            checkTiles.forEach(tile => {
+                //let mPA = mP - tile.terrain.movementCost;
+                if(/*!(tile.spMvt && !tile.terrain.spMvt.includes(unit.spMvt)) &&*/ tile.terrain.type != "Mountain" && !(tile.occupied.isOccupied && tile.occupied.unit.owner != unit.owner)){
+                    mP -= tile.terrain.stats.movementCost;
+                    checkTiles = tilesInRange(tile, 1);
+                    if(!viableTiles.includes(tile)){
+                        viableTiles.push(tile);
+                    };
+                };
+            });
+        };
+    });
+    return viableTiles;
+};
 
 function gameInit(){
     tileArray.forEach(el =>{
@@ -195,6 +231,7 @@ function buffCalc(unit){
             uB[key] += buff[key];
         });
     });
+    console.log(unit.pos.tile.terrain);
     return uB;
 }
 
@@ -224,7 +261,7 @@ function getWeapon(unit){
 };
 
 function damageCalc(attacker, defender){
-    args = [...arguments];
+    let args = [...arguments];
     args.forEach(arg => {arg.cStats = buffCalc(arg)}); /*Use cStats for battle*/
   
     let adv = 1;
@@ -292,9 +329,9 @@ function damageCalc(attacker, defender){
         crit = 1.5;
     }
 
-    dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
+    let dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
     if(dmg < 0){dmg = 0};
-    console.log(damage);
+    console.log(dmg);
     defender.hp -= dmg;
 
     console.log(attacker.hp, defender.hp);
@@ -350,19 +387,20 @@ function turnInit(el){
         return;
     };
 
-    tilesInRange(tile, unit.stats.mvt).forEach(tiles => {
+    moveCheck(unit).forEach(tiles => {
         if(tiles.occupied.isOccupied == false){
             tiles.dom.classList.add("viable");
         };
         viableTiles = true;
     });
 
-    tilesInRange(tile, (unit.stats.mvt + unit.stats.rng)).forEach(atkTile => {
-        if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
-            atkTile.dom.classList.add("atkViable");
-        };
+    moveCheck(unit).forEach(aT => {
+        tilesInRange(aT, unit.stats.rng).forEach(atkTile => {
+            if(atkTile.terrain.type != "Mountain" && (!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
+                atkTile.dom.classList.add("atkViable");
+            };
+        });
     });
-
-}
+};
 
 gameInit();
