@@ -92,7 +92,7 @@ tiles.forEach(el => {
         "terrain": {
             "type": "",
             "stats": {
-                "movementCost": 1
+                "mvtc": 1
             }
         }
     };
@@ -156,27 +156,36 @@ function tilesInRange(tile, dist){
 };
 
 function moveCheck(unit){
-    let viableTiles = [];
+    let viableTilesR = [];
+    let checkedTiles = [];
 
     tilesInRange(unit.pos.tile, 1).forEach(el => {
         if(el.terrain.type == "Mountain" || (el.occupied.isOccupied == true && el.occupied.unit.owner != unit.owner)){
             return;
         };
-        for(let mP = unit.stats.mvt; mP > 0;){
-            let checkTiles = tilesInRange(el, 1);
+        let checkTiles = tilesInRange(el, 1);
+        for(let i = 0; unit.stats.mvt - 1 > i; i++){
             checkTiles.forEach(tile => {
-                //let mPA = mP - tile.terrain.movementCost;
                 if(/*!(tile.spMvt && !tile.terrain.spMvt.includes(unit.spMvt)) &&*/ tile.terrain.type != "Mountain" && !(tile.occupied.isOccupied && tile.occupied.unit.owner != unit.owner)){
-                    mP -= tile.terrain.stats.movementCost;
-                    checkTiles = tilesInRange(tile, 1);
-                    if(!viableTiles.includes(tile)){
-                        viableTiles.push(tile);
+                    tilesInRange(tile, 1).forEach(t => {
+                        if(!checkedTiles.includes(t)){
+                            checkTiles.push(t);
+                            checkedTiles.push(t);
+                        }
+                    })
+                    if(!viableTilesR.includes(tile)){
+                        viableTilesR.push(tile);
                     };
                 };
             });
         };
     });
-    return viableTiles;
+
+    /* tilesInRange(unit.pos.tile, 1){
+
+    } */
+
+    return viableTilesR;
 };
 
 function gameInit(){
@@ -196,7 +205,8 @@ function battleDisp(attacker, defender){
         let atkTile = movementTiles[0];
         if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > 1){
             movementTiles.forEach(m => {
-                if(m.dom.classList.contains("viable") && ( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
+                console.log(m);
+                if(m.dom.classList.contains("viable") && ( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) <= Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
                     atkTile = m;
                 };
             });
@@ -396,7 +406,7 @@ function turnInit(el){
 
     moveCheck(unit).forEach(aT => {
         tilesInRange(aT, unit.stats.rng).forEach(atkTile => {
-            if(atkTile.terrain.type != "Mountain" && (!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
+            if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
                 atkTile.dom.classList.add("atkViable");
             };
         });
