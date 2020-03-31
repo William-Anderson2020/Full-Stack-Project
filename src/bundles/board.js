@@ -2,6 +2,8 @@
 //import { clickListener } from "./clickListener";
 
 import{ maps } from "./maps"
+import io from "socket.io-client"
+const socket = io();
 
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = [];
@@ -40,13 +42,14 @@ const amelia = {
         "tile": {}
     },
     "item":{
-        "name": "Training Sword",
+        "name": "Goddess Ring",
         "stats": {
-            "atk": 1,
+            "def": 1,
             "hp": 3
         }
     },
-    "owner": "Player 1"
+    "owner": "Player 1",
+    "id": 1
 };
 
 const erika = {
@@ -75,11 +78,15 @@ const erika = {
             "def": 2
         }
     },
-    "owner": "Player 2"
+    "owner": "Player 2",
+    "id": 2
 };
+
+unitArray.push(amelia, erika);
 
 let tiles = document.querySelectorAll(".tile");
 console.log(map);
+
 tiles.forEach(el => {
     let tile = {
         "dom": el,
@@ -97,12 +104,10 @@ tiles.forEach(el => {
         }
     };
     map.tiles.forEach(mT => {
-        //console.log(mT);
         if(mT.x == tile.x && mT.y == tile.y){
             tile.terrain = mT.terrain;
         };
     });
-    //console.log(tile.x, tile.y);
     tileArray.push(tile);
 });
 
@@ -154,6 +159,22 @@ function tilesInRange(tile, dist){
     });
     return tilesInRange;
 };
+
+function unitArrayTravelSize(){
+    let r = [];
+    unitArray.forEach(el => {
+        r.push({
+            "id": el.id,
+            "hp": el.hp,
+            "stats": el.stats,
+            "pos": {
+                "x": el.x,
+                "y": el.y            
+            }
+        });
+    });
+    return r
+}
 
 function moveCheck(unit){
     let viableTilesR = [];
@@ -334,7 +355,7 @@ function damageCalc(attacker, defender){
             console.log("weapon trianlge defaulting.");
     }
 
-
+    /*Crit Calc*/
     if(Math.trunc(Math.random()*100) < (attacker.cStats.lck + attacker.cStats.dex - defender.cStats.lck)/2 ){ /*crit calc*/
         crit = 1.5;
     }
@@ -378,8 +399,7 @@ function turnInit(el){
         unit.pos.y = unitDest.y;
         viableTiles = false;
         dispUnit(unit);
-
-        //tilesInRange(tile, unit.stats.mvt)
+        socket.emit('boardUpdate', unitArrayTravelSize());
         tileArray.forEach(tiles => {
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
@@ -414,3 +434,15 @@ function turnInit(el){
 };
 
 gameInit();
+
+/* socket.on("relay", el => {
+    console.log(el.msg);
+}) */
+
+socket.on("cT", (el) => {
+    console.log(el.msg);
+})
+
+socket.on("rT", (el) => {
+    console.log(el.msg);
+});
