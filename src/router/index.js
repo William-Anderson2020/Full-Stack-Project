@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 // Welcome Page
 router.get('/', (req, res) => res.render('login'));
 //Dashboard
-router.get('/dashboard', (req, res) =>
+router.get('/users/dashboard', (req, res) =>
   res.render('dashboard', {
     user: req.user
   })
