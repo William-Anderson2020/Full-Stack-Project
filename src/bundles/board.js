@@ -168,11 +168,12 @@ function unitArrayTravelSize(){
             "hp": el.hp,
             "stats": el.stats,
             "pos": {
-                "x": el.x,
-                "y": el.y            
+                "x": el.pos.x,
+                "y": el.pos.y            
             }
         });
     });
+    //console.log(r);
     return r
 }
 
@@ -374,6 +375,7 @@ function damageCalc(attacker, defender){
 function battleRes(attacker, defender){
     battleDisp(attacker, defender);
     damageCalc(attacker, defender);
+    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id, defender: defender.id});
 };
 
 let unit;
@@ -399,7 +401,7 @@ function turnInit(el){
         unit.pos.y = unitDest.y;
         viableTiles = false;
         dispUnit(unit);
-        socket.emit('boardUpdate', unitArrayTravelSize());
+        socket.emit('boardUpdate', {data: unitArrayTravelSize(), type: "move"});
         tileArray.forEach(tiles => {
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
@@ -444,5 +446,21 @@ socket.on("cT", (el) => {
 })
 
 socket.on("rT", (el) => {
-    console.log(el.msg);
+    console.log(el.data);
+    unitArray.forEach(u => {
+        el.data.forEach(d => {
+            if(d.id == u.id){
+                Object.keys(d).forEach(key => {
+                    u[key] = d[key];
+                });
+                dispUnit(u);
+            };
+        });
+    });
+    if(el.type == "atk"){
+        let attacker, defender;
+        unitArray.forEach(atk => {if(atk.id == el.attacker){attacker = atk}});
+        unitArray.forEach(def => {if(def.id == el.defender){defender = def}});
+        battleDisp(attacker, defender);
+    };
 });

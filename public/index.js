@@ -38,7 +38,7 @@ io.on("connection", socket => {
 
   socket.on("boardUpdate", unitData => {
     console.log("data recieved");
-    io.emit("rT", {unitData: unitData, msg:"test"});
+    io.emit("rT", unitData);
     console.log("data sent");
   });
 
