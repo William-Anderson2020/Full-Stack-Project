@@ -227,8 +227,7 @@ function battleDisp(attacker, defender){
         let atkTile = movementTiles[0];
         if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > 1){
             movementTiles.forEach(m => {
-                console.log(m);
-                if(m.dom.classList.contains("viable") && ( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) <= Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y))){
+                if(m.dom.classList.contains("viable") && (( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y)) || m.y == defender.pos.y)){
                     atkTile = m;
                 };
             });
