@@ -2,8 +2,8 @@ const path = require("path");
 const hbs = require("hbs");
 const express = require("express");
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+//const http = require("http").Server(app);
+
 const moment = require("moment")();
 require("./db/mongoose");
 
@@ -21,12 +21,14 @@ hbs.registerPartials(partialsPath);
 
 app.use(express.static(publicDirectoryPath));
 app.use(express.json());
-app.use(characterRouter)
-app.use(itemRouter)
+app.use(characterRouter);
+app.use(itemRouter);
 
-http.listen(3000, () => {
+const server = app.listen(3000, () => { //doesnt work with socket, http doesnt work with express
   console.log("Listening on port 3000");
 });
+
+const io = require("socket.io")(server);
 
 app.get("", async (req, res) => {
   try {

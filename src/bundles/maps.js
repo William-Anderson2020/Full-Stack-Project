@@ -14,7 +14,7 @@ class Map{
         this.tiles = tiles,
         this.size = {
             x:size.split("x")[0],
-            y:size.plit("x")[1]
+            y:size.split("x")[1]
         }
     };
 };

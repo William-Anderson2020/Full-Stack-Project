@@ -4,18 +4,18 @@ const router = new express.Router();
 
 router.post("/characters", async(req,res)=>{
     try {
-        const character = new Character(req.body)
-        await character.save();
-        res.send(character)
+        const unit = new Character(req.body);
+        await unit.save();
+        res.send(unit)
     } catch (error) {
      res.status(501).send(error)   
     }
 })
 
-router.get("/characters", async(req,res)=>{
+router.get("/characters/:id", async(req,res)=>{
     try{
-        let character = await Character.find(req.body);
-        res.send(character)
+        let unit = await Character.find(req.params.id);
+        res.send(unit);
     }catch(error){
         res.status(501).send(error)
     }
