@@ -186,6 +186,7 @@ body {
 .btn{
 
   background: linear-gradient(90deg, rgba(100,179,212,1) 35%, rgba(97,169,184,1) 100%);
+  border: rgba(100,179,212,1) solid 2px; 
   border: rgba(100,179,212,1) solid 2px;
   border-radius: 1rem;
   margin-left: 6px;
@@ -374,27 +375,20 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 5, 36, 0.5);
+  background: rgba(0, 40, 126, 0.23);
   transition: opacity 500ms;
 
+  
  
 }
 
-.popup{
-  margin: 70px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 5px;
-  width: 30%;
-  position: relative;
-  transition: all 5s ease-in-out;
-}
+
 
 .character1{
   height: 50rem;
   position: absolute;
   bottom: 0;
-  left: 13rem;
+  left: 25.3rem;
 
  
 
@@ -411,10 +405,14 @@ body {
   position: absolute;
 
   bottom: 0;
-  right: 13rem;
+  right: 22rem;
+ 
+
+}
+
+.img-character2{
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
-
 
 }
 
@@ -429,15 +427,57 @@ body {
 
 .battle-overlay{
   position: relative;
-  margin-top: -30rem;
+  margin-left: 2rem;
+  margin-top: -34rem;
   
-  background-color: rgb(144, 242, 255);
-  height: 20rem;
+  background-color: rgb(144, 242, 255 , 0.3);
+  height: 23rem;
+  width: 40rem;
+  
+ 
 
 
-  transform: skew(-5deg)  rotate(-5deg);
-
-
+  transform: skew(-3deg)  rotate(-3deg);
   clip-path: polygon(100% 19%, 100% 54%, 0 73%, 0 37%);
 
+  background: radial-gradient( rgba(203, 238, 255, 0.7) 35%, rgba(48, 162, 255, 0.9) 100%);
+  border: rgba(216, 155, 98, 0.8) solid 3px; 
+
+  box-shadow: 0px 0px 0px 2px #fff inset;
+
+}
+
+.battle-text{
+  letter-spacing: 0.2rem;
+
+  transform: rotate(-5deg);
+
+  
+  color: black;
+  font-family:'lato', sans-serif;
+  font-size: 1.4rem;
+  margin-top: 8.5rem;
+  
+  text-align: center;
+
+  padding-left: 5rem;
+  padding-right: 5rem;
+
+  
+}
+
+.character-name1 {
+  width: 8rem;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: -4rem;
+  font-size: 1.5rem;
+}
+
+.character-name2{
+  width: 8rem;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: -4rem;
+  font-size: 1.5rem;
 }
