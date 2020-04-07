@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
             
         }
         req.token = token;
-        req.user = user; //rout handler will not have to fetch user account
+        req.user = user; //route handler will not have to fetch user account
         next();
     } catch (error) {
         res.status(401).send({error: "Authorization Fail: please authenticate"});

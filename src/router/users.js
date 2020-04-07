@@ -3,6 +3,7 @@ const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const passport = require('passport');
 const upload = require("../middleware/upload");
 const router = new express.Router();
 
@@ -58,22 +59,30 @@ router.get('/register', (req, res) => res.render('register'));
   });
  */
 //Login
- router.post('/login', (req,res) => {
+ /* router.post('/login',auth, (req,res) => {
    console.log(req.body);
-   res.redirect("/users/dashboard");
-}); 
+   res.redirect("/dashboard");
+});  */
 
 router.post("/register", async (req, res) => {
     try{
         const user = new User(req.body);
-        await user.save();/* 
+        await user.save();
         const token = await user.generateToken(); //lowercase so that token is generated for only this user
-        res.send({user, token}); */
+        /* res.send({user, token}); */
         res.redirect('/users/login');
     }catch (error){
         res.status(500).send(error);
     }
 });
+// Login
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+      successRedirect: '/users/dashboard',
+      failureRedirect: '/users/login'
+      /* failureFlash: true */
+    })(req, res, next);
+  });
 /* router.post("/login", async (req, res) =>{
 try {
     const user = await User.findByCredentials(
@@ -88,7 +97,7 @@ try {
     res.status(500).send(error);
 }
 }); */
-/*router.post("/users/logout", auth, async(req,res) =>{
+router.post("/users/logout", auth, async(req,res) =>{
     try {
         req.user.tokens = req.user.tokens.filter(token => {
             console.log(token.token);
@@ -100,7 +109,7 @@ try {
         res.status(500).send(error);
     }
 });
-router.get("/users", async (req, res) => {
+/*router.get("/users", async (req, res) => {
     try{
         let users = await User.find({});
         res.send(users);

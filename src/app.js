@@ -3,10 +3,14 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const expressLayouts = require("express-ejs-layouts");
 const mongoose = require("./db/mongoose"); //this ensures mongoos runs and connect to our database
+const passport = require('passport');
 const secrets = require("./secrets");
 const app = express();
 const flash = require('connect-flash');
 const session = require('express-session');
+
+// Passport Config
+require('./config/passport')(passport);
 
 //EJS
 app.use(expressLayouts);
@@ -25,8 +29,20 @@ app.use(
     })
   );
 
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Connect Flahs
 app.use(flash());
+
+// Global variables
+app.use(function(req, res, next) {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  next();
+});
 
 //Routes
 app.use('/', require('./router/index.js'));

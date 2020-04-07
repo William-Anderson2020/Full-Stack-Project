@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         throw new Error('password cannot contain "password');
       }
     } */
-  } /*,
+  } ,
    tokens: [
     {
       token: {
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         required: true
       }
     }
-  ],
+  ]/*,
   profilePic: {
     type: Buffer
   },
@@ -64,17 +64,17 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
-  /* delete userObject.tokens; */
+  delete userObject.tokens;
   delete userObject.password;
   return userObject;
 }
-/* userSchema.methods.generateToken = async function() {
+userSchema.methods.generateToken = async function() {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString()}, secrets.JWT_PASSWORD);
   user.tokens = user.tokens.concat({token});
   await user.save();
   return token;
-}; */
+};
 
 userSchema.pre("save", async function(next){
   const user = this;
