@@ -16,9 +16,9 @@ function mapGen(xlim, ylim){ //Generate grid
         document.getElementById("container").insertAdjacentHTML("afterbegin", `<div id="row${xtile}" class="row"></div>`);
         for(let ytile = ylim; ytile > 0; ytile--){
             document.getElementById(`row${xtile}`).insertAdjacentHTML("beforeend", `<div class="tile" x="${xtile}" y="${ytile}"></div>`);
-        }
-    }
-}
+        };
+    };
+};
 
 mapGen(10,10);
 

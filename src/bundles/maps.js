@@ -9,9 +9,13 @@ class Tile{
 };
 
 class Map{
-    constructor(name, tiles){
+    constructor(name, size, tiles){
         this.name = name,
-        this.tiles = tiles
+        this.tiles = tiles,
+        this.size = {
+            x:size.split("x")[0],
+            y:size.plit("x")[1]
+        }
     };
 };
 
@@ -25,7 +29,7 @@ class Terrain{
 const mountain = new Terrain("Mountain", {spMvt: ["flier"]});
 const forest = new Terrain("Forest", {def: 2});
 
-maps.push(new Map ("Demo", 
+maps.push(new Map ("Demo", "10x10", 
     setTerrain([
         [2, [1]],
         [3, [1, 5, 6]],
