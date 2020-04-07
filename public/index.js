@@ -5,11 +5,14 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 const moment = require("moment")();
+require("./db/mongoose");
 
 
 const publicDirectoryPath = path.join(__dirname, "../public");
 const partialsPath = path.join(__dirname, "../templates/partials");
 const viewsPath = path.join(__dirname, "../templates/views");
+const characterRouter = require("./routers/character")
+const itemRouter = require("./routers/item")
 
 //setup handlebars engine and views location
 app.set("view engine", "hbs");
@@ -17,6 +20,9 @@ app.set("views", viewsPath); //telling express to get templates from templates/v
 hbs.registerPartials(partialsPath);
 
 app.use(express.static(publicDirectoryPath));
+app.use(express.json());
+app.use(characterRouter)
+app.use(itemRouter)
 
 http.listen(3000, () => {
   console.log("Listening on port 3000");
