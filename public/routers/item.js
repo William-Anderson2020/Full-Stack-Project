@@ -1,5 +1,6 @@
 const express = require("express");
 const Item = require("../models/item");
+const upload = require("../middleware/upload");
 const router = new express.Router();
 
 router.post("/items", async(req,res)=>{
@@ -20,5 +21,20 @@ router.get("/items", async(req,res)=>{
         res.status(501).send(error)
     }
 })
- 
+
+
+
+router.post("/item/image",
+    upload.single("image"),
+    async(req,res)=>{
+        try {
+            req.item.image = req.file.buffer;
+            await res.item.save()
+            res.send("Uploaded")
+        } catch (error) {
+            
+        }
+    }
+
+)
 module.exports= router
