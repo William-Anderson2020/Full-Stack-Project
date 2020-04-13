@@ -26,6 +26,10 @@ const itemSchema = new mongoose.Schema(
                 type:Number,
                 required:true,
             },
+        },
+        image:{
+            type:Buffer,
+            default:None
         }
     }
 )
