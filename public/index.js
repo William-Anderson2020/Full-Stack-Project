@@ -40,6 +40,17 @@ app.get("", async (req, res) => {
   }
 });
 
+app.get("/api/unit/:id", async (req, res) => {
+  try{
+    let data = await fetch(`/characters/${req.params.id}`);
+    data = await data.json();
+    console.log("TEST");
+    res.send(data);
+  }catch{
+    res.status(500).send();
+  }
+});
+
 io.on("connection", socket => {
   console.log(`A user connected @ ${moment.format('h:mm:ss a')} from ${socket.conn.remoteAddress}. (ID: ${socket.id})`);
   io.to(socket.id).emit("cT", {msg: "success"});

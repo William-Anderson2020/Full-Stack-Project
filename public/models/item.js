@@ -28,8 +28,7 @@ const itemSchema = new mongoose.Schema(
             },
         },
         image:{
-            type:Buffer,
-            default:None
+            type:Buffer
         }
     }
 )

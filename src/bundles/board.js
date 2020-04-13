@@ -139,6 +139,25 @@ function dispUnit(unit){
 dispUnit(amelia);
 dispUnit(erika);
 
+let get = {
+    async unit(id){
+        let data = await fetch(`/characters/${id}`); //Replace with working url
+        await data.json().then(unit => {
+            console.log(unit);
+            unit.pos = {};
+            unit.pos.x = 1;
+            unit.pos.y = 1;
+            unit.img = unit.sprite.img;
+            unit.anim = unit.sprite.attack;
+            unitArray.push(unit);
+            dispUnit(unit);
+        });
+        
+    }
+};
+
+get.unit("5e8cb65fa341f32310aab149");
+
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
     tileArray.forEach(tile => {
