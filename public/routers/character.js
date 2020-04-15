@@ -22,28 +22,38 @@ router.get("/characters/:id", async(req,res)=>{
     }
 });
 
-router.post("/characters/image/idle/:id", upload.single("image"), async(req,res)=>{
-        try {
-            let unit = await Character.findById(req.params.id);
-            unit.sprite.idle = req.file.buffer;
-            await unit.save();
-            res.send(unit);
-        } catch (error) {
-            res.status(501).send(error);
-        };
-    }
-);
-
-router.post("/characters/image/attack/:id", upload.single("image"), async(req,res)=>{
+router.post("/characters/image/post/:type/:id", upload.single("image"), async(req,res)=>{
     try {
         let unit = await Character.findById(req.params.id);
-        unit.sprite.attack = req.file.buffer;
+        unit.sprite[req.params.type] = req.file.buffer;
         await unit.save();
-        res.send(unit);
+        if(req.params.type == "attack"){
+            res.set('Content-Type', 'image/gif');
+        }else{
+            res.set('Content-Type', 'image/png');
+        }
+        res.send(unit.sprite[req.params.type]);
     } catch (error) {
         res.status(501).send(error);
     };
-}
-);
+});
+
+router.get('/characters/image/:type/:id', async (req, res) => {
+    try {
+        const unit = await Character.findById(req.params.id);
+        if(!unit || !unit.sprite[req.params.type]){
+            throw new Error('Sprite not found.');
+        } else{
+            if(req.params.type == "attack"){
+                res.set('Content-Type', 'image/gif');
+            }else{
+                res.set('Content-Type', 'image/png');
+            }
+            res.send(unit.sprite[req.params.type]);
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+});
  
 module.exports= router

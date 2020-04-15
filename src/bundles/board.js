@@ -5,6 +5,8 @@ import{ maps } from "./maps"
 import io from "socket.io-client"
 const socket = io();
 
+import{ Unit } from "./unit"
+
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = [];
 let unitTileArray = [];
@@ -23,8 +25,10 @@ function mapGen(xlim, ylim){ //Generate grid
 mapGen(10,10);
 
 const amelia = {
-    "img": "./img/ameliaIdle.png",
-    "anim": "./img/ameliaAtk.gif",
+    "sprite": {
+        "idle": "./img/ameliaIdle.png",
+        "attack": "./img/ameliaAtk.gif",
+    },
     "name": "Amelia",
     "hp": 20,
     "weapon": "spear",
@@ -53,8 +57,10 @@ const amelia = {
 };
 
 const erika = {
-    "img": "./img/erikaIdle.png",
-    "anim": "./img/erikaAtk.gif",
+    "sprite": {
+        "idle": "./img/erikaIdle.png",
+        "attack": "./img/erikaAtk.gif",
+    },
     "name": "Erika",
     "hp": 25,
     "weapon": "sword",
@@ -116,7 +122,7 @@ function dispUnit(unit){
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             tile.occupied = {"isOccupied": true, "unit":unit};
             unit.pos.tile = tile;
-            tile.dom.innerHTML = `<img class="board_sprite" src=${unit.img}>`;
+            tile.dom.innerHTML = `<img class="board_sprite" src=${unit.sprite.idle}>`;
             unitTileArray.push(tile);
             tileArray.forEach(oldTile => {
                 if(oldTile.occupied.unit == tile.occupied.unit && oldTile.occupied.unit != {} && oldTile != tile){
@@ -142,16 +148,20 @@ dispUnit(erika);
 let get = {
     async unit(id){
         let data = await fetch(`/characters/${id}`); //Replace with working url
-        await data.json().then(unit => {
-            console.log(unit);
-            unit.pos = {};
-            unit.pos.x = 1;
-            unit.pos.y = 1;
-            unit.img = unit.sprite.img;
-            unit.anim = unit.sprite.attack;
-            unitArray.push(unit);
-            dispUnit(unit);
-        });
+        data = await data.json()
+        let unitImport = new Unit(data.name, data.hp, data.stats, data._id);
+
+        unitImport.side = "l"
+        unitImport.setPos(tileArray, map);
+        unitImport.pos.tile = getUnitPos(unitImport);
+        console.log(unitImport.pos.tile)
+        
+
+        unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url);
+        unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
+        console.log(unitImport.sprite);
+        unitArray.push(unitImport);
+        dispUnit(unitImport);
         
     }
 };
@@ -166,6 +176,16 @@ function getTile(el){ // Checks value of dom element and returns corrosponding t
         }
     });
     return match;
+}
+
+function getUnitPos(unit){
+    let uPos;
+    tileArray.forEach(t => {
+        if(t.x == unit.pos.x && t.y == unit.pos.y){
+            uPos = t;
+        }
+    });
+    return uPos;
 }
 
 function tilesInRange(tile, dist){
@@ -257,7 +277,7 @@ function battleDisp(attacker, defender){
             }
             dispUnit(attacker);
         };
-        attacker.pos.tile.dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.anim}">`;
+        attacker.pos.tile.dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`;
         if(attacker.pos.x < defender.pos.x){
             if(!attacker.pos.tile.dom.classList.contains("flip")){
                 attacker.pos.tile.dom.classList.add("flip");

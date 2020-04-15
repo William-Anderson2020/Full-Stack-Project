@@ -23,6 +23,7 @@ app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 app.use(characterRouter);
 app.use(itemRouter);
+app.use(express.static('uploads'));
 
 const server = app.listen(3000, () => { //doesnt work with socket, http doesnt work with express
   console.log("Listening on port 3000");
