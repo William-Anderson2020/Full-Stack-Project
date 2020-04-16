@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         throw new Error('password cannot contain "password');
       }
     } */
-  } ,
+  }/*  ,
    tokens: [
     {
       token: {
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         required: true
       }
     }
-  ]/*,
+  ] *//*,
   profilePic: {
     type: Buffer
   },

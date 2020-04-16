@@ -3,15 +3,16 @@ const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const passport = require('passport');
 const upload = require("../middleware/upload");
 const router = new express.Router();
 
 //Login Page
 router.get('/login', (req, res) => res.render('login'));
 //Register Page
-router.get('/register', (req, res) => res.render('register'));
+router.get('/register', (req, res) => res.render('register')); */
 //Register
-router.post('/register', (req, res) => {
+/* router.post('/register', (req, res) => {
     const { name, email, password} = req.body;
     let errors = [];
   
@@ -19,18 +20,7 @@ router.post('/register', (req, res) => {
       errors.push({ msg: 'Please enter all fields' });
     }
   
-    if (password.length < 6) {
-      errors.push({ msg: 'Password must be at least 6 characters' });
-    }
-  
-    if (errors.length > 0) {
-      res.render('register', {
-        errors,
-        name,
-        email,
-        password
-      });
-    } else {
+    else {
       User.findOne({ email: email }).then(user => {
         if (user) {
           errors.push({ msg: 'Email already exists' });
@@ -67,38 +57,47 @@ router.post('/register', (req, res) => {
       });
     }
   });
-
+ */
 //Login
- router.post('/login', (req,res) => {
-   console.log(req.body)
-   res.send("hello");
+ /* router.post('/login',auth, (req,res) => {
+   console.log(req.body);
+   res.redirect("/dashboard");
 });  */
 
-
-/*  router.post("/users", async (req, res) => {
+/* router.post("/register", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
         const token = await user.generateToken(); //lowercase so that token is generated for only this user
         res.send({user, token});
+        res.redirect('/users/login');
     }catch (error){
         res.status(500).send(error);
     }
-});
-router.post("/users/login", async (req, res) =>{
+}); */
+// Login
+/* router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+      successRedirect: '/users/dashboard',
+      failureRedirect: '/users/login',
+      failureFlash: true
+    })(req, res, next);
+  }); */
+/* router.post("/login", async (req, res) =>{
 try {
     const user = await User.findByCredentials(
         req.body.email,
         req.body.password
     );
     const token = await user.generateToken();
-
+   
     res.send({user, token});
+    res.redirect("/users/dashboard");
 } catch (error) {
     res.status(500).send(error);
 }
-});
-router.post("/users/logout", auth, async(req,res) =>{
+}); */
+/* router.post("/users/logout", auth, async(req,res) =>{
     try {
         req.user.tokens = req.user.tokens.filter(token => {
             console.log(token.token);
@@ -109,8 +108,8 @@ router.post("/users/logout", auth, async(req,res) =>{
     } catch (error) {
         res.status(500).send(error);
     }
-});
-router.get("/users", async (req, res) => {
+}); */
+/*router.get("/users", async (req, res) => {
     try{
         let users = await User.find({});
         res.send(users);

@@ -33,7 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Connect Flahs
+//Connect Flash
 app.use(flash());
 
 // Global variables

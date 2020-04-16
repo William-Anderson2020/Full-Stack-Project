@@ -68,8 +68,12 @@ router.post("/register", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
-        const token = await user.generateToken(); //lowercase so that token is generated for only this user
+        /* const token = await user.generateToken(); */ //lowercase so that token is generated for only this user
         /* res.send({user, token}); */
+        req.flash(
+            'success_msg',
+            'You are now registered and can log in'
+          );
         res.redirect('/users/login');
     }catch (error){
         res.status(500).send(error);
@@ -79,8 +83,8 @@ router.post("/register", async (req, res) => {
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
       successRedirect: '/users/dashboard',
-      failureRedirect: '/users/login'
-      /* failureFlash: true */
+      failureRedirect: '/users/login',
+      failureFlash: true
     })(req, res, next);
   });
 /* router.post("/login", async (req, res) =>{
@@ -97,7 +101,9 @@ try {
     res.status(500).send(error);
 }
 }); */
-router.post("/users/logout", auth, async(req,res) =>{
+
+//logout
+/* router.post("/users/logout", auth, async(req,res) =>{
     try {
         req.user.tokens = req.user.tokens.filter(token => {
             console.log(token.token);
@@ -108,7 +114,7 @@ router.post("/users/logout", auth, async(req,res) =>{
     } catch (error) {
         res.status(500).send(error);
     }
-});
+}); */
 /*router.get("/users", async (req, res) => {
     try{
         let users = await User.find({});
