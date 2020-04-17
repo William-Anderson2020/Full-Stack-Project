@@ -29,7 +29,13 @@ const server = app.listen(3000, () => { //doesnt work with socket, http doesnt w
   console.log("Listening on port 3000");
 });
 
-const io = require("socket.io")(server);
+/* const server = app.listen(app.get("port"), () => {
+  console.log(`Listening on port ${app.get("port")}`);
+}) */
+
+const io = require("socket.io").listen(server);
+const serverIndex = io.of("/serverIndex");
+const mapIO = io.of("/map");
 
 app.get("", async (req, res) => {
   try {
@@ -41,24 +47,60 @@ app.get("", async (req, res) => {
   }
 });
 
-app.get("/api/unit/:id", async (req, res) => {
-  try{
-    let data = await fetch(`/characters/${req.params.id}`);
-    data = await data.json();
-    console.log("TEST");
-    res.send(data);
-  }catch{
+app.get("/serverIndex", async (req, res) => {
+  try {
+    res.render("index")
+  } catch (error) {
+    res.status(500).send();
+  }
+
+  /* io.on("connection", socket => {
+    let openGames = [];
+    io.to(socket.id).emit("serverLogRelay", )
+    socket.on("serverCreation", data => {
+      openGames.push(data.id);
+    });
+  }) */
+
+});
+
+app.get("/game/:id", async(req, res) => {
+  try {
+    res.render("map");
+
+  } catch (error) {
     res.status(500).send();
   }
 });
 
-io.on("connection", socket => {
+let serverList = [];
+serverIndex.on("connection", socket => {
+  serverIndex.to(socket.id).emit("listRelay", {list: serverList});
+
+  socket.on("serverCreation", data => {
+    serverList.push(data.id);
+    serverIndex.emit("listRelay", {list: serverList});
+  });
+
+});
+
+mapIO.on("connection", socket => {
+
+
+
+  socket.on("joinRoom", data => {
+    socket.join(data.room, function(){
+      console.log(`${socket.id} joined room ${Object.keys(socket.rooms)}`);  
+    });
+  });
+
   console.log(`A user connected @ ${moment.format('h:mm:ss a')} from ${socket.conn.remoteAddress}. (ID: ${socket.id})`);
-  io.to(socket.id).emit("cT", {msg: "success"});
+  mapIO.to(socket.id).emit("cT", {msg: "success"});
 
   socket.on("boardUpdate", unitData => {
     console.log("data recieved");
-    io.emit("rT", unitData);
+    let room = unitData.room;
+    io.of("/map").to(room).emit("rT", unitData);
     console.log("data sent");
   });
 

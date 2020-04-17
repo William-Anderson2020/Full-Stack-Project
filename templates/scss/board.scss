@@ -54,3 +54,9 @@ html{
 .flip{
     transform: scaleX(-1);
 }
+
+#newServer{
+    padding: .5rem;
+    border-radius: 1rem;
+    background-color: rgba(0,0,100,0.3);
+}

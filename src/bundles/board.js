@@ -3,7 +3,7 @@
 
 import{ maps } from "./maps"
 import io from "socket.io-client"
-const socket = io();
+const socket = io("/map");
 
 import{ Unit } from "./unit"
 
@@ -26,8 +26,8 @@ mapGen(10,10);
 
 const amelia = {
     "sprite": {
-        "idle": "./img/ameliaIdle.png",
-        "attack": "./img/ameliaAtk.gif",
+        "idle": "../img/ameliaIdle.png",
+        "attack": "../img/ameliaAtk.gif",
     },
     "name": "Amelia",
     "hp": 20,
@@ -58,8 +58,8 @@ const amelia = {
 
 const erika = {
     "sprite": {
-        "idle": "./img/erikaIdle.png",
-        "attack": "./img/erikaAtk.gif",
+        "idle": "../img/erikaIdle.png",
+        "attack": "../img/erikaAtk.gif",
     },
     "name": "Erika",
     "hp": 25,
@@ -159,7 +159,6 @@ let get = {
 
         unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url);
         unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
-        console.log(unitImport.sprite);
         unitArray.push(unitImport);
         dispUnit(unitImport);
         
@@ -167,6 +166,7 @@ let get = {
 };
 
 get.unit("5e8cb65fa341f32310aab149");
+console.log(unitArray);
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
@@ -413,7 +413,7 @@ function damageCalc(attacker, defender){
 function battleRes(attacker, defender){
     battleDisp(attacker, defender);
     damageCalc(attacker, defender);
-    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id, defender: defender.id});
+    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id, defender: defender.id, room:room});
 };
 
 let unit;
@@ -439,7 +439,7 @@ function turnInit(el){
         unit.pos.y = unitDest.y;
         viableTiles = false;
         dispUnit(unit);
-        socket.emit('boardUpdate', {data: unitArrayTravelSize(), type: "move"});
+        socket.emit('boardUpdate', {data: unitArrayTravelSize(), type: "move", room:room});
         tileArray.forEach(tiles => {
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
@@ -479,11 +479,20 @@ gameInit();
     console.log(el.msg);
 }) */
 
+let room;
+
 socket.on("cT", (el) => {
     console.log(el.msg);
+    room = window.location.pathname.slice(6);   // remove leading /chat/
+    let pos = room.indexOf('/');
+    if (pos !== -1) {
+        room = room.slice(0, pos);
+    }
+    socket.emit("joinRoom", {room: room});
 })
 
 socket.on("rT", (el) => {
+    console.log("data recieved");
     console.log(el.data);
     unitArray.forEach(u => {
         el.data.forEach(d => {

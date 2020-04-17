@@ -2,7 +2,7 @@ const path = require("path");
 module.exports = {
   entry: {
     board: "./src/bundles/board.js",
-    //display: "./src/bundles/amiibo-display.js"
+    serverIndex: "./src/bundles/serverIndex.js"
   },
   output: {
     filename: "[name].js",
