@@ -86,13 +86,16 @@ serverIndex.on("connection", socket => {
 
 mapIO.on("connection", socket => {
 
-
-
   socket.on("joinRoom", data => {
     socket.join(data.room, function(){
-      console.log(`${socket.id} joined room ${Object.keys(socket.rooms)}`);  
+      console.log(`${socket.id} joined room ${Object.keys(socket.rooms)}`);
+      mapIO.to(socket.id).emit("userNum", {num: io.nsps["/map"].adapter.rooms[data.room].length});
     });
   });
+
+  socket.on("turnPass", data => {
+    mapIO.to(data.room).emit("newTurn", {pass: data.pass});
+  })
 
   console.log(`A user connected @ ${moment.format('h:mm:ss a')} from ${socket.conn.remoteAddress}. (ID: ${socket.id})`);
   mapIO.to(socket.id).emit("cT", {msg: "success"});

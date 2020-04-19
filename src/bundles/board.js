@@ -24,6 +24,9 @@ function mapGen(xlim, ylim){ //Generate grid
 
 mapGen(10,10);
 
+let playerNum;
+let activePlayer = 1;
+
 const amelia = {
     "sprite": {
         "idle": "../img/ameliaIdle.png",
@@ -52,7 +55,7 @@ const amelia = {
             "hp": 3
         }
     },
-    "owner": "Player 1",
+    "owner": 1,
     "id": {
         "unitID": 1
     },
@@ -95,7 +98,7 @@ const erika = {
             "def": 2
         }
     },
-    "owner": "Player 2",
+    "owner": 2,
     "id": {
         "unitID": 2
     },
@@ -450,6 +453,10 @@ let unit;
 
 function turnInit(el){
     let tile = getTile(el.target);
+
+    if(activePlayer != playerNum){
+        return;
+    };
     
     if(tile.occupied.isOccupied == true){
         if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){
@@ -476,31 +483,39 @@ function turnInit(el){
         });
     };
 
-    if((!unitTileArray.includes(tile)) || (viableTiles == true)){
-        if(tile.dom.classList.contains("viable")){
-            moveUnit(tile);
-        };
-        tileArray.forEach(r => {
-            r.dom.classList.remove("viable", "atkViable");
-            viableTiles = false;
-        });
-        return;
-    };
+    
 
-    moveCheck(unit).forEach(tiles => {
-        if(tiles.occupied.isOccupied == false){
-            tiles.dom.classList.add("viable");
-        };
-        viableTiles = true;
-    });
+    if(unit.owner == playerNum){
 
-    moveCheck(unit).forEach(aT => {
-        tilesInRange(aT, unit.stats.rng).forEach(atkTile => {
-            if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
-                atkTile.dom.classList.add("atkViable");
+        if((!unitTileArray.includes(tile)) || (viableTiles == true)){
+            if(tile.dom.classList.contains("viable")){
+                moveUnit(tile);
             };
+            tileArray.forEach(r => {
+                r.dom.classList.remove("viable", "atkViable");
+                viableTiles = false;
+            });
+            return;
+        };
+
+        moveCheck(unit).forEach(tiles => {
+            if(tiles.occupied.isOccupied == false){
+                tiles.dom.classList.add("viable");
+            };
+            viableTiles = true;
         });
-    });
+
+        moveCheck(unit).forEach(aT => {
+            tilesInRange(aT, unit.stats.rng).forEach(atkTile => {
+                if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
+                    atkTile.dom.classList.add("atkViable");
+                };
+            });
+        });
+    }
+    
+
+    
 };
 
 gameInit();
@@ -540,4 +555,28 @@ socket.on("rT", (el) => {
         unitArray.forEach(def => {if(def.id.unitID == el.defender){defender = def}});
         battleDisp(attacker, defender);
     };
+});
+
+socket.on("userNum", data => { //Send account id to db with player nums, as is both players will be assigned 2 on refresh
+    playerNum = data.num;
+    console.log(playerNum);
+});
+
+socket.on("newTurn", data => {
+    console.log(`Turn passed to ${data.pass}`);
+    activePlayer = data.pass;
+})
+
+document.getElementById("turnPass").addEventListener("click", () => {
+    if(playerNum != activePlayer){
+        return;
+    }
+    let pass;
+    console.log("PASS");
+    if(playerNum == 1){
+        pass = 2;
+    }else if(playerNum == 2){
+        pass = 1;
+    };
+    socket.emit("turnPass", {"pass": pass, "room": room});
 });
