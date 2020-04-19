@@ -60,4 +60,19 @@ html {
   background-color: rgba(0, 0, 100, 0.3);
 }
 
+.unitDefeated {
+  animation-name: unitDefeated;
+  animation-duration: 1.2s;
+  animation-iteration-count: 1;
+}
+
+@keyframes unitDefeated {
+  from {
+    opacity: 100;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /*# sourceMappingURL=board.css.map */

@@ -33,10 +33,13 @@ const amelia = {
         "attack": "../img/ameliaAtk.gif",
     },
     "name": "Amelia",
-    "hp": 20,
+    "hp": {
+        m: 20,
+        c: 20
+    },
     "weapon": "spear",
     "stats":{
-        "atk": 3,
+        "atk": 30,
         "def": 2,
         "mvt": 2,
         "rng": 1,
@@ -76,10 +79,13 @@ const erika = {
         "attack": "../img/erikaAtk.gif",
     },
     "name": "Erika",
-    "hp": 25,
+    "hp": {
+        m: 25,
+        c: 25
+    },
     "weapon": "sword",
     "stats":{
-        "atk": 2,
+        "atk": 30,
         "def": 1,
         "mvt": 3,
         "rng": 1,
@@ -143,6 +149,9 @@ tiles.forEach(el => {
 });
 
 function dispUnit(unit){
+    if(unit.hp.c <= 0){
+        return
+    };
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             tile.occupied = {"isOccupied": true, "unit":unit};
@@ -289,7 +298,7 @@ function gameInit(){
     unitTileArray.forEach(tile => { //Apply one-time hp buffs
         let unit = tile.occupied.unit;
         if(unit.item.stats.hp){
-            unit.hp += unit.item.stats.hp;
+            unit.hp.c += unit.item.stats.hp;
         };
     });
 };
@@ -435,9 +444,9 @@ function damageCalc(attacker, defender){
     let dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
     if(dmg < 0){dmg = 0};
     console.log(dmg);
-    defender.hp -= dmg;
+    defender.hp.c -= dmg;
 
-    console.log(attacker.hp, defender.hp);
+    console.log(attacker.hp.c, defender.hp.c);
     if(crit > 1){
         console.log("Critical!");
     };
@@ -446,6 +455,11 @@ function damageCalc(attacker, defender){
 function battleRes(attacker, defender){
     battleDisp(attacker, defender);
     damageCalc(attacker, defender);
+    if(defender.hp.c <= 0){
+        socket.emit("unitDefeated", {x: defender.pos.x, y: defender.pos.y, room: room});
+        /* setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
+        setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800); */
+    }
     socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.unitID, defender: defender.id.unitID, room:room});
 };
 
@@ -565,6 +579,18 @@ socket.on("userNum", data => { //Send account id to db with player nums, as is b
 socket.on("newTurn", data => {
     console.log(`Turn passed to ${data.pass}`);
     activePlayer = data.pass;
+})
+
+socket.on("unitDefeatedRelay", data => {
+    let defender;
+    unitArray.forEach(u => {
+        if (u.pos.x == data.x && u.pos.y == data.y){
+            defender = u;
+            console.log(data, defender);
+        }
+    });
+    setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
+    setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800);
 })
 
 document.getElementById("turnPass").addEventListener("click", () => {

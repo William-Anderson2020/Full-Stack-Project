@@ -95,6 +95,10 @@ mapIO.on("connection", socket => {
 
   socket.on("turnPass", data => {
     mapIO.to(data.room).emit("newTurn", {pass: data.pass});
+  });
+
+  socket.on("unitDefeated", data =>{
+    mapIO.to(data.room).emit("unitDefeatedRelay", {x: data.x, y: data.y});
   })
 
   console.log(`A user connected @ ${moment.format('h:mm:ss a')} from ${socket.conn.remoteAddress}. (ID: ${socket.id})`);
