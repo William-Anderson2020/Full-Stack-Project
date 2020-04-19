@@ -53,7 +53,18 @@ const amelia = {
         }
     },
     "owner": "Player 1",
-    "id": 1
+    "id": {
+        "unitID": 1
+    },
+    "tile": function(){
+        let uPos;
+        tileArray.forEach(t => {
+            if(t.x == this.pos.x && t.y == this.pos.y){
+                uPos = t;
+            }
+        });
+        return uPos;
+    }
 };
 
 const erika = {
@@ -85,13 +96,24 @@ const erika = {
         }
     },
     "owner": "Player 2",
-    "id": 2
+    "id": {
+        "unitID": 2
+    },
+    "tile": function(){
+        let uPos;
+        tileArray.forEach(t => {
+            if(t.x == this.pos.x && t.y == this.pos.y){
+                uPos = t;
+            }
+        });
+        return uPos;
+    }
 };
 
 unitArray.push(amelia, erika);
 
 let tiles = document.querySelectorAll(".tile");
-console.log(map);
+//console.log(map);
 
 tiles.forEach(el => {
     let tile = {
@@ -121,7 +143,7 @@ function dispUnit(unit){
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
             tile.occupied = {"isOccupied": true, "unit":unit};
-            unit.pos.tile = tile;
+            //unit.tile() = tile;
             tile.dom.innerHTML = `<img class="board_sprite" src=${unit.sprite.idle}>`;
             unitTileArray.push(tile);
             tileArray.forEach(oldTile => {
@@ -153,20 +175,28 @@ let get = {
 
         unitImport.side = "l"
         unitImport.setPos(tileArray, map);
-        unitImport.pos.tile = getUnitPos(unitImport);
-        console.log(unitImport.pos.tile)
         
 
         unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url);
         unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
+
+        unitImport.tile = function(){
+            let uPos;
+            tileArray.forEach(t => {
+                if(t.x == this.pos.x && t.y == this.pos.y){
+                    uPos = t;
+                }
+            });
+            return uPos;
+        };
+
         unitArray.push(unitImport);
         dispUnit(unitImport);
-        
     }
 };
 
 get.unit("5e8cb65fa341f32310aab149");
-console.log(unitArray);
+//console.log(unitArray);
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
@@ -178,7 +208,7 @@ function getTile(el){ // Checks value of dom element and returns corrosponding t
     return match;
 }
 
-function getUnitPos(unit){
+/* function getUnitPos(unit){
     let uPos;
     tileArray.forEach(t => {
         if(t.x == unit.pos.x && t.y == unit.pos.y){
@@ -186,7 +216,7 @@ function getUnitPos(unit){
         }
     });
     return uPos;
-}
+} */
 
 function tilesInRange(tile, dist){
     //console.log(tile, dist)
@@ -220,7 +250,7 @@ function moveCheck(unit){
     let viableTilesR = [];
     let checkedTiles = [];
 
-    tilesInRange(unit.pos.tile, 1).forEach(el => {
+    tilesInRange(unit.tile(), 1).forEach(el => {
         if(el.terrain.type == "Mountain" || (el.occupied.isOccupied == true && el.occupied.unit.owner != unit.owner)){
             return;
         };
@@ -242,7 +272,7 @@ function moveCheck(unit){
         };
     });
 
-    /* tilesInRange(unit.pos.tile, 1){
+    /* tilesInRange(unit.tile(), 1){
 
     } */
 
@@ -262,7 +292,7 @@ function gameInit(){
 };
 
 function battleDisp(attacker, defender){
-    let movementTiles = tilesInRange(defender.pos.tile, attacker.stats.rng);
+    let movementTiles = tilesInRange(defender.tile(), attacker.stats.rng);
         let atkTile = movementTiles[0];
         if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > 1){
             movementTiles.forEach(m => {
@@ -272,19 +302,19 @@ function battleDisp(attacker, defender){
             });
             attacker.pos.x = atkTile.x;
             attacker.pos.y = atkTile.y;
-            if(defender.pos.x > attacker.pos.x && !attacker.pos.tile.dom.classList.contains("flip")){
-                attacker.pos.tile.dom.classList.add("flip");
+            if(defender.pos.x > attacker.pos.x && !attacker.tile().dom.classList.contains("flip")){
+                attacker.tile().dom.classList.add("flip");
             }
             dispUnit(attacker);
         };
-        attacker.pos.tile.dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`;
+        attacker.tile().dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`;
         if(attacker.pos.x < defender.pos.x){
-            if(!attacker.pos.tile.dom.classList.contains("flip")){
-                attacker.pos.tile.dom.classList.add("flip");
+            if(!attacker.tile().dom.classList.contains("flip")){
+                attacker.tile().dom.classList.add("flip");
             }
         }else{
-            if(attacker.pos.tile.dom.classList.contains("flip")){
-                attacker.pos.tile.dom.classList.remove("flip");
+            if(attacker.tile().dom.classList.contains("flip")){
+                attacker.tile().dom.classList.remove("flip");
             }
         };
         setTimeout(r => {dispUnit(attacker)}, 1600); /*Fix timing*/
@@ -293,15 +323,15 @@ function battleDisp(attacker, defender){
 function buffCalc(unit){
     let uB = Object.assign({}, unit.stats)
     let buffCounters = [];
-    if(unit.item.stats != {}){buffCounters.push(unit.item.stats)};
-    if(unit.pos.tile.terrain.stats != {}){buffCounters.push(unit.pos.tile.terrain.stats)};
+    if(unit.item.stats){buffCounters.push(unit.item.stats)};
+    if(unit.tile().terrain.stats){buffCounters.push(unit.tile().terrain.stats)};
 
     buffCounters.forEach(buff => {
         Object.keys(buff).forEach(key => {
             uB[key] += buff[key];
         });
     });
-    console.log(unit.pos.tile.terrain);
+    //console.log(unit.tile().terrain);
     return uB;
 }
 
@@ -413,7 +443,7 @@ function damageCalc(attacker, defender){
 function battleRes(attacker, defender){
     battleDisp(attacker, defender);
     damageCalc(attacker, defender);
-    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id, defender: defender.id, room:room});
+    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.unitID, defender: defender.id.unitID, room:room});
 };
 
 let unit;
@@ -496,7 +526,7 @@ socket.on("rT", (el) => {
     console.log(el.data);
     unitArray.forEach(u => {
         el.data.forEach(d => {
-            if(d.id == u.id){
+            if(d.id.unitID == u.id.unitID){ //Switch to unique id once implemented
                 Object.keys(d).forEach(key => {
                     u[key] = d[key];
                 });
@@ -506,8 +536,8 @@ socket.on("rT", (el) => {
     });
     if(el.type == "atk"){
         let attacker, defender;
-        unitArray.forEach(atk => {if(atk.id == el.attacker){attacker = atk}});
-        unitArray.forEach(def => {if(def.id == el.defender){defender = def}});
+        unitArray.forEach(atk => {if(atk.id.unitID == el.attacker){attacker = atk}});
+        unitArray.forEach(def => {if(def.id.unitID == el.defender){defender = def}});
         battleDisp(attacker, defender);
     };
 });

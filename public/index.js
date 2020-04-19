@@ -100,7 +100,7 @@ mapIO.on("connection", socket => {
   socket.on("boardUpdate", unitData => {
     console.log("data recieved");
     let room = unitData.room;
-    io.of("/map").to(room).emit("rT", unitData);
+    socket.to(room).emit("rT", unitData);
     console.log("data sent");
   });
 
