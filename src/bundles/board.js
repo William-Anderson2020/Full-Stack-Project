@@ -181,6 +181,7 @@ function dispUnit(unit){
             });
         };
     });
+    unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u));
     //turnInit();
 };
 
@@ -242,7 +243,7 @@ function turnPass(){
 
 function cardDisplayFunction(e){
     console.log("something");
-    document.getElementById("charaDisplay").insertAdjacentHTML('afterend', 
+    document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
     `<div class="column1">
     <img class="character-portrait" src="/img/characters/icons/ephraim_portrait.gif">
            <div class="skills-btn">
@@ -301,9 +302,10 @@ function cardDisplayFunction(e){
                    </div>
                    `);
 
-}
+};
 
-unitArray.filter(u=>u.owner==playerNum).forEach(u=>cardDisplayFunction(u));
+console.log(unitArray.filter(u => u.owner == playerNum));
+unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u));
 
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
