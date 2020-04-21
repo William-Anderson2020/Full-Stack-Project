@@ -89,7 +89,7 @@ const erika = {
     },
     "weapon": "sword",
     "stats":{
-        "atk": 30,
+        "atk": 0,
         "def": 1,
         "mvt": 3,
         "rng": 1,
@@ -97,8 +97,8 @@ const erika = {
         "lck": 30
     },
     "pos": {
-        "x": 7,
-        "y": 7,
+        "x": 5,
+        "y": 5,
         "tile": {}
     },
     "item":{
@@ -222,6 +222,21 @@ let get = {
 
 get.unit("5e8cb65fa341f32310aab149");
 //console.log(unitArray);
+
+function turnPass(){
+    if(playerNum != activePlayer){
+        return;
+    }
+    let pass;
+    console.log("PASS");
+    if(playerNum == 1){
+        pass = 2;
+    }else if(playerNum == 2){
+        pass = 1;
+    };
+    socket.emit("turnPass", {"pass": pass, "room": room});
+};
+
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
@@ -475,6 +490,7 @@ function battleRes(attacker, defender){
         setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800); */
     }
     socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.unitID, defender: defender.id.unitID, room:room});
+    
 };
 
 let unit;
@@ -491,6 +507,10 @@ function turnInit(el){
             //console.log('battle function here');
             battleRes(unit, tile.occupied.unit);
             unit.active.atk = false;
+            console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
+            if(!unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length){
+                turnPass();
+            };
         }else{
             unit = tile.occupied.unit;
         }
@@ -511,6 +531,11 @@ function turnInit(el){
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
         });
+        //console.log(tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length + " units in range")
+        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length){
+            console.log("NO MVT LEFT, PASS TURN");
+            turnPass();
+        }
     };
 
     
@@ -544,11 +569,11 @@ function turnInit(el){
         });
 
         if(unit.active.mvt == 0){
-            tilesInRange(unit.tile(), unit.stats.rng).forEach(atkTile => {
-                if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
-                    atkTile.dom.classList.add("atkViable");
-                };
-            });
+        tilesInRange(unit.tile(), unit.stats.rng).forEach(atkTile => {
+            if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
+                atkTile.dom.classList.add("atkViable");
+            };
+        });   
         }
     }
     
@@ -557,10 +582,6 @@ function turnInit(el){
 };
 
 gameInit();
-
-/* socket.on("relay", el => {
-    console.log(el.msg);
-}) */
 
 let room;
 
@@ -617,18 +638,9 @@ socket.on("unitDefeatedRelay", data => {
     });
     setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
     setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800);
+    if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){
+        console.log(`Player ${defender.owner} has lost!`);
+    }
 })
 
-document.getElementById("turnPass").addEventListener("click", () => {
-    if(playerNum != activePlayer){
-        return;
-    }
-    let pass;
-    console.log("PASS");
-    if(playerNum == 1){
-        pass = 2;
-    }else if(playerNum == 2){
-        pass = 1;
-    };
-    socket.emit("turnPass", {"pass": pass, "room": room});
-});
+document.getElementById("turnPass").addEventListener("click", turnPass);
