@@ -1,0 +1,28 @@
+function attack(attacker, defender){
+    AP=attacker.stats.attack +attacker.weapon.attack
+    DP=defender.stats.defense
+    for(attack.stats.speed/defender.stats.speed){
+    randomEvent{
+        if randomEvent{
+        defender.stats.health=defender.stats.health-(DP-AP*2)
+        }
+        else(){
+        defender.stats.health=defender.stats.health-(DP-AP)
+        }
+    }
+    }
+    
+    AP=defender.stats.attack +defender.weapon.attack
+    DP=attacker.stats.defense
+    randomEvent{
+    if randomEvent{
+        attacker.stats.health=attacker.stats.health-(DP-AP*2)
+        }
+        else(){
+        attacker.stats.health=attacker.stats.health-(DP-AP)
+        }
+    }
+}
+heal(attacker,defender){
+    defender.stats.health+= attacker.move.heal + attacker.stats.heal
+}

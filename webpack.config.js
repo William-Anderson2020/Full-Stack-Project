@@ -1,8 +1,8 @@
 const path = require("path");
 module.exports = {
   entry: {
-    app: "./src/bundles/index.js",
-    //display: "./src/bundles/amiibo-display.js"
+    board: "./src/bundles/board.js",
+    serverIndex: "./src/bundles/serverIndex.js"
   },
   output: {
     filename: "[name].js",

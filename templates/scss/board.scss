@@ -1,0 +1,80 @@
+html{
+    display: flex;
+    justify-content: center;
+}
+
+.tile{
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: .1px;
+    border-color: black;
+    border-style: solid;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-basis: 10%;
+}
+
+.viable{
+    background-color: rgba(0, 0, 255, .3);
+}
+
+.atkViable{
+    background-color: rgba(255, 0, 0, .3);
+}
+
+#container{
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    background-image: url("../img/maps/map1.png");
+    background-size: cover;
+}
+
+/* .row{
+    display: flex;
+    flex-direction: row;
+    width: 15rem;
+}
+ */
+.board_sprite{
+    height: 3rem;
+    width: auto;
+    pointer-events: none;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
+}
+
+.anim_sprite{
+    height: 3rem;
+    margin-right: 1rem;
+    //transform: scaleX(-1);
+}
+
+.flip{
+    transform: scaleX(-1);
+}
+
+#newServer{
+    padding: .5rem;
+    border-radius: 1rem;
+    background-color: rgba(0,0,100,0.3);
+}
+
+.unitDefeated{
+    animation-name: unitDefeated;
+    animation-duration: 1.2s;
+    animation-iteration-count: 1;
+}
+
+@keyframes unitDefeated{
+    from{
+        opacity: 100;
+    }
+    to{
+        opacity: 0;
+    }
+}
