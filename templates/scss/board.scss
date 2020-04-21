@@ -43,6 +43,9 @@ html{
     width: auto;
     pointer-events: none;
     z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
 }
 
 .anim_sprite{
