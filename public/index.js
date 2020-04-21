@@ -5,14 +5,14 @@ const app = express();
 //const http = require("http").Server(app);
 
 const moment = require("moment")();
-require("./db/mongoose");
+require("../src/db/mongoose");
 
 
 const publicDirectoryPath = path.join(__dirname, "../public");
 const partialsPath = path.join(__dirname, "../templates/partials");
 const viewsPath = path.join(__dirname, "../templates/views");
-const characterRouter = require("./routers/character")
-const itemRouter = require("./routers/item")
+const characterRouter = require("../src/routers/character")
+const itemRouter = require("../src/routers/item")
 
 //setup handlebars engine and views location
 app.set("view engine", "hbs");
