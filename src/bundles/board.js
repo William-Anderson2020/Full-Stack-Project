@@ -320,6 +320,21 @@ function moveCheck(unit){
     return viableTilesR;
 };
 
+function uiDisplay(unit){
+    console.log("UI DISP");
+    document.getElementById("nameDisp").innerHTML = `${unit.name}`;
+    Object.keys(unit.stats).forEach(stat => {
+        document.getElementById(`${stat}Disp`).innerHTML = `${stat}: ${unit.stats[stat]}`;
+    });
+    document.getElementById("hpDisp").innerHTML = `hp: ${unit.hp.c}/${unit.hp.m}`;
+    document.getElementById("mvtDisp").innerHTML = `mvt: ${unit.active.mvt}/${unit.stats.mvt}`;
+};
+
+function uiClear(){
+    document.getElementById("nameDisp").innerHTML = "";
+    Array.from(document.getElementById("statCont").children).forEach(disp => disp.innerHTML = "");
+};
+
 function gameInit(){
     tileArray.forEach(el =>{
         el.dom.addEventListener("click", turnInit);
@@ -499,13 +514,18 @@ function turnInit(el){
     let tile = getTile(el.target);
 
     if(activePlayer != playerNum){
+        if(tile.occupied.isOccupied == true){
+            uiDisplay(tile.occupied.unit);
+        }else{
+            uiClear();
+        };
         return;
     };
     
     if(tile.occupied.isOccupied == true){
         if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){
-            //console.log('battle function here');
             battleRes(unit, tile.occupied.unit);
+            uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
             console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
             if(!unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length){
@@ -513,11 +533,14 @@ function turnInit(el){
             };
         }else{
             unit = tile.occupied.unit;
+            uiDisplay(tile.occupied.unit);
         }
         tileArray.forEach(r => {
             r.dom.classList.remove("viable", "atkViable");
         });
-    };
+    }else{
+        uiClear();
+    }
 
     function moveUnit(e){
         let unitDest = e /* getTile(e.target); */
@@ -550,6 +573,7 @@ function turnInit(el){
                 r.dom.classList.remove("viable", "atkViable");
                 viableTiles = false;
             });
+            uiClear();
             return;
         };
 
@@ -638,6 +662,7 @@ socket.on("unitDefeatedRelay", data => {
     });
     setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
     setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800);
+    defender.tile().occupied = {isOccupied: false, unit: {}};
     if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){
         console.log(`Player ${defender.owner} has lost!`);
     }
