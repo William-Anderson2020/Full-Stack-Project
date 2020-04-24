@@ -10,6 +10,7 @@ import{ Unit } from "./unit"
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = [];
 let unitTileArray = [];
+let unitCards = [];
 let viableTiles = false;
 let map = maps[0];
 
@@ -242,7 +243,10 @@ function turnPass(){
 
 
 function cardDisplayFunction(e){
-    console.log("something");
+  if(unitCards.contains(e)){
+    return};
+  unitCards.push(e);
+
     document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
     ` <div class="card-side character_fronts">
             <div class="column1">
@@ -265,7 +269,7 @@ function cardDisplayFunction(e){
                     </div>
                         <div class="weapon btn">
                                 <img src="/img/card/decor_left_large.png" class="decor-left">
-                                ${e.stats.mvt}
+                                <span class="stat-text mvt">Turns:</span> ${e.stats.mvt}
                                 <img src="/img/card/decor_right_large.png" class="decor-right">
                             </div>
                 </div>
