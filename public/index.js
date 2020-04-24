@@ -21,6 +21,7 @@ const partialsPath = path.join(__dirname, "../templates/partials");
 const viewsPath = path.join(__dirname, "../templates/views");
 const characterRouter = require("../src/routers/character")
 const itemRouter = require("../src/routers/item");
+const userRouter = require("../src/routers/user");
 const passport = require("passport");
 const initializePassport = require("../src/config/passport");
 initializePassport(
@@ -37,6 +38,7 @@ app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 app.use(characterRouter);
 app.use(itemRouter);
+app.use(userRouter);
 app.use(express.static('uploads'));
 
 app.use(flash());
