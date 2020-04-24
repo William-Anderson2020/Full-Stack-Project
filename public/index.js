@@ -37,9 +37,9 @@ const io = require("socket.io").listen(server);
 const serverIndex = io.of("/serverIndex");
 const mapIO = io.of("/map");
 
-app.get("", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
-    res.render("map", {
+    res.render("index", {
       title: "Board Logic"
     });
   } catch {
@@ -49,7 +49,7 @@ app.get("", async (req, res) => {
 
 app.get("/serverIndex", async (req, res) => {
   try {
-    res.render("index")
+    res.render("serverIndex")
   } catch (error) {
     res.status(500).send();
   }
