@@ -7,9 +7,9 @@ html{
     padding: 0;
 }
 body{
-    background-image: url(vid_background.png);
+    /* background-image: url(vid_background.png);
     background-repeat: no-repeat;
-    background-size: 100% 130%;
+    background-size: 100% 130%; */
 }
 .login, .register{
     display: flex;
