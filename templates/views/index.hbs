@@ -6,6 +6,9 @@
     <title>HOME PAGE</title>
 </head>
 <body>
-    henlo
+    henlo {{ name }}
+    <form action="/logout?_method=DELETE" method="POST">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>
