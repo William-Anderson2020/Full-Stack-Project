@@ -4,8 +4,8 @@ html {
 }
 
 .tile {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 5rem;
+  height: 5rem;
   border-width: 0.1px;
   border-color: black;
   border-style: solid;
@@ -39,7 +39,7 @@ html {
 }
  */
 .board_sprite {
-  height: 3rem;
+  height: 8rem;
   width: auto;
   pointer-events: none;
   z-index: 1;
@@ -49,7 +49,7 @@ html {
 }
 
 .anim_sprite {
-  height: 3rem;
+  height: 8rem;
   margin-right: 1rem;
 }
 

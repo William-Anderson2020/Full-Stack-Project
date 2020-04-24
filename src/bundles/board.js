@@ -244,62 +244,64 @@ function turnPass(){
 function cardDisplayFunction(e){
     console.log("something");
     document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
-    `<div class="column1">
-    <img class="character-portrait" src="/img/characters/icons/ephraim_portrait.gif">
-           <div class="skills-btn">
-               <div class="skills">1</div>
-               <div class="skills">2</div>
-               <div class="skills">3</div>
-          </div>
-    </div>
+    ` <div class="card-side character_fronts">
+            <div class="column1">
+            <img class="character-portrait" src="/img/characters/icons/ephraim_portrait.gif">
+                <div class="skills-btn">
+                    <div class="skills">1</div>
+                    <div class="skills">2</div>
+                    <div class="skills">3</div>
+                </div>
+            </div>
 
-    <div class="column2">
-           <div class="row">
-               <div class="name btn"> 
-                   <img src="/img/card/decor_left_large.png" class="decor-left">
-                   
-                       ${e.name}
-
-                   <img src="/img/card/decor_right_large.png" class="decor-right">
-               </div>
-                   <div class="weapon btn">
+            <div class="column2">
+                <div class="card-row">
+                    <div class="name btn"> 
                         <img src="/img/card/decor_left_large.png" class="decor-left">
-                           Spear
-                         <img src="/img/card/decor_right_large.png" class="decor-right">
+                        
+                            ${e.name}
+
+                        <img src="/img/card/decor_right_large.png" class="decor-right">
                     </div>
-           </div>
-           <div class="row">
-               <div class="btn hp">
-                       <img src="/img/card/decor_left_large.png" class="decor-left">
-                       
-                       ${e.hp.c}/${e.hp.m}
+                        <div class="weapon btn">
+                                <img src="/img/card/decor_left_large.png" class="decor-left">
+                                ${e.stats.mvt}
+                                <img src="/img/card/decor_right_large.png" class="decor-right">
+                            </div>
+                </div>
+                <div class="card-row">
+                    <div class="btn hp">
+                            <img src="/img/card/decor_left_large.png" class="decor-left">
+                            
+                            ${e.hp.c}/${e.hp.m}
 
-                       <img src="/img/card/decor_right_large.png" class="decor-right">
-                               
-               </div> 
-                       </div>
-                       <div class="row">
-                           <div class="stats btn">
-                               <img src="/img/card/diamond_large.png" class="stat-decor">
-                                 <img src="/img/card/diamond_large.png" class="stat-decor2">
+                            <img src="/img/card/decor_right_large.png" class="decor-right">
+                                    
+                    </div> 
+                            </div>
+                            <div class="card-row">
+                                <div class="stats btn">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor">
+                                        <img src="/img/card/diamond_large.png" class="stat-decor2">
 
-                              <span class="stat-text atk">Atk <span id="atkDisp" class="value">${e.stats.atk} </span> </span>     
+                                    <span class="stat-text atk">Atk <span id="atkDisp" class="value">${e.stats.atk} </span> </span>     
 
-                              <span class="stat-text def">Def<span class="value">${e.stats.def} </span></span>
-                               
-                           </div>
-                           <div class="stats btn">
-                               <img src="/img/card/diamond_large.png" class="stat-decor">
-                               <img src="/img/card/diamond_large.png" class="stat-decor2">
+                                    <span class="stat-text def">Def<span class="value">${e.stats.def} </span></span>
+                                    
+                                </div>
+                                <div class="stats btn">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor2">
 
-                               <span class="stat-text dex">Dex   <span class="value">${e.stats.dex} </span></span>
-                             
-                               <span class="stat-text rng">Rng  <span class=" value">${e.stats.rng} </span> </span>
-                               
-                           </div>
-                       </div>
-   
-                   </div>
+                                    <span class="stat-text dex">Dex   <span class="value">${e.stats.dex} </span></span>
+                                    
+                                    <span class="stat-text rng">Rng  <span class=" value">${e.stats.rng} </span> </span>
+                                    
+                                </div>
+                            </div>
+        
+                        </div>
+    </div>
                    `);
 
 };
