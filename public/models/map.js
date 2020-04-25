@@ -15,8 +15,13 @@ const mapSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-   }
-  )
+  }
+);
+const terrainSchema = new mongoose.Schema({
+    type:{
+        type:string,
+        required:true
+    },
     stats:{
         atk:{
             type:Number,
@@ -59,19 +64,11 @@ const mapSchema = new mongoose.Schema({
             min:0
         },
     },
-    item:{
-        type:String
-    },
-    sprite:{
-        idle:{
-            type:Buffer
-        },
-        attack:{
-            type:Buffer
-        }
-    }
+    
 })
 
 
-const Map = mongoose.model("Map", mapSchema)
+const Map = mongoose.model("Map", mapSchema);
+const Terrain = mongoose.model("Terrain", terrainSchema);
 module.exports = Map;
+module.exports = Terrain;
