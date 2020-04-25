@@ -1,7 +1,7 @@
-const Character = require("../models/character");
+
 const admin = async(req,res,next)=>{
     try {
-        if(req.User.admin=true){
+        if(req.password=="ThisisaPassword"){
             next()
         }
     } catch (error) {
