@@ -7,4 +7,8 @@ const admin = async(req,res,next)=>{
     } catch (error) {
         res.status(400).send("Not an Admin")
     }
-}
+};
+
+
+
+module.exports= admin
