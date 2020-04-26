@@ -7,14 +7,12 @@ const hbs = require("hbs");
 const express = require("express");
 const app = express();
 //const http = require("http").Server(app);
-const bcrypt = require("bcryptjs");
+//const bcrypt = require("bcryptjs");
 const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 const moment = require("moment")();
 require("../src/db/mongoose");
-
-const users = [] //TEMP
 
 const publicDirectoryPath = path.join(__dirname, "../public");
 const partialsPath = path.join(__dirname, "../templates/partials");
@@ -96,6 +94,14 @@ app.get("/register", checkNotAuthenticated, (req,res) => {
 });
 
 app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: "/",
+  failureRedirect: "/login",
+  failureFlash: true
+}));
+
+app.get("/auth/google", passport.authenticate("google", { scope: ["email"] }))
+
+app.get("/auth/google/callback", checkNotAuthenticated, passport.authenticate('google', {
   successRedirect: "/",
   failureRedirect: "/login",
   failureFlash: true
