@@ -22,13 +22,10 @@ const viewsPath = path.join(__dirname, "../templates/views");
 const characterRouter = require("../src/routers/character")
 const itemRouter = require("../src/routers/item");
 const userRouter = require("../src/routers/user");
+const User = require("../src/models/user");
 const passport = require("passport");
 const initializePassport = require("../src/config/passport");
-initializePassport(
-  passport, 
-  email => users.find(user => user.email == email),
-  id => users.find(user => user.id == id)
-);
+initializePassport(passport);
 //setup handlebars engine and views location
 app.set("view engine", "hbs");
 app.set("views", viewsPath); //telling express to get templates from templates/views folder
@@ -84,6 +81,7 @@ app.get("/", checkAuthenticated, async (req, res) => {
     res.render("index", {
       name: req.user.name
     });
+    console.log(res.user);
   } catch {
     res.status(500).send();
   }
@@ -105,14 +103,8 @@ app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
 
 app.post("/register", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    users.push({
-      id: Date.now().toString(),
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPassword
-    });
-    console.log(users)
+    const user = new User(req.body);
+    await user.save();
     res.redirect("/login");
   } catch (error) {
     res.status(500).send(error);
@@ -124,7 +116,7 @@ app.delete("/logout", (req, res) => {
   res.redirect("/login");
 });
 
-app.get("/serverIndex", async (req, res) => {
+app.get("/serverIndex", checkAuthenticated, async (req, res) => {
   try {
     res.render("serverIndex")
   } catch (error) {
@@ -141,7 +133,7 @@ app.get("/serverIndex", async (req, res) => {
 
 });
 
-app.get("/game/:id", async(req, res) => {
+app.get("/game/:id", checkAuthenticated, async(req, res) => {
   try {
     res.render("map");
 

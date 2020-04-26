@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -10,11 +9,6 @@ const userSchema = new mongoose.Schema({
         trim:true,
         lowercase:true,
         unique:true,
-        validate(value){
-            if(!validator.isEmail(value)){
-                throw new Error('Email is invalid');
-            }
-        }
     },
     email:{
         type: String,
@@ -47,14 +41,6 @@ const userSchema = new mongoose.Schema({
         default: 0,
         required: true
     },
-    tokens:[
-        {
-            token:{
-                type:String,
-                required:true
-            }
-        }
-    ],
     profilePic: {
         type:Buffer
     }
@@ -63,17 +49,8 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function(){
     const user = this;
     const userObject = user.toObject();
-    delete userObject.tokens;
     delete userObject.password;
     return userObject;
-}
-
-userSchema.methods.generateToken = async function(){
-    const user = this;
-    const token = jwt.sign({_id: user._id.toString()}, 'SecretKey');
-    user.tokens = user.tokens.concat({token});
-    await user.save();
-    return token;
 }
 
 userSchema.pre('save', async function(next){
@@ -86,6 +63,7 @@ userSchema.pre('save', async function(next){
 
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email });
+    //console.log(user);
     if(!user){
         throw new Error("No user registered to that email.");
     }

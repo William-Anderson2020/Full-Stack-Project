@@ -1,11 +1,11 @@
 const express = require('express');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/mulch');
+const upload = require('../middleware/upload');
 const router = new express.Router();
 
 
-router.post("/users", async (req, res) => {
+router.post("/users/login", async (req, res) => {
     try {
         if(req.body.email.includes('@') != true){
             res.status(400).json({err: 'Input a valid email.'});
@@ -21,7 +21,7 @@ router.post("/users", async (req, res) => {
     }
 });
 
-router.get("/users", async (req, res) => {
+router.get("/users/find", async (req, res) => {
     try{
         let user = await User.find(req.body);
         res.send(user);
@@ -34,7 +34,7 @@ router.get('/users/me', auth, async (req, res) => {
     res.send(req.user);
 })
 
-router.get("/users/:id", async (req, res) => {
+router.get("/users/find/:id", async (req, res) => {
     try{
         let user = await User.findById(req.params.id);
         res.send(user);
@@ -76,7 +76,7 @@ router.post('/users/login', async (req, res) => {
     }
 });
 
-router.post('/users/logout', auth, async (req, res) => {
+/* router.post('/users/logout', auth, async (req, res) => {
     //console.log(req.user.name);
     try {
         req.user.tokens = req.user.tokens.filter(token => {
@@ -88,7 +88,7 @@ router.post('/users/logout', auth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
-});
+}); */
 
 router.post('/users/me/profilePic', auth, upload.single('profilePic'), async (req, res) => {
     try {
