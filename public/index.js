@@ -14,6 +14,7 @@ const methodOverride = require("method-override");
 const moment = require("moment")();
 require("../src/db/mongoose");
 
+const PORT = process.env.PORT || 3000;
 const publicDirectoryPath = path.join(__dirname, "../public");
 const partialsPath = path.join(__dirname, "../templates/partials");
 const viewsPath = path.join(__dirname, "../templates/views");
@@ -46,8 +47,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 
-const server = app.listen(4000, () => { //doesnt work with socket, http doesnt work with express
-  console.log("Listening on port 4000");
+const server = app.listen(PORT, () => { //doesnt work with socket, http doesnt work with express
+  console.log(`Listening on port ${PORT}`);
 });
 
 /* const server = app.listen(app.get("port"), () => {

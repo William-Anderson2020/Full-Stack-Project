@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node public/index",
+    "start": "node public/index.js",
     "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\" \"npm run build\"",
     "build": "webpack --config webpack.config.js"
   },
