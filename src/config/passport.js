@@ -1,5 +1,5 @@
 const localStrategy = require("passport-local").Strategy
-const googleStrategy = require("passport-google-oauth20").Strategy
+const googleStrategy = require("passport-google-oauth").OAuth2Strategy
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
@@ -30,7 +30,7 @@ function initialize(passport){
 
     }
     passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
-    passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "auth/google/callback"}, 
+    passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "/auth/google/callback"}, 
         function(accessToken, refreshToken, profile, done) {
             User.findOrCreate({ googleId: profile.id }, function (err, user) {
                 if(err){
