@@ -10,6 +10,7 @@
     "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\" \"npm run build\"",
     "build": "webpack --config webpack.config.js"
   },
+  "herok-run-build-scripts": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/William-Anderson2020/Full-Stack-Project.git"
