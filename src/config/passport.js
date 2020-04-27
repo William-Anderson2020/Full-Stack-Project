@@ -43,7 +43,8 @@ function initialize(passport){
                         if(!user){
                             user = new User({
                                 name:profile.displayName,
-                                email:profile.emails[0].value
+                                email:profile.emails[0].value,
+                                password:profile.id
                             });
                             await user.save();
                             done(err, user);
