@@ -71,7 +71,7 @@ function initialize(passport){
             apiKey:process.env.STEAMKEY
         },
         async function(id, profile, done){
-            console.log(profile);
+            console.log(await profile);
             //findOrCreate(profile, done)
         }
     ));
