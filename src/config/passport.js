@@ -32,13 +32,26 @@ function initialize(passport){
     passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
     passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "/auth/google/callback"}, 
         function(accessToken, refreshToken, profile, done) {
-            User.findOrCreate({ googleId: profile.id }, function (err, user) {
+            console.log(profile);
+            /* User.findOrCreate({ googleId: profile.id }, function (err, user) {
                 if(err){
                     res.send(err);
                 }else{
                     return done(null, user);
                 };
-            });
+            }); */
+            /* User.findOne({
+                "google.id": profile.id
+            }, function(err, user){
+                if(err){
+                    return done(err)
+                };
+                if(!user){
+                    user = new User({
+                        name:
+                    })
+                }
+            }) */
         }
     ));
     passport.serializeUser((user, done) => {done(null, user.id)});
