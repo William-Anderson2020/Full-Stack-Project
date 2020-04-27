@@ -31,7 +31,7 @@ function initialize(passport){
     }
     passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
     passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "/auth/google/callback"}, 
-        function(accessToken, refreshToken, profile, done) {
+        async function(accessToken, refreshToken, profile, done) {
             console.log(profile);
             /* User.findOrCreate({ googleId: profile.id }, function (err, user) {
                 if(err){
@@ -40,18 +40,23 @@ function initialize(passport){
                     return done(null, user);
                 };
             }); */
-            /* User.findOne({
-                "google.id": profile.id
+            User.findOne({
+                "email":profile.emails[0].value
             }, function(err, user){
                 if(err){
                     return done(err)
                 };
                 if(!user){
                     user = new User({
-                        name:
-                    })
-                }
-            }) */
+                        name:profile.displayName,
+                        email:profile.emails[0].value
+                    });
+                    await user.save();
+                    done(err, user);
+                } else{
+                    return done(err, user);
+                };
+            });
         }
     ));
     passport.serializeUser((user, done) => {done(null, user.id)});
