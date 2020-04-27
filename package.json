@@ -41,6 +41,7 @@
     "passport": "^0.4.1",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
+    "passport-steam": "^1.0.14",
     "sass": "^1.25.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",

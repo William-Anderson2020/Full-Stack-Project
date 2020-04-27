@@ -1,5 +1,6 @@
 const localStrategy = require("passport-local").Strategy
 const googleStrategy = require("passport-google-oauth").OAuth2Strategy
+const steamStrategy = require("passport-steam").Strategy
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
@@ -29,36 +30,49 @@ function initialize(passport){
         }
 
     }
-    passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
-    passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "/auth/google/callback"}, 
-        async function(accessToken, refreshToken, profile, done) {
+
+    async function findOrCreate(profile, done){
+        User.findOne({
+            "email":profile.emails[0].value
+        }, async function(err, user){
+            if(err){
+                return done(err)
+            };
             try {
-                User.findOne({
-                    "email":profile.emails[0].value
-                }, async function(err, user){
-                    if(err){
-                        return done(err)
-                    };
-                    try {
-                        if(!user){
-                            user = new User({
-                                name:profile.displayName,
-                                email:profile.emails[0].value,
-                                password:profile.id
-                            });
-                            await user.save();
-                            done(err, user);
-                        } else{
-                            return done(err, user);
-                        };    
-                    } catch (error) {
-                        return done(error);
-                    }
-                });    
+                if(!user){
+                    user = new User({
+                        name:profile.displayName,
+                        email:profile.emails[0].value,
+                        password:profile.id
+                    });
+                    await user.save();
+                    done(err, user);
+                } else{
+                    return done(err, user);
+                };    
             } catch (error) {
                 return done(error);
             }
-            
+        });    
+    };
+
+    passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
+    passport.use(new googleStrategy({
+        clientID:process.env.GSCID, 
+        clientSecret:process.env.GSCS, 
+        callbackURL: "/auth/google/callback"}, 
+        async function(accessToken, refreshToken, profile, done) {
+            findOrCreate(profile, done);
+        }
+    ));
+    passport.use(new steamStrategy({
+            returnURL:"/auth/steam/callback",
+            realm:"http://full-stack-game.herokuapp.com/",
+            apiKey:process.env.STEAMKEY
+        },
+        async function(id, profile, done){
+            console.log(profile);
+            //findOrCreate(profile, done)
         }
     ));
     passport.serializeUser((user, done) => {done(null, user.id)});
