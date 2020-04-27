@@ -42,7 +42,7 @@ function initialize(passport){
             }); */
             User.findOne({
                 "email":profile.emails[0].value
-            }, function(err, user){
+            }, async function(err, user){
                 if(err){
                     return done(err)
                 };
