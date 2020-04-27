@@ -72,7 +72,7 @@ function initialize(passport){
         },
         async function(id, profile, done){
             console.log(await profile);
-            //findOrCreate(profile, done)
+            findOrCreate(profile, done)
         }
     ));
     passport.serializeUser((user, done) => {done(null, user.id)});
