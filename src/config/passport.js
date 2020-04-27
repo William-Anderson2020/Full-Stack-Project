@@ -72,8 +72,8 @@ function initialize(passport){
         },
         async function(id, profile, done){
             User.findByOpenID({ openId: id }, async function (err, user) {
-                console.log(profile);
-                findOrCreate(profile, done)
+                console.log(user);
+                done(err, user);
             })
         }
     ));
