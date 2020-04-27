@@ -32,36 +32,32 @@ function initialize(passport){
     passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
     passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "/auth/google/callback"}, 
         async function(accessToken, refreshToken, profile, done) {
-            console.log(profile);
-            /* User.findOrCreate({ googleId: profile.id }, function (err, user) {
-                if(err){
-                    res.send(err);
-                }else{
-                    return done(null, user);
-                };
-            }); */
-            User.findOne({
-                "email":profile.emails[0].value
-            }, async function(err, user){
-                if(err){
-                    return done(err)
-                };
-                try {
-                    if(!user){
-                        user = new User({
-                            name:profile.displayName,
-                            email:profile.emails[0].value
-                        });
-                        await user.save();
-                        done(err, user);
-                    } else{
-                        return done(err, user);
-                    };    
-                } catch (error) {
-                    res.status(500).send(error);
-                }
-                
-            });
+            try {
+                User.findOne({
+                    "email":profile.emails[0].value
+                }, async function(err, user){
+                    if(err){
+                        return done(err)
+                    };
+                    try {
+                        if(!user){
+                            user = new User({
+                                name:profile.displayName,
+                                email:profile.emails[0].value
+                            });
+                            await user.save();
+                            done(err, user);
+                        } else{
+                            return done(err, user);
+                        };    
+                    } catch (error) {
+                        res.status(500).send(error);
+                    }
+                });    
+            } catch (error) {
+                res.status(500).send(error);
+            }
+            
         }
     ));
     passport.serializeUser((user, done) => {done(null, user.id)});
