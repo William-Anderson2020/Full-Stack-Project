@@ -51,11 +51,11 @@ function initialize(passport){
                             return done(err, user);
                         };    
                     } catch (error) {
-                        res.status(500).send(error);
+                        return done(error);
                     }
                 });    
             } catch (error) {
-                res.status(500).send(error);
+                return done(error);
             }
             
         }
