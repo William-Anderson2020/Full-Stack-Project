@@ -46,16 +46,21 @@ function initialize(passport){
                 if(err){
                     return done(err)
                 };
-                if(!user){
-                    user = new User({
-                        name:profile.displayName,
-                        email:profile.emails[0].value
-                    });
-                    await user.save();
-                    done(err, user);
-                } else{
-                    return done(err, user);
-                };
+                try {
+                    if(!user){
+                        user = new User({
+                            name:profile.displayName,
+                            email:profile.emails[0].value
+                        });
+                        await user.save();
+                        done(err, user);
+                    } else{
+                        return done(err, user);
+                    };    
+                } catch (error) {
+                    res.status(500).send(error);
+                }
+                
             });
         }
     ));
