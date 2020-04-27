@@ -31,7 +31,7 @@ function initialize(passport){
     }
     passport.use(new localStrategy({usernameField: "email"}, authenticateUser));
     passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "auth/google/callback"}, 
-        function(accessToken, refreshToken, profile, cb) {
+        function(accessToken, refreshToken, profile, done) {
             User.findOrCreate({ googleId: profile.id }, function (err, user) {
                 if(err){
                     res.send(err);
