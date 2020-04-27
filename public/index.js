@@ -108,7 +108,7 @@ app.get("/auth/google/callback", checkNotAuthenticated, passport.authenticate("g
 
 app.get("/auth/steam", passport.authenticate("steam"));
 
-app.get("/auth/steam/callback", passport.authenticate("steam", {failureRedirect: "/login"}), (req, res) => {
+app.get("/auth/steam/return", passport.authenticate("steam", {failureRedirect: "/login"}), (req, res) => {
   res.redirect("/");
 })
 

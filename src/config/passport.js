@@ -66,7 +66,7 @@ function initialize(passport){
         }
     ));
     passport.use(new steamStrategy({
-            returnURL:"/auth/steam/callback",
+            returnURL:"/auth/steam/return",
             realm:"http://full-stack-game.herokuapp.com/",
             apiKey:process.env.STEAMKEY
         },
