@@ -100,13 +100,13 @@ app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
   failureFlash: true
 }));
 
-app.get("/auth/google", passport.authenticate("google", { scope: ["email"] }))
+app.get("/auth/google", checkNotAuthenticated, passport.authenticate("google", { scope: ["email"] }))
 
 app.get("/auth/auth/google/callback", checkNotAuthenticated, passport.authenticate('google', {
-  successRedirect: "/",
-  failureRedirect: "/login",
-  failureFlash: true
-}));
+  failureRedirect: "/login"
+}), (req, res) => {
+  res.redirect("/");
+});
 
 app.post("/register", async (req, res) => {
   try {
