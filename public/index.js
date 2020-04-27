@@ -100,18 +100,17 @@ app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
   failureFlash: true
 }));
 
-app.get("/auth/:type", checkNotAuthenticated, (req, res) => {
-  passport.authenticate(req.params.tpye);
+app.get("/auth/google", checkNotAuthenticated, passport.authenticate("google", { scope: ["email"] }))
+
+app.get("/auth/:type/callback", checkNotAuthenticated, passport.authenticate(req.type, {failureRedirect: "/login"}), (req, res) => {
+  res.redirect("/");
 });
 
-app.get("/auth/:type/callback", checkNotAuthenticated, (req, res) => {
-  passport.authenticate(req.type, {
-    successRedirect: "/",
-    failureRedirect: "/login"
-  })
-});
+app.get("/auth/steam", passport.authenticate("steam"));
 
-//app.get("/auth/steam", passport.authenticate("steam"));
+app.get("/auth/steam/callback", passport.authenticate("steam", {failureRedirect: "/login"}), (req, res) => {
+  res.redirect("/");
+})
 
 app.post("/register", async (req, res) => {
   try {
