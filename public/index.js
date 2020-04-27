@@ -102,7 +102,7 @@ app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
 
 app.get("/auth/google", checkNotAuthenticated, passport.authenticate("google", { scope: ["email"] }))
 
-app.get("auth//auth/google/callback", checkNotAuthenticated, passport.authenticate('google', {
+app.get("auth/auth/google/callback", checkNotAuthenticated, passport.authenticate('google', {
   failureRedirect: "/login"
 }), (req, res) => {
   res.redirect("/");
