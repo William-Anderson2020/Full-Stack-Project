@@ -33,7 +33,11 @@ function initialize(passport){
     passport.use(new googleStrategy({clientID:process.env.GSCID, clientSecret:process.env.GSCS, callbackURL: "auth/google/callback"}, 
         function(accessToken, refreshToken, profile, cb) {
             User.findOrCreate({ googleId: profile.id }, function (err, user) {
-                return cb(err, user);
+                if(err){
+                    res.send(err);
+                }else{
+                    return done(null, user);
+                };
             });
         }
     ));
