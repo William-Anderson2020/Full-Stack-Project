@@ -71,7 +71,7 @@ function initialize(passport){
             apiKey:process.env.STEAMKEY
         },
         async function(id, profile, done){
-            User.findByOpenID({ openId: identifier }, function (err, user) {
+            User.findByOpenID({ openId: id }, function (err, user) {
                 console.log(await profile);
                 findOrCreate(profile, done)
             })
