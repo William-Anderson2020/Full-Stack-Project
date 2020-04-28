@@ -3,23 +3,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/style.css" type="text/css">
+
     <title>Homepage</title>
 </head>
 <body>
-    <h1>Welcome Player!</h1>
-    <div class="servers">
-        <a href="/serverIndex" class="btn btn-secondary">Create Server</a>
-        <div class="create-game hidden-popup">
-            <h2>Game #</h2>
-            <p>Space for the maps and user units</p>
-            <a href="`/game/${socket.id}`" class="btn btn-secondary">Create Game</a>
-            
-        </div>
-        <a href="/serverIndex" class="btn btn-secondary">Join Game 1</a>
-        <a href="/serverIndex" class="btn btn-secondary">Join Game 2</a>
-        <a href="/serverIndex" class="btn btn-secondary">Join Game 3</a>
+    <div class="nav" >
+        <a href="/users/logout" class="btn">&larr;Logout</a>
     </div>
-
-    <a href="/users/logout" class="btn btn-secondary">Logout</a>
+    
+    <div class="servers">
+        <a href="#popup1" class="game btn-initial">Create Server</a>
+        <div id="popup1" class="overlay">
+	        <div class="popup">
+		        <h2>Game</h2>
+		        <a class="close" href="#">&larr;Back</a>
+		        <div class="content">
+			        <p>Space for the maps and user units</p>
+                    <a href="`/game/${socket.id}`" class="btn-secondary">Create Game</a>
+		        </div>
+	        </div>
+        </div>
+        <a href="/serverIndex" class="game btn-initial">Join Game 1</a>
+        <a href="/serverIndex" class="game btn-initial">Join Game 2</a>
+        <a href="/serverIndex" class="game btn-initial">Join Game 3</a>
+    </div>
 </body>
 </html>
+
