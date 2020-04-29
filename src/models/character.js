@@ -65,6 +65,9 @@ const characterSchema = new mongoose.Schema({
         },
         attack:{
             type:Buffer
+        },
+        portrait:{
+            type:Buffer
         }
     }
 })

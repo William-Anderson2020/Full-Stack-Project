@@ -116,7 +116,8 @@ app.post("/register", async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
-    res.redirect("/login");
+    req.login(user, err => {if(err){return err}});
+    res.redirect("/");
   } catch (error) {
     res.status(500).send(error);
   }
@@ -146,7 +147,9 @@ app.get("/serverIndex", checkAuthenticated, async (req, res) => {
 
 app.get("/game/:id", checkAuthenticated, async(req, res) => {
   try {
-    res.render("map");
+    res.render("map", {
+      userID: req.user.id
+    });
 
   } catch (error) {
     res.status(500).send();

@@ -28,6 +28,8 @@ class Terrain{
 
 const mountain = new Terrain("Mountain", {spMvt: ["flier"]});
 const forest = new Terrain("Forest", {def: 2});
+const lSideStart = new Terrain("P1 Starting Tile", {});
+const rSideStart = new Terrain("P2 Starting Tile", {});
 
 maps.push(new Map ("Demo", "10x10", 
     setTerrain([
@@ -48,7 +50,17 @@ maps.push(new Map ("Demo", "10x10",
         [7, [2, 3, 4, 8]],
         [8, [2, 3, 7, 8]],
         [9, [7, 8]]
-    ], mountain))
+    ], mountain)).concat(
+    setTerrain([
+        [1, [1, 2]],
+        [2, [1]]
+    ], lSideStart).concat(
+    setTerrain([
+        [9, [10]],
+        [10, [9, 10]]
+    ], rSideStart)
+    )
+    )
 ));
 
 function setTerrain(tiles, terrain){ /*Format [[x1, [y1, y2]], [x2, [y1,y2]]]*/ 

@@ -1,7 +1,10 @@
 export class Unit{
     constructor(name, hp, stats, id){
         this.name = name,
-        this.hp = hp
+        this.hp = {
+            c: hp,
+            m: hp
+        }
         this.stats = stats,
         this.pos = {
             x: "",
@@ -10,36 +13,21 @@ export class Unit{
         },
         this.sprite = {
             "idle": "",
-            "attack": ""
+            "attack": "",
+            "portrait":""
         },
         this.owner = "",
         this.side = "",
-        this.active= true,
+        this.active= {},
         this.item= "",
         this.id = {
             unitID: id,
             uniqueID: ""
         }
     }
-    active(){
+    /* active(){
         this.active=!(this.active);
-    };
-    setPos(tileArray, map){
-        tileArray.forEach(el => {
-            if(this.side = "l"){
-                if(el.x <=2 && el.occupied.isOccupied == false && el.terrain.type != "Mountain"){
-                    this.pos.x = el.x,
-                    this.pos.y = el.y
-                }
-            }else{
-                if(el.x >= map.size.x - 2 && el.occupied.isOccupied == false){
-                    this.pos.x = el.x,
-                    this.pos.y = el.y
-                }
-            }
-        });
-        console.log(this.pos);
-    }
+    }; */
     setOwner(owner){
         this.owner = owner;
         this.id.uniqueID = `${this.owner.id}:${id}`;

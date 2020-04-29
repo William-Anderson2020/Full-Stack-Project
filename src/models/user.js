@@ -25,17 +25,14 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    units:[
-        {
-            id:{
-                type:Number,
-                required: true
-            },
-            item:{
-                type:Number
-            }
-        }
-    ],
+    units:{
+        type:[{}],
+        default:[{"id":"5ea9b1342cd7b97420ea0f1c", "item":""}, {"id":"5ea9ade22cd7b97420ea0f18", "item":""}, {"id":"5ea9b3082cd7b97420ea0f1e", "item":""}]
+    },
+    activeUnits:{
+        type:[{}],
+        default:[{"id":"5ea9b1342cd7b97420ea0f1c", "item":""}, {"id":"5ea9ade22cd7b97420ea0f18", "item":""}, {"id":"5ea9b3082cd7b97420ea0f1e", "item":""}]
+    },
     currency:{
         type: Number,
         default: 0,

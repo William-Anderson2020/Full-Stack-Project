@@ -7,6 +7,7 @@ const socket = io("/map");
 
 import{ Unit } from "./unit"
 
+
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = [];
 let unitTileArray = [];
@@ -26,6 +27,9 @@ mapGen(10,10);
 
 let playerNum;
 let activePlayer = 1;
+let thisUser;
+let oppUser;
+let gameSide;
 
 const amelia = {
     "sprite": {
@@ -199,14 +203,55 @@ dispUnit(amelia);
 dispUnit(erika);
 
 let get = {
-    async unit(id){
-        let data = await fetch(`/characters/${id}`); //Replace with working url
+    async user(id){
+        if(!id){id = document.getElementById("userTag").getAttribute("uid")};
+        let data = await fetch(`/users/find/${id}`);
+        let user = await data.json()
+        user.playerNum = playerNum;
+        if(id == document.getElementById("userTag").getAttribute("uid")){
+            thisUser = user;
+            if(playerNum == 1){
+                gameSide = "l";
+            }else{
+                gameSide = "r";
+            };
+        }else{
+            oppUser = user;
+        };
+        user.activeUnits.forEach(el => {
+            console.log(user.activeUnits.findIndex(u=> u.id == el.id))
+            let unit = get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
+            console.log(thisUser._id);
+            unit.side = gameSide;
+            unit.owner = thisUser._id;
+            console.log(unit.side, unit.owner)
+            /* if(el.item){
+                unit.item = get.item(el.item);
+            } */
+        });
+        console.log(user);    
+        
+    },
+    async unit(id, index){
+        let data = await fetch(`/characters/${id}`);
         data = await data.json()
         let unitImport = new Unit(data.name, data.hp, data.stats, data._id);
 
-        unitImport.side = "l"
-        unitImport.setPos(tileArray, map);
-        
+        function setPos(side){
+            let startTile;
+            let sTArray = [];
+                if(side == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
+            sTArray = tileArray.filter(el => {
+                if(el.terrain.type == startTile && el.occupied.isOccupied == false){
+                    return el;
+                }
+            });
+            return sTArray;
+        }
+
+        let uTile = setPos(gameSide)[index];
+        unitImport.pos.x = uTile.x;
+        unitImport.pos.y = uTile.y;
 
         unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url);
         unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
@@ -221,6 +266,9 @@ let get = {
             return uPos;
         };
 
+        unitImport.tile().occupied.isOccupied = true;
+        unitImport.tile().occupied.unit = unitImport;
+
         unitImport.active = {
             mvt: unitImport.stats.mvt,
             atk: true
@@ -228,18 +276,22 @@ let get = {
 
         unitArray.push(unitImport);
         dispUnit(unitImport);
+        unitArray.forEach(u => {
+            if(u.side == "l"){
+                u.tile().dom.classList.add("flip");
+            }
+        });
+        console.log(unitImport);
+        return(unitImport);
     }
 };
-
-get.unit("5e8cb65fa341f32310aab149");
-//console.log(unitArray);
+//get.user();
 
 function turnPass(){
     if(playerNum != activePlayer){
         return;
     }
     let pass;
-    console.log("PASS");
     if(playerNum == 1){
         pass = 2;
     }else if(playerNum == 2){
@@ -258,16 +310,6 @@ function getTile(el){ // Checks value of dom element and returns corrosponding t
     });
     return match;
 }
-
-/* function getUnitPos(unit){
-    let uPos;
-    tileArray.forEach(t => {
-        if(t.x == unit.pos.x && t.y == unit.pos.y){
-            uPos = t;
-        }
-    });
-    return uPos;
-} */
 
 function tilesInRange(tile, dist){
     //console.log(tile, dist)
@@ -307,7 +349,7 @@ function moveCheck(unit){
         }; */
         let checkTiles = tilesInRange(unit.tile(), 1);
         for(let i = 0; unit.active.mvt - 1  >= i; i++){
-            console.log(i, unit.active.mvt);
+            //console.log(i, unit.active.mvt);
             checkTiles.forEach(tile => {
                 if(/*!(tile.spMvt && !tile.terrain.spMvt.includes(unit.spMvt)) &&*/ tile.terrain.type != "Mountain" && !(tile.occupied.isOccupied && tile.occupied.unit.owner != unit.owner)){
                     tilesInRange(tile, 1).forEach(t => {
@@ -332,7 +374,7 @@ function moveCheck(unit){
 };
 
 function uiDisplay(unit){
-    console.log("UI DISP");
+    //console.log("UI DISP");
     document.getElementById("nameDisp").innerHTML = `${unit.name}`;
     Object.keys(unit.stats).forEach(stat => {
         document.getElementById(`${stat}Disp`).innerHTML = `${stat}: ${unit.stats[stat]}`;
@@ -538,8 +580,8 @@ function turnInit(el){
             battleRes(unit, tile.occupied.unit);
             uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
-            console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
-            if(!unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length){
+            //console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
+            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true).length){
                 turnPass();
             };
         }else{
@@ -566,7 +608,7 @@ function turnInit(el){
             tiles.dom.removeEventListener("click", moveUnit);
         });
         //console.log(tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length + " units in range")
-        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length){
+        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length){
             console.log("NO MVT LEFT, PASS TURN");
             turnPass();
         }
@@ -574,7 +616,7 @@ function turnInit(el){
 
     
 
-    if(unit.owner == playerNum && unit.active.atk == true){
+    if(unit.owner == thisUser._id && unit.active.atk == true){
 
         if((!unitTileArray.includes(tile)) || (viableTiles == true)){
             if(tile.dom.classList.contains("viable")){
@@ -621,7 +663,7 @@ gameInit();
 let room;
 
 socket.on("cT", (el) => {
-    console.log(el.msg);
+    //console.log(el.msg);
     room = window.location.pathname.slice(6);   // remove leading /chat/
     let pos = room.indexOf('/');
     if (pos !== -1) {
@@ -631,8 +673,8 @@ socket.on("cT", (el) => {
 })
 
 socket.on("rT", (el) => {
-    console.log("data recieved");
-    console.log(el.data);
+    //console.log("data recieved");
+    //console.log(el.data);
     unitArray.forEach(u => {
         el.data.forEach(d => {
             if(d.id.unitID == u.id.unitID){ //Switch to unique id once implemented
@@ -655,7 +697,8 @@ socket.on("rT", (el) => {
 
 socket.on("userNum", data => { //Send account id to db with player nums, as is both players will be assigned 2 on refresh
     playerNum = data.num;
-    console.log(playerNum);
+    get.user();
+    //onsole.log(playerNum);
 });
 
 socket.on("newTurn", data => {

@@ -10,6 +10,7 @@ html {
   border-color: black;
   border-style: solid;
   display: flex;
+  flex-direction: row;
   align-items: flex-end;
   justify-content: center;
   flex-basis: 10%;
@@ -39,6 +40,7 @@ html {
 }
  */
 .board_sprite {
+  margin-right: 0.5rem;
   height: 3rem;
   width: auto;
   pointer-events: none;
