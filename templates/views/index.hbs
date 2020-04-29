@@ -1,15 +1,32 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME PAGE</title>
+    <link rel="stylesheet" href="/css/homepage.css" type="text/css">
+
+    <title>Homepage</title>
 </head>
 <body>
-    hello {{ name }}
-    <form action="/logout?_method=DELETE" method="POST">
-        <button type="submit">Logout</button>
-    </form>
-    <a href="/serverIndex">Join a Game</a>
+    <div class="nav" >
+        <a href="/users/logout" class="btn">&larr;Logout</a>
+        <p class="homepage-title">Game</p>
+    </div>
+
+    <div class="servers">
+        <a href="#popup1" class="game btn-initial">Create Server</a>
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <h2>Game</h2>
+                <a class="close" href="#">&larr;Back</a>
+                <div class="content">
+                    <p>Space for the maps and user units</p>
+                    <a href="/game/${socket.id}" class="btn-secondary">Create Game</a>
+                </div>
+            </div>
+        </div>
+        <a href="/serverIndex" class="game btn-initial">Join Game 1</a>
+        <a href="/serverIndex" class="game btn-initial">Join Game 2</a>
+        <a href="/serverIndex" class="game btn-initial">Join Game 3</a>
+    </div>
 </body>
 </html>
