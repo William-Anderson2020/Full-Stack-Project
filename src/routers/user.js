@@ -21,9 +21,9 @@ router.post("/users/login", async (req, res) => {
     }
 });
 
-router.get("/users/find", async (req, res) => {
+router.get("/users/find/:id", async (req, res) => {
     try{
-        let user = await User.find(req.body);
+        let user = await User.findById(req.params.id);
         res.send(user);
     }catch(err){
         res.status(500).send(err);
