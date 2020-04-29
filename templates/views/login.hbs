@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../public/css/views.css" type="text/css">
     <title>Login</title>
 </head>
-<body>
-    <h1>Login</h1>
+<body class="login">
+    <h1 class='login-title'>Login</h1>
     {{ messages.error }}
     <form action="/login" method="POST">
-        <div>
+        <div class="login-input">
             <label for="name">Email</label>
             <input type="email" id="email" name="email" required>
         </div>
-        <div>
+        <div class="login-input">
             <label for="name">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
