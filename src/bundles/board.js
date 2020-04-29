@@ -218,13 +218,13 @@ let get = {
         }else{
             oppUser = user;
         };
-        user.activeUnits.forEach(el => {
+        user.activeUnits.forEach(async (el) => {
             console.log(user.activeUnits.findIndex(u=> u.id == el.id))
-            let unit = get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
+            let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
             console.log(thisUser._id);
             unit.side = gameSide;
             unit.owner = thisUser._id;
-            console.log(unit.side, unit.owner)
+            console.log(unit);
             /* if(el.item){
                 unit.item = get.item(el.item);
             } */
@@ -282,7 +282,7 @@ let get = {
             }
         });
         console.log(unitImport);
-        return(unitImport);
+        return unitImport;
     }
 };
 //get.user();
@@ -610,7 +610,11 @@ function turnInit(el){
         //console.log(tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length + " units in range")
         if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length){
             console.log("NO MVT LEFT, PASS TURN");
-            turnPass();
+            unit.active.atk = false;
+            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true)){
+                turnPass();
+            }
+
         }
     };
 
