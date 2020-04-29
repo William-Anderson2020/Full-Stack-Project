@@ -58,6 +58,17 @@ const amelia = {
             "hp": 3
         }
     },
+    "special":{
+        "attacks":{
+            "0": {
+                "name": "Tempest Lance",
+                "stats": {
+                    "atk": 5
+                }
+            },
+        },
+        active: ""
+    },
     "active":{
         mvt: 2,
         atk: true
