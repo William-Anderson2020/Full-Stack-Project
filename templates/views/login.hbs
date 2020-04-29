@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../public/css/views.css" type="text/css">
+    <link rel="stylesheet" href="/css/login.css" type="text/css">
     <title>Login</title>
 </head>
-<body class="login">
+<body>
+    <div class="login">
     <h1 class='login-title'>Login</h1>
     {{ messages.error }}
     <form action="/login" method="POST">
@@ -18,10 +19,11 @@
             <label for="name">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
-        <button type="submit">Login</button>
+        <button class="btn" type="submit">Login</button>
     </form>
-    <a href="/register">Need to make an account?</a> 
-    <a href="/auth/google">Sign in with Google</a>
+    <a class="new-user" href="/register">Need to make an account?</a> 
+    <a class="old-user" href="/auth/google">Sign in with Google</a>
    {{!--  <a href="/auth/steam">Sign in with Steam</a> --}}
+    </div>
 </body>
 </html>

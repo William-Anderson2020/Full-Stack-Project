@@ -51,6 +51,7 @@ body{
 }
 .new-user, .old-user{
     font-size: 1.5rem;
+    color: black;
 }
 
 .btn {
