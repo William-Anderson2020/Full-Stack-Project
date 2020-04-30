@@ -171,10 +171,24 @@ mapIO.on("connection", socket => {
 
   socket.on("joinRoom", data => {
     socket.join(data.room, function(){
-      console.log(`${socket.id} joined room ${Object.keys(socket.rooms)}`);
-      mapIO.to(socket.id).emit("userNum", {num: io.nsps["/map"].adapter.rooms[data.room].length});
+      console.log(io.nsps["/map"].adapter.rooms[data.room].length)
+      if(io.nsps["/map"].adapter.rooms[data.room].length <= 2){
+        console.log(`${socket.id} joined room ${Object.keys(socket.rooms)}`);
+        mapIO.to(socket.id).emit("userNum", {num: io.nsps["/map"].adapter.rooms[data.room].length}); 
+        socket.to(data.room).emit("sendU"); 
+
+      }else{
+        socket.leave(data.room, function(){
+          mapIO.to(socket.id).emit("roomFull");  
+        });
+      };
+      
     });
   });
+
+  socket.on("userRelay", data => {
+    socket.to(data.room).emit("recieveU", data);
+  })
 
   socket.on("turnPass", data => {
     mapIO.to(data.room).emit("newTurn", {pass: data.pass});

@@ -214,6 +214,7 @@ let get = {
                 gameSide = "l";
             }else{
                 gameSide = "r";
+                socket.emit("userRelay", {user: thisUser, room: room});
             };
         }else{
             oppUser = user;
@@ -223,7 +224,7 @@ let get = {
             let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
             console.log(thisUser._id);
             unit.side = gameSide;
-            unit.owner = thisUser._id;
+            unit.setOwner(thisUser._id);
             console.log(unit);
             /* if(el.item){
                 unit.item = get.item(el.item);
@@ -699,6 +700,14 @@ socket.on("rT", (el) => {
     };
 });
 
+socket.on("sendU", (el) => {
+    socket.emit("userRelay", {user: thisUser._id, room: room});
+});
+
+socket.on("recieveU", data => {
+    get.user(data.user);
+})
+
 socket.on("userNum", data => { //Send account id to db with player nums, as is both players will be assigned 2 on refresh
     playerNum = data.num;
     get.user();
@@ -724,6 +733,11 @@ socket.on("unitDefeatedRelay", data => {
     if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){
         console.log(`Player ${defender.owner} has lost!`);
     }
-})
+});
+
+socket.on("roomFull", function(){
+    window.location.href = "/serverIndex";
+    socket.to(socket.id).emit("roomFullErr");
+});
 
 document.getElementById("turnPass").addEventListener("click", turnPass);
