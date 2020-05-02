@@ -30,7 +30,7 @@ export class Unit{
     }; */
     setOwner(owner){
         this.owner = owner;
-        this.id.uniqueID = `${this.owner.id}:${id}`;
+        this.id.uniqueID = `${this.owner}:${id}`;
     };
     
 }

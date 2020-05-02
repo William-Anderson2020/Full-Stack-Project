@@ -142,7 +142,7 @@ const erika = {
     }
 };
 
-unitArray.push(amelia, erika);
+//unitArray.push(amelia, erika);
 
 let tiles = document.querySelectorAll(".tile");
 //console.log(map);
@@ -199,38 +199,49 @@ function dispUnit(unit){
     //turnInit();
 };
 
-dispUnit(amelia);
-dispUnit(erika);
+/* dispUnit(amelia);
+dispUnit(erika); */
 
 let get = {
     async user(id){
         if(!id){id = document.getElementById("userTag").getAttribute("uid")};
         let data = await fetch(`/users/find/${id}`);
         let user = await data.json()
-        user.playerNum = playerNum;
         if(id == document.getElementById("userTag").getAttribute("uid")){
             thisUser = user;
+            thisUser.playerNum = playerNum;
+            document.getElementById("userTag").innerHTML = thisUser.name;
             if(playerNum == 1){
+                thisUser.gameSide = "l"
+                user.gameSide = "l"
                 gameSide = "l";
             }else{
+                thisUser.gameSide = "r"
+                user.gameSide = "r"
                 gameSide = "r";
                 socket.emit("userRelay", {user: thisUser, room: room});
             };
         }else{
             oppUser = user;
+            if(playerNum == 1){
+                user.gameSide = "r"
+                oppUser.gameSide = "r"
+            }else{
+                user.gameSide = "l"
+                oppUser.gameSide = "l"
+            }
         };
         user.activeUnits.forEach(async (el) => {
-            console.log(user.activeUnits.findIndex(u=> u.id == el.id))
             let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
             console.log(thisUser._id);
-            unit.side = gameSide;
-            unit.setOwner(thisUser._id);
+            unit.side = user.gameSide;
+            unit.setOwner(user._id);
             console.log(unit);
             /* if(el.item){
                 unit.item = get.item(el.item);
             } */
         });
-        console.log(user);    
+        console.log(unitArray);    
         
     },
     async unit(id, index){
@@ -701,10 +712,13 @@ socket.on("rT", (el) => {
 });
 
 socket.on("sendU", (el) => {
+    console.log("SEND U")
     socket.emit("userRelay", {user: thisUser._id, room: room});
 });
 
 socket.on("recieveU", data => {
+    console.log(`GET U ${data.user}`);
+    if(data.user == thisUser._id){return};
     get.user(data.user);
 })
 

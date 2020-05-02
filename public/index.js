@@ -80,7 +80,6 @@ app.get("/", checkAuthenticated, async (req, res) => {
     res.render("index", {
       name: req.user.name
     });
-    console.log(res.user);
   } catch {
     res.status(500).send();
   }
