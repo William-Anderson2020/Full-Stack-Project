@@ -309,6 +309,7 @@ function turnPass(){
     }else if(playerNum == 2){
         pass = 1;
     };
+    console.log(`Passing to ${pass}.`)
     socket.emit("turnPass", {"pass": pass, "room": room});
 };
 
@@ -569,7 +570,7 @@ function battleRes(attacker, defender){
         /* setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
         setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800); */
     }
-    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.unitID, defender: defender.id.unitID, room:room});
+    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.uniqueID, defender: defender.id.uniqueID, room:room});
     
 };
 
@@ -621,9 +622,9 @@ function turnInit(el){
         });
         //console.log(tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length + " units in range")
         if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length){
-            console.log("NO MVT LEFT, PASS TURN");
             unit.active.atk = false;
             if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true)){
+                console.log("NO MVT LEFT, PASS TURN");
                 turnPass();
             }
 
@@ -701,7 +702,7 @@ socket.on("rT", (el) => {
             };
         });
         u.active.mvt = u.stats.mvt;
-        u.active.attack = true;
+        u.active.atk = true;
     });
     if(el.type == "atk"){
         let attacker, defender;
