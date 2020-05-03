@@ -206,7 +206,9 @@ let get = {
     async user(id){
         if(!id){id = document.getElementById("userTag").getAttribute("uid")};
         let data = await fetch(`/users/find/${id}`);
-        let user = await data.json()
+        let user = await data.json();
+        console.log(`getting user ${id}...`);
+        console.log(user);
         if(id == document.getElementById("userTag").getAttribute("uid")){
             thisUser = user;
             thisUser.playerNum = playerNum;
@@ -219,7 +221,6 @@ let get = {
                 thisUser.gameSide = "r"
                 user.gameSide = "r"
                 gameSide = "r";
-                socket.emit("userRelay", {user: thisUser, room: room});
             };
         }else{
             oppUser = user;
@@ -232,36 +233,40 @@ let get = {
             }
         };
         user.activeUnits.forEach(async (el) => {
-            let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id));
-            console.log(thisUser._id);
+            let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id), user.gameSide);
             unit.side = user.gameSide;
             unit.setOwner(user._id);
-            console.log(unit);
             /* if(el.item){
                 unit.item = get.item(el.item);
             } */
         });
         console.log(unitArray);    
+        unitArray.forEach(u => {
+            if(u.side == "l"){
+                u.tile().dom.classList.add("flip");
+            }
+        });
         
     },
-    async unit(id, index){
+    async unit(id, index, aSide){
         let data = await fetch(`/characters/${id}`);
         data = await data.json()
         let unitImport = new Unit(data.name, data.hp, data.stats, data._id);
 
-        function setPos(side){
+        function setPos(){
             let startTile;
             let sTArray = [];
-                if(side == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
+                if(aSide == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
             sTArray = tileArray.filter(el => {
                 if(el.terrain.type == startTile && el.occupied.isOccupied == false){
+                    console.log(el);
                     return el;
                 }
             });
             return sTArray;
         }
 
-        let uTile = setPos(gameSide)[index];
+        let uTile = setPos()[index];
         unitImport.pos.x = uTile.x;
         unitImport.pos.y = uTile.y;
 
@@ -288,11 +293,6 @@ let get = {
 
         unitArray.push(unitImport);
         dispUnit(unitImport);
-        unitArray.forEach(u => {
-            if(u.side == "l"){
-                u.tile().dom.classList.add("flip");
-            }
-        });
         console.log(unitImport);
         return unitImport;
     }
@@ -680,7 +680,7 @@ let room;
 
 socket.on("cT", (el) => {
     //console.log(el.msg);
-    room = window.location.pathname.slice(6);   // remove leading /chat/
+    room = window.location.pathname.slice(6);
     let pos = room.indexOf('/');
     if (pos !== -1) {
         room = room.slice(0, pos);
@@ -693,7 +693,7 @@ socket.on("rT", (el) => {
     //console.log(el.data);
     unitArray.forEach(u => {
         el.data.forEach(d => {
-            if(d.id.unitID == u.id.unitID){ //Switch to unique id once implemented
+            if(d.id.uniqueID == u.id.uniqueID){ //Switch to unique id once implemented
                 Object.keys(d).forEach(key => {
                     u[key] = d[key];
                 });
@@ -711,16 +711,30 @@ socket.on("rT", (el) => {
     };
 });
 
-socket.on("sendU", (el) => {
+socket.on("sendU", () => {
+    if(!thisUser){
+        return console.log("No user to send")
+    }
     console.log("SEND U")
     socket.emit("userRelay", {user: thisUser._id, room: room});
+    if(thisUser && !oppUser){
+        setTimeout(function(){
+            console.log("P1 req opp.")
+            socket.emit("p1Req");
+        }, 3000)
+        
+    }
 });
 
 socket.on("recieveU", data => {
     console.log(`GET U ${data.user}`);
-    if(data.user == thisUser._id){return};
+    //if(data.user == thisUser._id){return console.log("Duplicate user, returning...")};
     get.user(data.user);
-})
+});
+
+socket.on("p1ReqF", () => {
+    socket.emit("userRelay", {user: thisUser._id, room: room});
+});
 
 socket.on("userNum", data => { //Send account id to db with player nums, as is both players will be assigned 2 on refresh
     playerNum = data.num;

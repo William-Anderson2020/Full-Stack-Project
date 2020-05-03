@@ -186,7 +186,12 @@ mapIO.on("connection", socket => {
   });
 
   socket.on("userRelay", data => {
-    socket.to(data.room).emit("recieveU", data);
+    console.log(data);
+    mapIO.to(data.room).emit("recieveU", data);
+  })
+
+  socket.on("p1Req", () => {
+    socket.broadcast.emit("p1ReqF");
   })
 
   socket.on("turnPass", data => {
