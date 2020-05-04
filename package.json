@@ -7,8 +7,7 @@
   },
   "scripts": {
     "start": "node public/index.js",
-    "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\" \"npm run build\"",
-    "build": "webpack --config webpack.config.js"
+    "dev": "concurrently \"sass --watch templates/scss:public/css\" \"nodemon public/index.js\" \"webpack --config webpack.config.js\""
   },
   "heroku-run-build-script": false,
   "repository": {

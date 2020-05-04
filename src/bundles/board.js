@@ -8,6 +8,7 @@ import{ Unit } from "./unit"
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
 let unitArray = []; //A dynamic array holding all of the unit objects in the game.
 let unitTileArray = []; //A dynamic array holding the tiles occupied by a unit.
+let unitCards = []; //Array housing a list of units who's cards are displayed.
 let viableTiles = false; //A variable used to determine if any tile functions are active.
 let map = maps[0]; //Declaring which map will be used.
 
@@ -26,6 +27,7 @@ let playerNum; //User variables. Build into later.
 let activePlayer = 1;
 let thisUser;
 let oppUser;
+let gameSide;
 
 /* const amelia = { //Test units.
     "sprite": {
@@ -193,7 +195,7 @@ function dispUnit(unit){ //Displays unit on board after a position update.
             });
         };
     });
-    unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u)); //Display unit cards
+    unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u)); //Display unit cards
 };
 
 let get = { //Initialize get obj for calling items from db.
@@ -216,6 +218,7 @@ let get = { //Initialize get obj for calling items from db.
             };
         }else{
             oppUser = user;
+            document.getElementById("oppTag").innerHTML = oppUser.name;
             if(playerNum == 1){
                 user.gameSide = "r"
                 oppUser.gameSide = "r"
@@ -262,7 +265,8 @@ let get = { //Initialize get obj for calling items from db.
         unitImport.pos.y = uTile.y;
 
         unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url); //Retrieve unit sprites
-        unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
+        //unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
+        unitImport.sprite.portrait = await fetch(`/characters/image/portrait/${id}`).then(im => im.url);
 
         unitImport.tile = function(){ //Set location and tile proporties
             let uPos;
@@ -307,14 +311,16 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
 
 
 function cardDisplayFunction(e){
-  if(unitCards.includes(e)){
-    return};
+    if(unitCards.includes(e)){
+        document.getElementById(`${e.id.uniqueID}-mvt`).innerHTML == `${e.active.mvt}/${e.stats.mvt}`;
+        document.getElementById(`${e.id.uniqueID}-hp`).innerHTML == `${e.hp.c}/${e.hp.max}`;
+    };
   unitCards.push(e);
 
     document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
-    ` <div class="card-side character_fronts">
+    ` <div id="${e.id.uniqueID}" class="card-side character_fronts">
             <div class="column1">
-            <img class="character-portrait" src="/img/${e.sprite.portrait}">
+            <img class="character-portrait" src="${e.sprite.portrait}">
                 <div class="skills-btn">
                     <div class="skills">1</div>
                     <div class="skills">2</div>
@@ -333,7 +339,7 @@ function cardDisplayFunction(e){
                     </div>
                         <div class="weapon btn">
                                 <img src="/img/card/decor_left_large.png" class="decor-left">
-                                <span class="stat-text mvt">Mvt</span> ${e.stats.mvt}
+                                <span id="${e.id.uniqueID}-mvt" class="stat-text mvt">Mvt</span> ${e.active.mvt}/${e.stats.mvt}
                                 <img src="/img/card/decor_right_large.png" class="decor-right">
                             </div>
                 </div>
@@ -341,7 +347,7 @@ function cardDisplayFunction(e){
                     <div class="btn hp">
                             <img src="/img/card/decor_left_large.png" class="decor-left">
                             
-                            ${e.hp.c}/${e.hp.m}
+                            <span id="${e.id.uniqueID}-hp"> ${e.hp.c}/${e.hp.m} </span>
 
                             <img src="/img/card/decor_right_large.png" class="decor-right">
                                     
@@ -488,6 +494,7 @@ function battleDisp(attacker, defender){ //Display battle on board.
                 attacker.tile().dom.classList.remove("flip");
             }
         };
+        unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
         setTimeout(() => {dispUnit(attacker)}, 1600); /*Fix timing*/ //Removes attack animation at end of cycle !UPDATE HERE
 }
 
@@ -634,7 +641,7 @@ function turnInit(el){
 
     if(activePlayer != playerNum){ //Case if it is not the user's turn. Only allows ui functions to take place.
         if(tile.occupied.isOccupied == true){
-            uiDisplay(tile.occupied.unit);
+            //uiDisplay(tile.occupied.unit);
         }else{
             uiClear();
         };
@@ -644,7 +651,7 @@ function turnInit(el){
     if(tile.occupied.isOccupied == true){ //Case if tile is occupied.
         if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){ //If tile is viable for attack, commence attack function.
             battleRes(unit, tile.occupied.unit);
-            uiDisplay(tile.occupied.unit);
+            //uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
             //console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
             if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true).length){ //Checks if any units can still attack. If not, passes turn. (Unit attack is always the final action of the turn) !UPDATE HERE for CANTO ability on riders.
@@ -652,7 +659,7 @@ function turnInit(el){
             };
         }else{ //If tile is a friendly unit, display select them as current unit.
             unit = tile.occupied.unit;
-            uiDisplay(tile.occupied.unit);
+            //uiDisplay(tile.occupied.unit);
         }
         tileArray.forEach(r => { //Remove all viable markers at the end of action.
             r.dom.classList.remove("viable", "atkViable");
