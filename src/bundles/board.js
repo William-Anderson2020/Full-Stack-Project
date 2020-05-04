@@ -236,12 +236,12 @@ let get = { //Initialize get obj for calling items from db.
         });
         
     },
-    async unit(id, index, aSide){
+    async unit(id, index, aSide){ //Function to retrieve unit from db
         let data = await fetch(`/characters/${id}`);
         data = await data.json()
-        let unitImport = new Unit(data.name, data.hp, data.stats, data._id);
+        let unitImport = new Unit(data.name, data.hp, data.stats, data._id); //Build unit obj
 
-        function setPos(){
+        function setPos(){ //Setting initial position
             let startTile;
             let sTArray = [];
                 if(aSide == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
@@ -258,10 +258,10 @@ let get = { //Initialize get obj for calling items from db.
         unitImport.pos.x = uTile.x;
         unitImport.pos.y = uTile.y;
 
-        unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url);
+        unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url); //Retrieve unit sprites
         unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
 
-        unitImport.tile = function(){
+        unitImport.tile = function(){ //Set location and tile proporties
             let uPos;
             tileArray.forEach(t => {
                 if(t.x == this.pos.x && t.y == this.pos.y){
@@ -281,13 +281,12 @@ let get = { //Initialize get obj for calling items from db.
 
         unitArray.push(unitImport);
         dispUnit(unitImport);
-        console.log(unitImport);
         return unitImport;
     }
 };
 //get.user();
 
-function turnPass(){
+function turnPass(){ //Pass turn between players. Determines active user, siwtches them, then emits the event to all others in the room.
     if(playerNum != activePlayer){
         return;
     }
@@ -312,18 +311,17 @@ function getTile(el){ // Checks value of dom element and returns corrosponding t
     return match;
 }
 
-function tilesInRange(tile, dist){
-    //console.log(tile, dist)
+function tilesInRange(tile, dist){ //Returns all tiles dist tiles away from the given tile
     let tilesInRange = [];
     tileArray.forEach(el => {
-        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist /*&& el.occupied.isOccupied == false*/){
+        if (Math.abs(el.x - tile.x) + Math.abs(el.y - tile.y) <= dist){
             tilesInRange.push(el);
         }
     });
     return tilesInRange;
 };
 
-function unitArrayTravelSize(){
+function unitArrayTravelSize(){ //Trim unit data before emmiting to other users.
     let r = [];
     unitArray.forEach(el => {
         r.push({
@@ -340,42 +338,29 @@ function unitArrayTravelSize(){
     return r
 }
 
-function moveCheck(unit){
+function moveCheck(unit){ //Determines which tiles a unit can move to.
     let viableTilesR = [];
     let checkedTiles = [];
-
-    /* tilesInRange(unit.tile(), 1).forEach(el => {
-        if(el.terrain.type == "Mountain" || (el.occupied.isOccupied == true && el.occupied.unit.owner != unit.owner)){
-            return;
-        }; */
         let checkTiles = tilesInRange(unit.tile(), 1);
-        for(let i = 0; unit.active.mvt - 1  >= i; i++){
-            //console.log(i, unit.active.mvt);
+        for(let i = 0; unit.active.mvt - 1  >= i; i++){ //Loops the function below based on the units movement stat.
             checkTiles.forEach(tile => {
-                if(/*!(tile.spMvt && !tile.terrain.spMvt.includes(unit.spMvt)) &&*/ tile.terrain.type != "Mountain" && !(tile.occupied.isOccupied && tile.occupied.unit.owner != unit.owner)){
-                    tilesInRange(tile, 1).forEach(t => {
-                        if(!checkedTiles.includes(t)){
+                if(/*!(tile.spMvt && !tile.terrain.spMvt.includes(unit.spMvt)) &&*/ tile.terrain.type != "Mountain" && !(tile.occupied.isOccupied && tile.occupied.unit.owner != unit.owner)){ //Exclusion cases
+                    tilesInRange(tile, 1).forEach(t => { //Grab adjacent tiles.
+                        if(!checkedTiles.includes(t)){ //Determine if tile has been checked, if not, add to array of tiles to be checked.
                             checkTiles.push(t);
                             checkedTiles.push(t);
                         }
                     })
-                    if(!viableTilesR.includes(tile)){
+                    if(!viableTilesR.includes(tile)){ //Determine if tile is viable for movement. If so, push to array to be returned.
                         viableTilesR.push(tile);
                     };
                 };
             });
         };
-    /* }); */
-
-    /* tilesInRange(unit.tile(), 1){
-
-    } */
-
-    return viableTilesR;
+    return viableTilesR; //Return viable tiles for unit movement.
 };
 
-function uiDisplay(unit){
-    //console.log("UI DISP");
+function uiDisplay(unit){ //Fill ui with information regarding the selected unit.
     document.getElementById("nameDisp").innerHTML = `${unit.name}`;
     Object.keys(unit.stats).forEach(stat => {
         document.getElementById(`${stat}Disp`).innerHTML = `${stat}: ${unit.stats[stat]}`;
@@ -384,40 +369,39 @@ function uiDisplay(unit){
     document.getElementById("mvtDisp").innerHTML = `mvt: ${unit.active.mvt}/${unit.stats.mvt}`;
 };
 
-function uiClear(){
+function uiClear(){ //Empty the ui
     document.getElementById("nameDisp").innerHTML = "";
     Array.from(document.getElementById("statCont").children).forEach(disp => disp.innerHTML = "");
 };
 
-function gameInit(){
+function gameInit(){ //Add event listeners to each tile.
     tileArray.forEach(el =>{
         el.dom.addEventListener("click", turnInit);
     });
-    unitTileArray.forEach(tile => { //Apply one-time hp buffs
-        let unit = tile.occupied.unit;
-        if(unit.item.stats.hp){
-            unit.hp.c += unit.item.stats.hp;
+    unitArray.forEach(u => { //Apply one-time hp buffs
+        if(u.item.stats.hp){
+            u.hp.c += unit.item.stats.hp;
         };
     });
 };
 
-function battleDisp(attacker, defender){
-    let movementTiles = tilesInRange(defender.tile(), attacker.stats.rng);
+function battleDisp(attacker, defender){ //Display battle on board.
+    let movementTiles = tilesInRange(defender.tile(), attacker.stats.rng); //Get tiles in range of target.
         let atkTile = movementTiles[0];
-        if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > 1){
+        if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > attacker.rng){ //If target is out of range, find viable tiles to move to.
             movementTiles.forEach(m => {
-                if(m.dom.classList.contains("viable") && (( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y)) || m.y == defender.pos.y)){
+                if(m.dom.classList.contains("viable") && ((( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y)) || m.y == defender.pos.y))){
                     atkTile = m;
                 };
             });
-            attacker.pos.x = atkTile.x;
+            attacker.pos.x = atkTile.x; //Set attacker position to determined best tile. This tile will be the closest to the attacker while in range of the enemy, prefering to be on the same y level as the enemy if possible.
             attacker.pos.y = atkTile.y;
-            if(defender.pos.x > attacker.pos.x && !attacker.tile().dom.classList.contains("flip")){
+            if(defender.pos.x > attacker.pos.x && !attacker.tile().dom.classList.contains("flip")){ //Determine if attacker needs to turn to face enemy or not.
                 attacker.tile().dom.classList.add("flip");
             }
             dispUnit(attacker);
         };
-        attacker.tile().dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`;
+        attacker.tile().dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`; //Render attack animation.
         if(attacker.pos.x < defender.pos.x){
             if(!attacker.tile().dom.classList.contains("flip")){
                 attacker.tile().dom.classList.add("flip");
@@ -427,16 +411,16 @@ function battleDisp(attacker, defender){
                 attacker.tile().dom.classList.remove("flip");
             }
         };
-        setTimeout(r => {dispUnit(attacker)}, 1600); /*Fix timing*/
+        setTimeout(() => {dispUnit(attacker)}, 1600); /*Fix timing*/ //Removes attack animation at end of cycle !UPDATE HERE
 }
 
-function buffCalc(unit){
+function buffCalc(unit){ //Determine tile and item buffs
     let uB = Object.assign({}, unit.stats)
     let buffCounters = [];
     if(unit.item.stats){buffCounters.push(unit.item.stats)};
     if(unit.tile().terrain.stats){buffCounters.push(unit.tile().terrain.stats)};
 
-    buffCounters.forEach(buff => {
+    buffCounters.forEach(buff => { //Checks values determined to have a buff, adds or subracts them from the unit here.
         Object.keys(buff).forEach(key => {
             uB[key] += buff[key];
         });
@@ -445,7 +429,7 @@ function buffCalc(unit){
     return uB;
 }
 
-function getWeapon(unit){
+function getWeapon(unit){ //Assigns weapon type based on weapon designated on db.
    let weapon;
    switch(unit.weapon){
        case "sword":
@@ -470,21 +454,21 @@ function getWeapon(unit){
    return weapon;
 };
 
-function damageCalc(attacker, defender){
+function damageCalc(attacker, defender){ //Damage calculation
     let args = [...arguments];
-    args.forEach(arg => {arg.cStats = buffCalc(arg)}); /*Use cStats for battle*/
+    args.forEach(arg => {arg.cStats = buffCalc(arg)}); //Use cStats for battle.
   
     let adv = 1;
     let crit = 1;
     let mit = 0;
 
-    if(attacker.weapon == "magic"){ /*mitigation factor*/
+    if(attacker.weapon == "magic"){ //Mitigation factor.
         mit = defender.cStats.res;
     } else{
         mit = defender.cStats.def;
     }
 
-    /*weapon triangle*/
+    //Weapon triangle.
     let weaponA = getWeapon(attacker);
     let weaponD = getWeapon(defender);
     switch(weaponA){
@@ -534,16 +518,18 @@ function damageCalc(attacker, defender){
             console.log("weapon trianlge defaulting.");
     }
 
-    /*Crit Calc*/
+    //Crit Calc.
     if(Math.trunc(Math.random()*100) < (attacker.cStats.lck + attacker.cStats.dex - defender.cStats.lck)/2 ){ /*crit calc*/
         crit = 1.5;
     }
 
     let dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
     if(dmg < 0){dmg = 0};
-    console.log(dmg);
+    console.log(dmg); //!UPDATE HERE
     defender.hp.c -= dmg;
-
+    if(defender.hp.c < 0){
+        defender.hp.c = 0;
+    };
     console.log(attacker.hp.c, defender.hp.c);
     if(crit > 1){
         console.log("Critical!");
@@ -553,21 +539,23 @@ function damageCalc(attacker, defender){
 function battleRes(attacker, defender){
     battleDisp(attacker, defender);
     damageCalc(attacker, defender);
-    if(defender.hp.c <= 0){
+    if(defender.hp.c == 0){ //Signal unit death event.
         socket.emit("unitDefeated", {x: defender.pos.x, y: defender.pos.y, room: room});
-        /* setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
-        setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800); */
     }
-    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.uniqueID, defender: defender.id.uniqueID, room:room});
+    socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.uniqueID, defender: defender.id.uniqueID, room:room}); //Send battle data to other users/
     
 };
 
-let unit;
+let unit; //Dynamic variable. Saves currently selected unit outside of turn function unil overwritten.
 
 function turnInit(el){
-    let tile = getTile(el.target);
+    let tile = getTile(el.target); //Return tile obj which corresponds to the selected tile.
 
-    if(activePlayer != playerNum){
+    if(!thisUser || !oppUser){ //Prohibits moevement if one user isn't connected.
+        return console.log("Not enough players to begin");
+    }
+
+    if(activePlayer != playerNum){ //Case if it is not the user's turn. Only allows ui functions to take place.
         if(tile.occupied.isOccupied == true){
             uiDisplay(tile.occupied.unit);
         }else{
@@ -576,58 +564,56 @@ function turnInit(el){
         return;
     };
     
-    if(tile.occupied.isOccupied == true){
-        if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){
+    if(tile.occupied.isOccupied == true){ //Case if tile is occupied.
+        if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){ //If tile is viable for attack, commence attack function.
             battleRes(unit, tile.occupied.unit);
             uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
             //console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
-            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true).length){
+            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true).length){ //Checks if any units can still attack. If not, passes turn. (Unit attack is always the final action of the turn) !UPDATE HERE for CANTO ability on riders.
                 turnPass();
             };
-        }else{
+        }else{ //If tile is a friendly unit, display select them as current unit.
             unit = tile.occupied.unit;
             uiDisplay(tile.occupied.unit);
         }
-        tileArray.forEach(r => {
+        tileArray.forEach(r => { //Remove all viable markers at the end of action.
             r.dom.classList.remove("viable", "atkViable");
         });
-    }else{
+    }else{ //If tile is empty, clear the ui. !UPDATE HERE for displaying tile stats
         uiClear();
     }
 
-    function moveUnit(e){
-        let unitDest = e /* getTile(e.target); */
-        unit.active.mvt -= (Math.abs(unitDest.x - unit.pos.x) + Math.abs(unitDest.y - unit.pos.y));
+    function moveUnit(e){ //Function for moving a unit and updating the respective object proporties
+        let unitDest = e
+        unit.active.mvt -= (Math.abs(unitDest.x - unit.pos.x) + Math.abs(unitDest.y - unit.pos.y)); //Subtract cost of movement from unit's allowance per turn.
         unit.pos.x = unitDest.x;
-        unit.pos.y = unitDest.y;
-        viableTiles = false;
+        unit.pos.y = unitDest.y; //Update position
+        viableTiles = false; //Global veriable to tell function no tiles are highlighted.
         dispUnit(unit);
-        socket.emit('boardUpdate', {data: unitArrayTravelSize(), type: "move", room:room});
-        tileArray.forEach(tiles => {
+        socket.emit('boardUpdate', {data: unitArrayTravelSize(), type: "move", room:room}); //Send new board data to other user.
+        tileArray.forEach(tiles => { //Removes highlights and listeners from tiles.
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
         });
-        //console.log(tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != playerNum).length + " units in range")
-        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length){
+        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length && unit.aative.mvt == 0){ //If unit is out of mvt points and no enemies are in range, set unit to inactive.
             unit.active.atk = false;
-            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true)){
+            if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true)){ //If no units are active, pass the turn.
                 console.log("NO MVT LEFT, PASS TURN");
                 turnPass();
-            }
-
-        }
+            };
+        };
     };
 
     
 
-    if(unit.owner == thisUser._id && unit.active.atk == true){
+    if(unit.owner == thisUser._id && unit.active.atk == true){ //Check if unit belongs to user and if it is still active.
 
-        if((!unitTileArray.includes(tile)) || (viableTiles == true)){
-            if(tile.dom.classList.contains("viable")){
+        if((!unitTileArray.includes(tile)) || (viableTiles == true)){ //Check if tile is open and if unit is ready for movement.
+            if(tile.dom.classList.contains("viable")){ //If selected tile is viable, move unit to it.
                 moveUnit(tile);
             };
-            tileArray.forEach(r => {
+            tileArray.forEach(r => { //Remove overlays.
                 r.dom.classList.remove("viable", "atkViable");
                 viableTiles = false;
             });
@@ -635,14 +621,14 @@ function turnInit(el){
             return;
         };
 
-        moveCheck(unit).forEach(tiles => {
+        moveCheck(unit).forEach(tiles => { //Find tiles in range of unit, add viable overlay if they are empty.
             if(tiles.occupied.isOccupied == false){
                 tiles.dom.classList.add("viable");
             };
             viableTiles = true;
         });
 
-        moveCheck(unit).forEach(aT => {
+        moveCheck(unit).forEach(aT => { //Return tiles in range, extend array to include tiles withing unit attack distance. Add attack tile overlay to each.
             tilesInRange(aT, unit.stats.rng).forEach(atkTile => {
                 if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
                     atkTile.dom.classList.add("atkViable");
@@ -650,25 +636,21 @@ function turnInit(el){
             });
         });
 
-        if(unit.active.mvt == 0){
+        if(unit.active.mvt == 0){ //If unit cannot move, check tiles within attack range. Add attack overlay to each. !UPDATE HERE Potentially redundant function.
         tilesInRange(unit.tile(), unit.stats.rng).forEach(atkTile => {
             if((!atkTile.dom.classList.contains("viable") || (atkTile.occupied.isOccupied == true && atkTile.occupied.unit.owner != unit.owner)) && (atkTile.occupied.unit.owner != unit.owner)){
                 atkTile.dom.classList.add("atkViable");
             };
         });   
-        }
-    }
-    
-
-    
+        };
+    };
 };
 
 gameInit();
 
-let room;
+let room; //Global variable to hold game room value.
 
-socket.on("cT", (el) => {
-    //console.log(el.msg);
+socket.on("cT", () => { //Runs on connection. Sets room variable, returns event which adds socket to the game's unique room.
     room = window.location.pathname.slice(6);
     let pos = room.indexOf('/');
     if (pos !== -1) {
@@ -677,22 +659,20 @@ socket.on("cT", (el) => {
     socket.emit("joinRoom", {room: room});
 })
 
-socket.on("rT", (el) => {
-    //console.log("data recieved");
-    //console.log(el.data);
+socket.on("rT", (el) => { //Recieves unit data. Compares each unit to unit on board and updates accordingly.
     unitArray.forEach(u => {
         el.data.forEach(d => {
-            if(d.id.uniqueID == u.id.uniqueID){ //Switch to unique id once implemented
+            if(d.id.uniqueID == u.id.uniqueID){ //Matches units acording to id. Updates values for matching units.
                 Object.keys(d).forEach(key => {
                     u[key] = d[key];
                 });
                 dispUnit(u);
             };
         });
-        u.active.mvt = u.stats.mvt;
+        u.active.mvt = u.stats.mvt; //Resets values used to determine if a unit is active or not.
         u.active.atk = true;
     });
-    if(el.type == "atk"){
+    if(el.type == "atk"){ //If update contains an attack, run the attack display function. Damage was already calculated by the other user and updated above.
         let attacker, defender;
         unitArray.forEach(atk => {if(atk.id.unitID == el.attacker){attacker = atk}});
         unitArray.forEach(def => {if(def.id.unitID == el.defender){defender = def}});
@@ -700,61 +680,57 @@ socket.on("rT", (el) => {
     };
 });
 
-socket.on("sendU", () => {
+socket.on("sendU", () => { //Sends user id to other sockets.
     if(!thisUser){
         return console.log("No user to send")
     }
     console.log("SEND U")
     socket.emit("userRelay", {user: thisUser._id, room: room});
     if(thisUser && !oppUser){
-        setTimeout(function(){
+        setTimeout(function(){ //Delay used in order to afford the other user time to retrieve their user.
             console.log("P1 req opp.")
             socket.emit("p1Req");
-        }, 3000)
-        
-    }
+        }, 3000);
+    };
 });
 
-socket.on("recieveU", data => {
+socket.on("recieveU", data => { //Recieves user data. Runs function to retrieve user from db.
     console.log(`GET U ${data.user}`);
-    //if(data.user == thisUser._id){return console.log("Duplicate user, returning...")};
     get.user(data.user);
 });
 
-socket.on("p1ReqF", () => {
+socket.on("p1ReqF", () => { //Relays user data to player 1.
     socket.emit("userRelay", {user: thisUser._id, room: room});
 });
 
-socket.on("userNum", data => { //Send account id to db with player nums, as is both players will be assigned 2 on refresh
+socket.on("userNum", data => { //Declares user number. !UPDATE HERE Send account id to db with player nums, as is both players will be assigned 2 on refresh
     playerNum = data.num;
     get.user();
-    //onsole.log(playerNum);
 });
 
-socket.on("newTurn", data => {
+socket.on("newTurn", data => { //Receives new turn data and sets active player var accordingly.
     console.log(`Turn passed to ${data.pass}`);
     activePlayer = data.pass;
 })
 
-socket.on("unitDefeatedRelay", data => {
+socket.on("unitDefeatedRelay", data => { //Runs unit death function.
     let defender;
-    unitArray.forEach(u => {
+    unitArray.forEach(u => { //Find defender from unit array.
         if (u.pos.x == data.x && u.pos.y == data.y){
             defender = u;
-            console.log(data, defender);
         }
     });
-    setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit Death
-    setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800);
-    defender.tile().occupied = {isOccupied: false, unit: {}};
-    if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){
+    setTimeout(function(){defender.tile().dom.children[0].classList.add("unitDefeated");}, 1600) //Unit death. Timer waits until attack is completed.
+    setTimeout(function(){defender.tile().dom.innerHTML = ""}, 2800); //Empties tile after unit death effect.
+    defender.tile().occupied = {isOccupied: false, unit: {}}; //Resets tile proporties.
+    if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){ //Checks if the defeated unit was the user's last. If so, end game.
         console.log(`Player ${defender.owner} has lost!`);
     }
 });
 
-socket.on("roomFull", function(){
+socket.on("roomFull", function(){ //If room already has two players, redirect user to server menu.
     window.location.href = "/serverIndex";
     socket.to(socket.id).emit("roomFullErr");
 });
 
-document.getElementById("turnPass").addEventListener("click", turnPass);
+document.getElementById("turnPass").addEventListener("click", turnPass); //Adds turn pass function to end turn button.
