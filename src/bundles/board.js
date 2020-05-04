@@ -31,6 +31,7 @@ let oppUser;
     "sprite": {
         "idle": "../img/ameliaIdle.png",
         "attack": "../img/ameliaAtk.gif",
+        "portrait": "../img/ameliaportrait.gif"
     },
     "name": "Amelia",
     "hp": {
@@ -92,6 +93,7 @@ const erika = {
     "sprite": {
         "idle": "../img/erikaIdle.png",
         "attack": "../img/erikaAtk.gif",
+        "portrait": "../img/erikaportrait.gif"
     },
     "name": "Erika",
     "hp": {
@@ -191,6 +193,7 @@ function dispUnit(unit){ //Displays unit on board after a position update.
             });
         };
     });
+    unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u)); //Display unit cards
 };
 
 let get = { //Initialize get obj for calling items from db.
@@ -299,6 +302,80 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
     console.log(`Passing to ${pass}.`)
     socket.emit("turnPass", {"pass": pass, "room": room});
 };
+
+
+
+
+function cardDisplayFunction(e){
+  if(unitCards.includes(e)){
+    return};
+  unitCards.push(e);
+
+    document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
+    ` <div class="card-side character_fronts">
+            <div class="column1">
+            <img class="character-portrait" src="/img/${e.sprite.portrait}">
+                <div class="skills-btn">
+                    <div class="skills">1</div>
+                    <div class="skills">2</div>
+                    <div class="skills">3</div>
+                </div>
+            </div>
+
+            <div class="column2">
+                <div class="card-row">
+                    <div class="name btn"> 
+                        <img src="/img/card/decor_left_large.png" class="decor-left">
+                        
+                            ${e.name}
+
+                        <img src="/img/card/decor_right_large.png" class="decor-right">
+                    </div>
+                        <div class="weapon btn">
+                                <img src="/img/card/decor_left_large.png" class="decor-left">
+                                <span class="stat-text mvt">Mvt</span> ${e.stats.mvt}
+                                <img src="/img/card/decor_right_large.png" class="decor-right">
+                            </div>
+                </div>
+                <div class="card-row">
+                    <div class="btn hp">
+                            <img src="/img/card/decor_left_large.png" class="decor-left">
+                            
+                            ${e.hp.c}/${e.hp.m}
+
+                            <img src="/img/card/decor_right_large.png" class="decor-right">
+                                    
+                    </div> 
+                            </div>
+                            <div class="card-row">
+                                <div class="stats btn">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor">
+                                        <img src="/img/card/diamond_large.png" class="stat-decor2">
+
+                                    <span class="stat-text atk">Atk <span id="atkDisp" class="value">${e.stats.atk} </span> </span>     
+
+                                    <span class="stat-text def">Def<span class="value">${e.stats.def} </span></span>
+                                    
+                                </div>
+                                <div class="stats btn">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor">
+                                    <img src="/img/card/diamond_large.png" class="stat-decor2">
+
+                                    <span class="stat-text dex">Dex   <span class="value">${e.stats.dex} </span></span>
+                                    
+                                    <span class="stat-text rng">Rng  <span class=" value">${e.stats.rng} </span> </span>
+                                    
+                                </div>
+                            </div>
+        
+                        </div>
+    </div>
+                   `);
+
+};
+
+console.log(unitArray.filter(u => u.owner == playerNum));
+unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u));
 
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
