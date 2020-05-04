@@ -1,20 +1,17 @@
-//import { DOMELEMENTS } from "./domElements";
-//import { clickListener } from "./clickListener";
+import io from "socket.io-client"
+const socket = io("/map"); //Import and connect socket.io to the "maps" namespace.
 
 import{ maps } from "./maps"
-import io from "socket.io-client"
-const socket = io("/map");
-
 import{ Unit } from "./unit"
 
 
 let tileArray = []; //Grabs all tiles on the board, passes into an array with proporties we'll use later.
-let unitArray = [];
-let unitTileArray = [];
-let viableTiles = false;
-let map = maps[0];
+let unitArray = []; //A dynamic array holding all of the unit objects in the game.
+let unitTileArray = []; //A dynamic array holding the tiles occupied by a unit.
+let viableTiles = false; //A variable used to determine if any tile functions are active.
+let map = maps[0]; //Declaring which map will be used.
 
-function mapGen(xlim, ylim){ //Generate grid
+function mapGen(xlim, ylim){ //Generates the game board. Dynamic, can generate any size rectangle.
     for(let xtile = xlim; xtile > 0; xtile--){
         document.getElementById("container").insertAdjacentHTML("afterbegin", `<div id="row${xtile}" class="row"></div>`);
         for(let ytile = ylim; ytile > 0; ytile--){
@@ -23,15 +20,14 @@ function mapGen(xlim, ylim){ //Generate grid
     };
 };
 
-mapGen(10,10);
+mapGen(10,10); // Generating map.
 
-let playerNum;
+let playerNum; //User variables. Build into later.
 let activePlayer = 1;
 let thisUser;
 let oppUser;
-let gameSide;
 
-const amelia = {
+/* const amelia = { //Test units.
     "sprite": {
         "idle": "../img/ameliaIdle.png",
         "attack": "../img/ameliaAtk.gif",
@@ -140,30 +136,30 @@ const erika = {
         });
         return uPos;
     }
-};
+}; */
 
 //unitArray.push(amelia, erika);
 
-let tiles = document.querySelectorAll(".tile");
+let tiles = document.querySelectorAll(".tile"); //Retrieve all tiles created in mapGen();
 //console.log(map);
 
-tiles.forEach(el => {
+tiles.forEach(el => { //Apply proporties to each tile, pass to tileArray.
     let tile = {
         "dom": el,
-        "x": parseInt(el.getAttribute("x")),
+        "x": parseInt(el.getAttribute("x")), //Location of tile.
         "y": parseInt(el.getAttribute("y")),
-        "occupied": {
+        "occupied": { //Updated dynamically, tells if tile is occupied by a unit.
             "isOccupied": false,
             "unit": {}
         },
-        "terrain": {
+        "terrain": { //Holds terrain proporties.
             "type": "",
             "stats": {
                 "mvtc": 1
             }
         }
     };
-    map.tiles.forEach(mT => {
+    map.tiles.forEach(mT => { //Applies terrain effects to tiles if applicatble. Terrain effects designated in maps.js.
         if(mT.x == tile.x && mT.y == tile.y){
             tile.terrain = mT.terrain;
         };
@@ -171,23 +167,22 @@ tiles.forEach(el => {
     tileArray.push(tile);
 });
 
-function dispUnit(unit){
+function dispUnit(unit){ //Displays unit on board after a position update.
     if(unit.hp.c <= 0){
         return
     };
     tileArray.forEach(tile => {
         if(tile.x == unit.pos.x && tile.y == unit.pos.y){
-            tile.occupied = {"isOccupied": true, "unit":unit};
-            //unit.tile() = tile;
-            tile.dom.innerHTML = `<img class="board_sprite" src=${unit.sprite.idle}>`;
+            tile.occupied = {"isOccupied": true, "unit":unit}; //Update tile obj.
+            tile.dom.innerHTML = `<img class="board_sprite" src=${unit.sprite.idle}>`; //Generate user sprite on screen.
             unitTileArray.push(tile);
             tileArray.forEach(oldTile => {
                 if(oldTile.occupied.unit == tile.occupied.unit && oldTile.occupied.unit != {} && oldTile != tile){
-                    unitTileArray = unitTileArray.filter(function(toRemove){return toRemove != oldTile;});
+                    unitTileArray = unitTileArray.filter(function(toRemove){return toRemove != oldTile;}); //Remove proporties from old tile.
                     oldTile.occupied.isOccupied = false;
                     oldTile.occupied.unit = {};
                     oldTile.dom.classList.remove("active");
-                    if((oldTile.x < tile.x) || (oldTile.x == tile.x && oldTile.dom.classList.contains("flip"))){
+                    if((oldTile.x < tile.x) || (oldTile.x == tile.x && oldTile.dom.classList.contains("flip"))){//Decide if sprite should be displayed facing left or right.
                         tile.dom.classList.add("flip");
                     }
                     oldTile.dom.innerHTML = "";
@@ -196,20 +191,14 @@ function dispUnit(unit){
             });
         };
     });
-    //turnInit();
 };
 
-/* dispUnit(amelia);
-dispUnit(erika); */
-
-let get = {
-    async user(id){
-        if(!id){id = document.getElementById("userTag").getAttribute("uid")};
+let get = { //Initialize get obj for calling items from db.
+    async user(id){ //Retrieve user from db.
+        if(!id){id = document.getElementById("userTag").getAttribute("uid")}; //If no id is passed, default to user which generated the page. This attribute is passed in through passport on the back end.
         let data = await fetch(`/users/find/${id}`);
         let user = await data.json();
-        console.log(`getting user ${id}...`);
-        console.log(user);
-        if(id == document.getElementById("userTag").getAttribute("uid")){
+        if(id == document.getElementById("userTag").getAttribute("uid")){ //If user is the page owner, set game variables accordingly.
             thisUser = user;
             thisUser.playerNum = playerNum;
             document.getElementById("userTag").innerHTML = thisUser.name;
@@ -232,16 +221,15 @@ let get = {
                 oppUser.gameSide = "l"
             }
         };
-        user.activeUnits.forEach(async (el) => {
+        user.activeUnits.forEach(async (el) => { //Retrive units from db, pass in additional parameters.
             let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id), user.gameSide);
             unit.side = user.gameSide;
             unit.setOwner(user._id);
-            /* if(el.item){
+            /* if(el.item){ //Item function. Inclusion for later addition of item system.
                 unit.item = get.item(el.item);
             } */
-        });
-        console.log(unitArray);    
-        unitArray.forEach(u => {
+        }); 
+        unitArray.forEach(u => {//Apply sprite flip if nessecary
             if(u.side == "l"){
                 u.tile().dom.classList.add("flip");
             }
