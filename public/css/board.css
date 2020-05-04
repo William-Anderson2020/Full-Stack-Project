@@ -39,7 +39,7 @@ html {
 }
  */
 .board_sprite {
-  height: 8rem;
+  height: 9rem;
   width: auto;
   pointer-events: none;
   z-index: 1;
@@ -49,7 +49,7 @@ html {
 }
 
 .anim_sprite {
-  height: 8rem;
+  height: 7rem;
   margin-right: 1rem;
 }
 

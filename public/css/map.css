@@ -85,10 +85,13 @@ body {
   text-align: center;
 }
 
+
 .party-section{
   
   width: 60rem;
   flex-direction: column;
+  
+
  
 
 }
@@ -104,13 +107,27 @@ body {
   
 }
 
+.party-header{
+  font-size:3rem;
+  font-family: 'Sofia', cursive;
+  color: rgb(66, 153, 211);
+  
+  margin-top: -0.1rem;
+  margin-bottom: -0.1rem;
+
+  
+}
+
 .party-divider{
-  width: 20rem;
+  width: 30rem;
+  margin-bottom: 1.5rem;
+
 
 
 }
 
 .card-side{
+  display:flex;
 
   height:18rem;
 
@@ -291,7 +308,9 @@ body {
 
 
   margin-right: 1rem;
+
 }
+
 
 
 
@@ -484,8 +503,11 @@ body {
 
 #turnPass{
  
+  display:flex;
+  display: inline-block;
+  margin-top: 2rem;
+  width: 18rem;
   font-size: 1.5rem;
   
-  font-family: 'Lato', cursive;
-  
+  font-family: 'Sriracha', cursive;
 }

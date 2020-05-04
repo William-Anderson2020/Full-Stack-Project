@@ -32,6 +32,7 @@ const amelia = {
     "sprite": {
         "idle": "../img/ameliaIdle.png",
         "attack": "../img/ameliaAtk.gif",
+        "portrait": "../img/ameliaportrait.gif"
     },
     "name": "Amelia",
     "hp": {
@@ -82,6 +83,7 @@ const erika = {
     "sprite": {
         "idle": "../img/erikaIdle.png",
         "attack": "../img/erikaAtk.gif",
+        "portrait": "../img/erikaportrait.gif"
     },
     "name": "Erika",
     "hp": {
@@ -243,14 +245,14 @@ function turnPass(){
 
 
 function cardDisplayFunction(e){
-  if(unitCards.contains(e)){
+  if(unitCards.includes(e)){
     return};
   unitCards.push(e);
 
     document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
     ` <div class="card-side character_fronts">
             <div class="column1">
-            <img class="character-portrait" src="/img/characters/icons/ephraim_portrait.gif">
+            <img class="character-portrait" src="/img/${e.sprite.portrait}">
                 <div class="skills-btn">
                     <div class="skills">1</div>
                     <div class="skills">2</div>
@@ -269,7 +271,7 @@ function cardDisplayFunction(e){
                     </div>
                         <div class="weapon btn">
                                 <img src="/img/card/decor_left_large.png" class="decor-left">
-                                <span class="stat-text mvt">Turns:</span> ${e.stats.mvt}
+                                <span class="stat-text mvt">Mvt</span> ${e.stats.mvt}
                                 <img src="/img/card/decor_right_large.png" class="decor-right">
                             </div>
                 </div>
