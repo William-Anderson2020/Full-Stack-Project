@@ -40,7 +40,8 @@ html {
 }
  */
 .board_sprite {
-  height: 9rem;
+  margin-right: 1.5rem;
+  height: 10rem;
   width: auto;
   pointer-events: none;
   z-index: 1;
@@ -50,8 +51,7 @@ html {
 }
 
 .anim_sprite {
-  height: 7rem;
-  margin-right: 1rem;
+  height: 10rem;
 }
 
 .flip {
@@ -77,6 +77,10 @@ html {
   to {
     opacity: 0;
   }
+}
+#character-cards {
+  display: flex;
+  flex-direction: column;
 }
 
 /*# sourceMappingURL=board.css.map */

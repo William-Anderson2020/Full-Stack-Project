@@ -4,8 +4,8 @@ html{
 }
 
 .tile{
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 5rem;
+    height: 5rem;
     border-width: .1px;
     border-color: black;
     border-style: solid;
@@ -40,8 +40,8 @@ html{
 }
  */
 .board_sprite{
-    margin-right: .5rem;
-    height: 3rem;
+    margin-right: 1.5rem;
+    height: 10rem;
     width: auto;
     pointer-events: none;
     z-index: 1;
@@ -51,8 +51,8 @@ html{
 }
 
 .anim_sprite{
-    height: 3rem;
-    margin-right: 1rem;
+    height: 10rem;
+    //margin-right: 1rem;
     //transform: scaleX(-1);
 }
 
@@ -79,4 +79,9 @@ html{
     to{
         opacity: 0;
     }
+}
+
+#character-cards{
+    display: flex;
+    flex-direction: column;
 }

@@ -195,7 +195,9 @@ function dispUnit(unit){ //Displays unit on board after a position update.
             });
         };
     });
-    unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u)); //Display unit cards
+    if(unit.owner == thisUser._id){
+        cardDisplayFunction(unit);
+    }; //Display unit cards
 };
 
 let get = { //Initialize get obj for calling items from db.
@@ -205,6 +207,7 @@ let get = { //Initialize get obj for calling items from db.
         let user = await data.json();
         if(id == document.getElementById("userTag").getAttribute("uid")){ //If user is the page owner, set game variables accordingly.
             thisUser = user;
+            console.log("AT GET USER, PLAYER NUMBER IS ", playerNum);
             thisUser.playerNum = playerNum;
             document.getElementById("userTag").innerHTML = thisUser.name;
             if(playerNum == 1){
@@ -228,29 +231,38 @@ let get = { //Initialize get obj for calling items from db.
             }
         };
         user.activeUnits.forEach(async (el) => { //Retrive units from db, pass in additional parameters.
-            let unit = await get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id), user.gameSide);
-            unit.side = user.gameSide;
-            unit.setOwner(user._id);
+            get.unit(el.id, user.activeUnits.findIndex(u=> u.id == el.id), user);
             /* if(el.item){ //Item function. Inclusion for later addition of item system.
                 unit.item = get.item(el.item);
             } */
         }); 
-        unitArray.forEach(u => {//Apply sprite flip if nessecary
-            if(u.side == "l"){
-                u.tile().dom.classList.add("flip");
-            }
-        });
+        setTimeout(() => {
+            console.log(unitArray.filter(u => u.owner == thisUser._id));
+            unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
+            unitArray.forEach(u => {//Apply sprite flip if nessecary
+                if(u.side == "l"){
+                    u.tile().dom.classList.add("flip");
+                }
+            });
+        }, 500);
+        
         
     },
-    async unit(id, index, aSide){ //Function to retrieve unit from db
+    async unit(id, index, user){ //Function to retrieve unit from db
         let data = await fetch(`/characters/${id}`);
         data = await data.json()
         let unitImport = new Unit(data.name, data.hp, data.stats, data._id); //Build unit obj
+        
+        unitImport.setOwner(user._id)
+        if(unitArray.filter(u => u.id.uniqueID == unitImport.id.uniqueID).length){
+            return;
+        };
+        unitImport.side = user.gameSide;
 
         function setPos(){ //Setting initial position
             let startTile;
             let sTArray = [];
-                if(aSide == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
+                if(user.gameSide == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
             sTArray = tileArray.filter(el => {
                 if(el.terrain.type == startTile && el.occupied.isOccupied == false){
                     console.log(el);
@@ -311,13 +323,15 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
 
 
 function cardDisplayFunction(e){
-    if(unitCards.includes(e)){
+    console.log(e);
+    if(unitCards.includes(e) || document.getElementById("charDisplay").children.length == thisUser.activeUnits.length){
         document.getElementById(`${e.id.uniqueID}-mvt`).innerHTML == `${e.active.mvt}/${e.stats.mvt}`;
         document.getElementById(`${e.id.uniqueID}-hp`).innerHTML == `${e.hp.c}/${e.hp.max}`;
+        return;
     };
   unitCards.push(e);
 
-    document.getElementById("charDisplay").insertAdjacentHTML('afterend', 
+    document.getElementById("charDisplay").insertAdjacentHTML("beforeend", 
     ` <div id="${e.id.uniqueID}" class="card-side character_fronts">
             <div class="column1">
             <img class="character-portrait" src="${e.sprite.portrait}">
@@ -380,9 +394,6 @@ function cardDisplayFunction(e){
 
 };
 
-console.log(unitArray.filter(u => u.owner == playerNum));
-unitArray.filter(u=>u.owner==playerNum).forEach(u => cardDisplayFunction(u));
-
 
 function getTile(el){ // Checks value of dom element and returns corrosponding tile from array
     let match;
@@ -414,7 +425,8 @@ function unitArrayTravelSize(){ //Trim unit data before emmiting to other users.
             "pos": {
                 "x": el.pos.x,
                 "y": el.pos.y            
-            }
+            },
+            "active": el.active
         });
     });
     //console.log(r);
@@ -680,7 +692,7 @@ function turnInit(el){
             tiles.dom.classList.remove("viable", "atkViable");
             tiles.dom.removeEventListener("click", moveUnit);
         });
-        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length && unit.aative.mvt == 0){ //If unit is out of mvt points and no enemies are in range, set unit to inactive.
+        if(!tilesInRange(unit.tile(), unit.stats.rng).filter(tile => tile.occupied.isOccupied == true).filter(tile => tile.occupied.unit.owner != thisUser._id).length && unit.active.mvt == 0){ //If unit is out of mvt points and no enemies are in range, set unit to inactive.
             unit.active.atk = false;
             if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true)){ //If no units are active, pass the turn.
                 console.log("NO MVT LEFT, PASS TURN");
@@ -769,7 +781,7 @@ socket.on("sendU", () => { //Sends user id to other sockets.
         return console.log("No user to send")
     }
     console.log("SEND U")
-    socket.emit("userRelay", {user: thisUser._id, room: room});
+    socket.emit("userRelay", {user: thisUser._id, num: playerNum, turn: activePlayer, room: room, units: unitArrayTravelSize()});
     if(thisUser && !oppUser){
         setTimeout(function(){ //Delay used in order to afford the other user time to retrieve their user.
             console.log("P1 req opp.")
@@ -780,11 +792,35 @@ socket.on("sendU", () => { //Sends user id to other sockets.
 
 socket.on("recieveU", data => { //Recieves user data. Runs function to retrieve user from db.
     console.log(`GET U ${data.user}`);
+    if(data.num == 1 && !oppUser){
+        playerNum = 2;
+    }else if(data.num == 2 && !oppUser){
+        playerNum = 1;
+    };
+    activePlayer = data.turn;
+    get.user();
     get.user(data.user);
+    setTimeout(() => {
+        console.log("DATA", data.units)
+        if(data.units.length){
+            unitArray.forEach(u => {
+                data.units.forEach(d => {
+                    if(d.id.uniqueID == u.id.uniqueID){ //Matches units acording to id. Updates values for matching units.
+                        Object.keys(d).forEach(key => {
+                            u[key] = d[key];
+                        });
+                        dispUnit(u);
+                    };
+                });
+            });
+        };
+    }, 3000); //Delay to allow user function to execute and load units
+    
 });
 
 socket.on("p1ReqF", () => { //Relays user data to player 1.
-    socket.emit("userRelay", {user: thisUser._id, room: room});
+    console.log("RELAY TO P1");
+    socket.emit("userRelay", {user: thisUser._id, num: playerNum, turn: activePlayer, room: room, units: unitArrayTravelSize()});
 });
 
 socket.on("userNum", data => { //Declares user number. !UPDATE HERE Send account id to db with player nums, as is both players will be assigned 2 on refresh

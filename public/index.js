@@ -178,7 +178,6 @@ mapIO.on("connection", socket => { //Game board socket events.
   });
 
   socket.on("userRelay", data => { //Relay user data to game room.
-    console.log(data);
     mapIO.to(data.room).emit("recieveU", data);
   })
 
