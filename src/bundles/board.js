@@ -237,7 +237,6 @@ let get = { //Initialize get obj for calling items from db.
             } */
         }); 
         setTimeout(() => {
-            console.log(unitArray.filter(u => u.owner == thisUser._id));
             unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
             unitArray.forEach(u => {//Apply sprite flip if nessecary
                 if(u.side == "l"){
@@ -265,7 +264,6 @@ let get = { //Initialize get obj for calling items from db.
                 if(user.gameSide == "l"){startTile = "P1 Starting Tile"}else{startTile = "P2 Starting Tile"};
             sTArray = tileArray.filter(el => {
                 if(el.terrain.type == startTile && el.occupied.isOccupied == false){
-                    console.log(el);
                     return el;
                 }
             });
@@ -323,10 +321,11 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
 
 
 function cardDisplayFunction(e){
-    console.log(e);
-    if(unitCards.includes(e) || document.getElementById("charDisplay").children.length == thisUser.activeUnits.length){
-        document.getElementById(`${e.id.uniqueID}-mvt`).innerHTML == `${e.active.mvt}/${e.stats.mvt}`;
-        document.getElementById(`${e.id.uniqueID}-hp`).innerHTML == `${e.hp.c}/${e.hp.max}`;
+    console.log(`DISPLAY CARD FOR ${e.name} (${e.id.uniqueID})`);
+    if(unitCards.map(u => u.id.uniqueID).includes(e.id.uniqueID) /* || document.getElementById("charDisplay").children.length == thisUser.activeUnits.length */){
+        console.log(e)
+        document.getElementById(`${e.id.uniqueID}-mvt`).innerHTML = `${e.active.mvt}/${e.stats.mvt}`;
+        document.getElementById(`${e.id.uniqueID}-hp`).innerHTML = `${e.hp.c}/${e.hp.m}`;
         return;
     };
   unitCards.push(e);
@@ -353,7 +352,7 @@ function cardDisplayFunction(e){
                     </div>
                         <div class="weapon btn">
                                 <img src="/img/card/decor_left_large.png" class="decor-left">
-                                <span id="${e.id.uniqueID}-mvt" class="stat-text mvt">Mvt</span> ${e.active.mvt}/${e.stats.mvt}
+                                <span id="${e.id.uniqueID}-mvt" class="stat-text mvt">Mvt: ${e.active.mvt}/${e.stats.mvt}</span>
                                 <img src="/img/card/decor_right_large.png" class="decor-right">
                             </div>
                 </div>
@@ -506,7 +505,6 @@ function battleDisp(attacker, defender){ //Display battle on board.
                 attacker.tile().dom.classList.remove("flip");
             }
         };
-        unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
         setTimeout(() => {dispUnit(attacker)}, 1600); /*Fix timing*/ //Removes attack animation at end of cycle !UPDATE HERE
 }
 
@@ -626,6 +624,7 @@ function damageCalc(attacker, defender){ //Damage calculation
     if(defender.hp.c < 0){
         defender.hp.c = 0;
     };
+    console.log(`${defender.hp.m} - ${dmg} = ${defender.hp.c}`)
     console.log(attacker.hp.c, defender.hp.c);
     if(crit > 1){
         console.log("Critical!");
@@ -637,7 +636,9 @@ function battleRes(attacker, defender){
     damageCalc(attacker, defender);
     if(defender.hp.c == 0){ //Signal unit death event.
         socket.emit("unitDefeated", {x: defender.pos.x, y: defender.pos.y, room: room});
-    }
+    };
+    console.log(`UNIT CARD UPDATES ${unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u))}`)
+    unitArray.map(u=> { if(u.owner == thisUser._id){return u} }).forEach(u => cardDisplayFunction(u));
     socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.uniqueID, defender: defender.id.uniqueID, room:room}); //Send battle data to other users/
     
 };
@@ -662,6 +663,8 @@ function turnInit(el){
     
     if(tile.occupied.isOccupied == true){ //Case if tile is occupied.
         if(tile.dom.classList.contains("atkViable") && tile.occupied.unit.owner != unit.owner){ //If tile is viable for attack, commence attack function.
+            console.log(tile);
+            console.log(`BATTLE ${unit.name} VS ${tile.occupied.unit.name}`)
             battleRes(unit, tile.occupied.unit);
             //uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
