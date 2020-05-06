@@ -11,6 +11,7 @@
         <form action="/logout?_method=DELETE" method="POST">
             <button type="submit" class="btn">&larr; Logout</button>
         </form>
+        <div id="userTag" class="pTag" uId = {{userID}}></div>
         <p class="homepage-title">Game</p>
     </div>
 
@@ -25,6 +26,10 @@
                         <div class="form-sections">
                             <label class="form-label" for="id">ID</label>
                             <input type="text" value="" id="IdPOST" name="id" required readonly="readonly">
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="name">ID</label>
+                            <input type="text" value="" id="namePOST" name="name" required>
                         </div>
                         <button id="newServer" class="btn-secondary">Create Game</button>
                     </form>    

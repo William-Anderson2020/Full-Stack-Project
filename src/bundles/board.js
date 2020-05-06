@@ -854,6 +854,7 @@ socket.on("unitDefeatedRelay", data => { //Runs unit death function.
     defender.tile().occupied = {isOccupied: false, unit: {}}; //Resets tile proporties.
     if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){ //Checks if the defeated unit was the user's last. If so, end game.
         console.log(`Player ${defender.owner} has lost!`);
+        document.getElementById
     }
 });
 

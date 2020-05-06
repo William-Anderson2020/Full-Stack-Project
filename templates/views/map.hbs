@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/css/board.css">
     <link rel="stylesheet" href="/css/map.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Sofia&family=Sriracha&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Sofia&family=Sriracha&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lemonada&display=swap" rel="stylesheet"> 
     <link rel="icon" href="/img/icon.png">
        <title>Map of Game</title>
 </head>
@@ -17,41 +18,56 @@
 <div class="logo"><img class="logo"src="/img/logos/logo_blue_gold.png">
 <img class="logo_sword"src="/img/logos/sword.png">
 </div>
-<div id="userTag" class="pTag" uId = {{userID}}></div>
-<div id="oppTag" class="pTag"></div>
+
 <div class="gameboard">
+        
+        {{!-- <div id="playerTags">
+                <div id="userTag" class="pTag" uId = {{userID}}></div>
+                VS
+                <div id="oppTag" class="pTag"></div>
+        </div> --}}
 
 
-        <div class="map-dialogue-section">
-                
-             <div id="container"></div>
+        <div id="column-cont">
+                <div class="map-dialogue-section column-section">
 
-             <div id="turnPass" class="btn">PASS THE TURN</div>
+                        <div id="playerTagsCont">
+                                <div id="playerTags">
+                                        <div id="userTag" class="pTag" uId = {{userID}}></div>VS<div id="oppTag" class="pTag"></div>
+                                </div>
+                                {{!-- <img id="turnObj" class="turnObj" src="/img/logos/sword.png">    --}}     
+                        </div>
+                        
+                        <div id="container"></div>
+
+                        <button id="turnPass" class="btn">PASS THE TURN</button>
 
                         <div class="dialogue">
-                            <img class="chibi" src="/img/characters/chibi/ephraim.png">
+                                {{!-- <img class="chibi" src="/img/characters/chibi/ephraim.png">
                                 <div class="text">
-                                            " I won't falter! I am Ephraim, bringer of the light!"
-                                </div>
+                                                " I won't falter! I am Ephraim, bringer of the light!"
+                                </div> --}}
                         </div>
-         </div>   
+                </div>   
 
 
-            
-        <section class= "party-section">
+                
+                <section class= "party-section column-section">
 
-            <h2 class="party-header"> Party </h2>
-            <img class="party-divider" src="/img/dividers/elegant-divider.png">
+                <h2 class="party-header"> Party </h2>
+                <img class="party-divider" src="/img/dividers/elegant-divider.png">
 
 
-            <div class= "character-cards">
-                    <div class="info">
-                            <div id="charDisplay"></div>
-                    </div>
-               
-            
-            </div>
+                <div class= "character-cards">
+                        <div class="info">
+                                <div id="charDisplay"></div>
+                        </div>
+                
+                
+                </div>
+        </div>        
 </div>
+       
 
  <div id="nameDisp"></div>
                         <div id="statCont">

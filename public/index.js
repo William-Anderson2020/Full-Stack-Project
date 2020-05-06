@@ -115,9 +115,12 @@ app.get("/auth/steam/callback", checkNotAuthenticated, passport.authenticate("st
 
 app.post("/register", async (req, res) => { //Post user registration, send new user data to db.
   try {
+    if(await User.findOne({email: req.body.email})){
+      res.redirect("/register")
+    }
     const user = new User(req.body);
-    await user.save();
-    req.login(user, err => {if(err){return err}});
+    await user.save()
+    req.login(user);
     res.redirect("/");
   } catch (error) {
     res.status(500).send(error);
@@ -131,7 +134,9 @@ app.delete("/logout", (req, res) => { //Process logout request.
 
 app.get("/serverIndex", checkAuthenticated, async (req, res) => { //Loads server index page.
   try {
-    res.render("serverIndex")
+    res.render("serverIndex", {
+      userID: req.user._id
+    })
   } catch (error) {
     res.status(500).send();
   };
@@ -150,7 +155,6 @@ app.get("/game/:id", checkAuthenticated, async(req, res) => { //Loads game board
 
 app.post("/newGame", checkAuthenticated, async(req, res) => {
   try {
-    console.log(req.body);
     res.redirect(`/game/${req.body.id}`);
   } catch (error) {
     res.status(500).send(error);
@@ -163,8 +167,18 @@ serverIndex.on("connection", socket => { //Server index socket events.
   serverIndex.to(socket.id).emit("listRelay", {list: serverList}); //Sends server list to user.
 
   socket.on("serverCreation", data => { //Adds server to list on creation.
-    serverList.push(data.id);
+    serverList.push(data);
     serverIndex.emit("listRelay", {list: serverList});
+  });
+
+  socket.on("removeListItem", data => {
+    console.log(`Remove server ${data.id}`)
+    serverList.forEach(s => {
+      if(s.id == data.id){
+        serverList.splice(serverList.indexOf(s));
+      }
+    })
+    serverIndex.emit("removeListItemRelay", data);
   });
 
 });

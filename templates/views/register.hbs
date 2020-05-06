@@ -9,6 +9,9 @@
 <body>
     <div class="register">
     <h1 class="register-title">Register</h1>
+    {{#each errors}}
+        <div class="err">{{this.message}}</div>
+    {{/each}}
     <form action="/register" method="POST">
         <div class="form-sections">
             <label class="form-label" for="name">Name</label>
@@ -31,4 +34,5 @@
     <a class="old-user" href="/login">Already registered?</a> 
     </div>
 </body>
+    {{!-- <script src="registration.js"></script> --}}
 </html>

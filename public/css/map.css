@@ -68,6 +68,7 @@ body {
 
 
   display:flex;
+  flex-direction: column;
   justify-content: space-around;
   
  
@@ -510,4 +511,35 @@ body {
   font-size: 1.5rem;
   
   font-family: 'Sriracha', cursive;
+}
+
+#playerTags{
+  width: inherit;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ptag{
+  width:20rem
+}
+
+#column-cont{
+  display: flex;
+  flex-direction: row;
+}
+
+#playerTagsCont{
+  font-size: 2rem;
+  /* font-family: 'Lemonada', cursive; */
+}
+
+.column-section{
+  width: 50rem;
+}
+
+#turnObj{
+  width: 10rem;
+  transform: translateY(-5rem) rotate(90deg);
 }
