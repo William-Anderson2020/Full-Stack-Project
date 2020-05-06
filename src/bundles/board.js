@@ -304,8 +304,9 @@ let get = { //Initialize get obj for calling items from db.
 //get.user();
 
 function turnPass(){ //Pass turn between players. Determines active user, siwtches them, then emits the event to all others in the room.
-    if(playerNum != activePlayer){
+    if(playerNum == activePlayer){
         return;
+    ;
     }
     let pass;
     if(playerNum == 1){
@@ -313,8 +314,12 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
     }else if(playerNum == 2){
         pass = 1;
     };
-    console.log(`Passing to ${pass}.`)
+    console.log(`
+    Passing to ${pass}.`)
     socket.emit("turnPass", {"pass": pass, "room": room});
+
+    
+
 };
 
 
