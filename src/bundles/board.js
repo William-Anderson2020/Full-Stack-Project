@@ -321,7 +321,7 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
 
 
 function cardDisplayFunction(e){
-    console.log(`DISPLAY CARD FOR ${e.name} (${e.id.uniqueID})`);
+    if(!e){console.log("NO UNIT RECIEVED AT CARD DISP")}
     if(unitCards.map(u => u.id.uniqueID).includes(e.id.uniqueID) /* || document.getElementById("charDisplay").children.length == thisUser.activeUnits.length */){
         console.log(e)
         document.getElementById(`${e.id.uniqueID}-mvt`).innerHTML = `${e.active.mvt}/${e.stats.mvt}`;
@@ -480,32 +480,35 @@ function gameInit(){ //Add event listeners to each tile.
 };
 
 function battleDisp(attacker, defender){ //Display battle on board.
+    console.log("OUT OF RANGE?", Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y), attacker.stats.rng);
     let movementTiles = tilesInRange(defender.tile(), attacker.stats.rng); //Get tiles in range of target.
-        let atkTile = movementTiles[0];
-        if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > attacker.rng){ //If target is out of range, find viable tiles to move to.
-            movementTiles.forEach(m => {
-                if(m.dom.classList.contains("viable") && ((( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y)) || m.y == defender.pos.y))){
-                    atkTile = m;
-                };
-            });
-            attacker.pos.x = atkTile.x; //Set attacker position to determined best tile. This tile will be the closest to the attacker while in range of the enemy, prefering to be on the same y level as the enemy if possible.
-            attacker.pos.y = atkTile.y;
-            if(defender.pos.x > attacker.pos.x && !attacker.tile().dom.classList.contains("flip")){ //Determine if attacker needs to turn to face enemy or not.
-                attacker.tile().dom.classList.add("flip");
-            }
-            dispUnit(attacker);
-        };
-        attacker.tile().dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`; //Render attack animation.
-        if(attacker.pos.x < defender.pos.x){
-            if(!attacker.tile().dom.classList.contains("flip")){
-                attacker.tile().dom.classList.add("flip");
-            }
-        }else{
-            if(attacker.tile().dom.classList.contains("flip")){
-                attacker.tile().dom.classList.remove("flip");
-            }
-        };
-        setTimeout(() => {dispUnit(attacker)}, 1600); /*Fix timing*/ //Removes attack animation at end of cycle !UPDATE HERE
+    let atkTile = movementTiles[0];
+    if(Math.abs(attacker.pos.x - defender.pos.x) + Math.abs(attacker.pos.y - defender.pos.y) > attacker.stats.rng){ //If target is out of range, find viable tiles to move to.
+        movementTiles.forEach(m => {
+            if((m.dom.classList.contains("viable") && m.terrain.type != "Mountain") && (( Math.abs(m.x - attacker.pos.x) + Math.abs(m.y - attacker.pos.y)) < Math.abs((atkTile.x + atkTile.y)-(attacker.pos.x + attacker.pos.y)) || m.y == defender.pos.y)){
+                atkTile = m;
+            };
+        });
+        console.log(`ATK TILE: ${atkTile}`)
+        attacker.pos.x = atkTile.x; //Set attacker position to determined best tile. This tile will be the closest to the attacker while in range of the enemy, prefering to be on the same y level as the enemy if possible.
+        attacker.pos.y = atkTile.y;
+        if(defender.pos.x > attacker.pos.x && !attacker.tile().dom.classList.contains("flip")){ //Determine if attacker needs to turn to face enemy or not.
+            attacker.tile().dom.classList.add("flip");
+        }
+        dispUnit(attacker);
+    };
+    attacker.tile().dom.innerHTML = `<img class="board_sprite anim_sprite" src="${attacker.sprite.attack}">`; //Render attack animation.
+    if(attacker.pos.x < defender.pos.x){
+        if(!attacker.tile().dom.classList.contains("flip")){
+            attacker.tile().dom.classList.add("flip");
+        }
+    }else{
+        if(attacker.tile().dom.classList.contains("flip")){
+            attacker.tile().dom.classList.remove("flip");
+        }
+    };
+    [attacker, defender].filter(u => u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
+    setTimeout(() => {dispUnit(attacker)}, 1600); /*Fix timing*/ //Removes attack animation at end of cycle !UPDATE HERE
 }
 
 function buffCalc(unit){ //Determine tile and item buffs
@@ -637,8 +640,11 @@ function battleRes(attacker, defender){
     if(defender.hp.c == 0){ //Signal unit death event.
         socket.emit("unitDefeated", {x: defender.pos.x, y: defender.pos.y, room: room});
     };
-    console.log(`UNIT CARD UPDATES ${unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u))}`)
-    unitArray.map(u=> { if(u.owner == thisUser._id){return u} }).forEach(u => cardDisplayFunction(u));
+    unitArray.forEach(u => { //Update unit cards
+        if(u.owner == thisUser._id){
+            cardDisplayFunction(u);
+        }
+    });
     socket.emit("boardUpdate", {data: unitArrayTravelSize(), type:"atk", attacker: attacker.id.uniqueID, defender: defender.id.uniqueID, room:room}); //Send battle data to other users/
     
 };
