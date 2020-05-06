@@ -144,9 +144,18 @@ app.get("/game/:id", checkAuthenticated, async(req, res) => { //Loads game board
     });
 
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send(error);
   }
 });
+
+app.post("/newGame", checkAuthenticated, async(req, res) => {
+  try {
+    console.log(req.body);
+    res.redirect(`/game/${req.body.id}`);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+})
 
 let serverList = [];
 

@@ -3,11 +3,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/board.css">
+    <link rel="stylesheet" href="/css/homepage.css" type="text/css">
     <title>Server List</title>
 </head>
 <body>
-    <div id="newServer">New Server</div>
-    <div id="serverList"></div>
+    <div class="nav" >
+        <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit" class="btn">&larr; Logout</button>
+        </form>
+        <p class="homepage-title">Game</p>
+    </div>
+
+    <div class="servers">
+        <a id="newGame" href="#newGamePopup" class="game btn-initial">Create Lobby</a>
+        <div id="newGamePopup" class="overlay">
+            <div class="popup">
+                <h2>Game</h2>
+                <a class="close" href="#">&larr;Back</a>
+                <div class="content">
+                    <form id="newGamePOST" action="/newGame" method="POST">
+                        <div class="form-sections">
+                            <label class="form-label" for="id">ID</label>
+                            <input type="text" value="" id="IdPOST" name="id" required readonly="readonly">
+                        </div>
+                        <button id="newServer" class="btn-secondary">Create Game</button>
+                    </form>    
+                </div>
+                
+            </div>
+        </div>
+        <div id="serverList"></div>
 </body>
 <script src="./js/serverIndex.js"></script>
 </html>
