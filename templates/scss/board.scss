@@ -14,6 +14,9 @@ html{
     align-items: flex-end;
     justify-content: center;
     flex-basis: 10%;
+    transition: background-color .1s cubic-bezier(1, .2, .2, 1);
+    /* transition-duration: background-color 1s;
+    transition-timing-function: background-color cubic-bezier(1, .2, .2, 1); */
 }
 
 .viable{
@@ -40,7 +43,7 @@ html{
 }
  */
 .board_sprite{
-    margin-right: 1.5rem;
+    padding-right: 1.5rem;
     height: 10rem;
     width: auto;
     pointer-events: none;
@@ -58,6 +61,7 @@ html{
 
 .flip{
     transform: scaleX(-1);
+    transition-duration: 0s;
 }
 
 #newServer{

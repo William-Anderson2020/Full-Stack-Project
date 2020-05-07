@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/board.css">
     <link rel="stylesheet" href="/css/map.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Sofia&family=Sriracha&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lemonada&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet">
     <link rel="icon" href="/img/icon.png">
        <title>Map of Game</title>
 </head>
@@ -18,7 +18,12 @@
 <div class="logo"><img class="logo"src="/img/logos/logo_blue_gold.png">
 <img class="logo_sword"src="/img/logos/sword.png">
 </div>
-<div class="gameboard">
+{{!-- <div id="gameOver">
+        <div id="gameOverCont">
+                <div id="gameOverText">GAME OVER</div>
+        </div>
+</div> --}}
+<div id="game-container" class="gameboard">
         
         {{!-- <div id="playerTags">
                 <div id="userTag" class="pTag" uId = {{userID}}></div>
@@ -69,7 +74,6 @@
 
                 <div id="uiCard">
                         <div class="uiCardColumn">
-                                <div id="nameDisp"></div>
                                 <div id="portraitDisp"></div>        
                         </div>
                         <div class="uiCardColumn">

@@ -101,7 +101,10 @@ body {
   margin-top: -2rem;
   
   text-align: center;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-content: center;
 
 
 
@@ -131,6 +134,7 @@ body {
   display:flex;
 
   height:18rem;
+  width: 45rem;
 
   color: skyblue;
   border-radius: 1rem;
@@ -349,22 +353,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-end;
   height: 15rem;
   width: 50rem;
   align-items: center;
   margin-top: 3rem;
   overflow-x: hidden;
-  overflow-y: auto;
  
   
   border-radius: 1rem;
-  border: solid rgb(187, 231, 248) 0.2rem;
+  border: solid black 0.2rem;
 
 	backface-visibility: hidden;
 	box-shadow: 0 1.5rem 2rem rgba(0,0,0,.15);
   
-  background: linear-gradient(90deg, #e5fffd 0%, #d9e7ff 100%);
+  background-color: #f5f5f5;
 
 
 
@@ -512,8 +515,8 @@ body {
   margin-top: 2rem;
   width: 50rem;
   font-size: 1.5rem;
-  
-  font-family: 'Sriracha', cursive;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 2px;
 }
 
 #playerTags{
@@ -537,6 +540,8 @@ body {
 #playerTagsCont{
   width: 50rem;
   font-size: 2rem;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 2px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -550,15 +555,10 @@ body {
   align-items: center;
 }
 
-#turnObj{
-  width: 10rem;
-  transform: translateY(-5rem) rotate(90deg);
-}
-
 #underline{
   width: 20rem;
-  height: .1rem;
-  background-color: rgba(100,179,212,1);
+  height: .2rem;
+  background-color: #16805a;
   margin-top: -1.5rem;
   margin-bottom: 2rem;
   border-radius: 2rem;
@@ -574,12 +574,21 @@ body {
 }
 
 #uiCard{
-  width:50rem;
+  width:40rem;
   height:18rem;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  /* background-color: red; */
+  align-items: center;
+  border-radius: 1rem;
+  border: solid black 0.2rem;
+
+	backface-visibility: hidden;
+	box-shadow: 0 1.5rem 2rem rgba(0,0,0,.15);
+  
+  background-color: #f5f5f5;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(1, .2, .2, 1);
 }
 
 .uiCardColumn{
@@ -590,9 +599,60 @@ body {
 .statDisp{
   text-align: left;
   text-transform: capitalize;
+  font-size: 1.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 2px;
 }
 
 .combatReport{
+  font-size: 1rem;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 2px;
   text-align: left;
-  width: 20rem;
+  width: 45rem;
+  border-top: black 1px solid;
+  padding: 2rem;
 }
+
+.character-portrait-2{
+  width: 15rem;
+}
+
+#charDisplay{
+  height: 56rem;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hpFill{
+  background-color: red;
+};
+
+#gameOver{
+  transition-duration: 1s;
+  z-index: 10;
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,1); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+#gameOverText{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 50px;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+

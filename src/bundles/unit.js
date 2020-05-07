@@ -1,5 +1,5 @@
 export class Unit{
-    constructor(name, hp, stats, id){
+    constructor(name, hp, stats, id, weapon){
         this.name = name,
         this.hp = {
             c: hp,
@@ -23,7 +23,8 @@ export class Unit{
         this.id = {
             unitID: id,
             uniqueID: ""
-        }
+        },
+        this.weapon = weapon
     }
     /* active(){
         this.active=!(this.active);

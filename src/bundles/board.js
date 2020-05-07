@@ -252,7 +252,7 @@ let get = { //Initialize get obj for calling items from db.
     async unit(id, index, user){ //Function to retrieve unit from db
         let data = await fetch(`/characters/${id}`);
         data = await data.json()
-        let unitImport = new Unit(data.name, data.hp, data.stats, data._id); //Build unit obj
+        let unitImport = new Unit(data.name, data.hp, data.stats, data._id, data.weapon); //Build unit obj
         
         unitImport.setOwner(user._id)
         if(unitArray.filter(u => u.id.uniqueID == unitImport.id.uniqueID).length){
@@ -315,7 +315,7 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
     }else if(playerNum == 2){
         pass = 1;
     };
-    let msg = `<div class="combatReport">${thisUser.name} passed the turn to ${oppUser.name}.</div>`;
+    let msg = turnPassMsgRandomizer(thisUser, oppUser);
     socket.emit("turnPass", {"pass": pass, "room": room});
     socket.emit("cLog", {msg:msg, room:room});
 };
@@ -361,6 +361,9 @@ function cardDisplayFunction(e){
                 </div>
                 <div class="card-row">
                     <div class="btn hp">
+                            
+                            <div id="${e.id.uniqueID}-hpFill" class="hpFill"></div>
+
                             <img src="/img/card/decor_left_large.png" class="decor-left">
                             
                             <span id="${e.id.uniqueID}-hp"> ${e.hp.c}/${e.hp.m} </span>
@@ -374,7 +377,7 @@ function cardDisplayFunction(e){
                                     <img src="/img/card/diamond_large.png" class="stat-decor">
                                         <img src="/img/card/diamond_large.png" class="stat-decor2">
 
-                                    <span class="stat-text atk">Atk <span id="atkDisp" class="value">${e.stats.atk} </span> </span>     
+                                    <span class="stat-text atk">Atk <span class="value">${e.stats.atk} </span> </span>     
 
                                     <span class="stat-text def">Def<span class="value">${e.stats.def} </span></span>
                                     
@@ -458,8 +461,14 @@ function moveCheck(unit){ //Determines which tiles a unit can move to.
 };
 
 function uiDisplay(unit){ //Fill ui with information regarding the selected unit.
-    document.getElementById("nameDisp").innerHTML = `${unit.name}`;
-    document.getElementById("portraitDisp").innerHTML = `<img class="character-portrait" src="${unit.sprite.portrait}"></img>`;
+    let color;
+    if(unit.owner == thisUser._id){
+        color = "#16805a"
+    }else{
+        color = "#c95a38"
+    }
+    document.getElementById("uiCard").style.borderColor = color
+    document.getElementById("portraitDisp").innerHTML = `<img class="character-portrait-2" src="${unit.sprite.portrait}"></img>`;
     Object.keys(unit.stats).forEach(stat => {
         document.getElementById(`${stat}Disp`).innerHTML = `${stat}: ${unit.stats[stat]}`;
     });
@@ -468,7 +477,7 @@ function uiDisplay(unit){ //Fill ui with information regarding the selected unit
 };
 
 function uiClear(){ //Empty the ui
-    document.getElementById("nameDisp").innerHTML = "";
+    document.getElementById("uiCard").style.borderColor = "black";
     document.getElementById("portraitDisp").innerHTML = "";
     Array.from(document.getElementById("statCont").children).forEach(disp => disp.innerHTML = "");
 };
@@ -622,17 +631,18 @@ function damageCalc(attacker, defender){ //Damage calculation
 
     //Crit Calc.
     if(Math.trunc(Math.random()*100) < (attacker.cStats.lck + attacker.cStats.dex - defender.cStats.lck)/2 ){ /*crit calc*/
-        crit = 1.5;
+        crit = 2;
     }
 
-    let dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
+    let dmg = Math.floor((attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit);
     if(dmg < 0){dmg = 0};
-    let msg = `<div class="combatReport"><span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> attacked <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>! They did <strong>${dmg}</strong> damage. </div>`;
+    defender.hp.c -= dmg;
+    let msg = combatMsgRandomizer(attacker, defender, dmg);
     if(defender.hp.c < 0){
         defender.hp.c = 0;
     };
     if(crit > 1){
-        msg = `<div class="combatReport"><span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> attacked <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>! They did <strong>${dmg}</strong> damage. It was a <strong>critical hit!</strong></div>`
+        msg = critMsgRandomizer(attacker, defender, dmg);
     };
     socket.emit("cLog", {msg:msg, room:room});
 };
@@ -642,6 +652,8 @@ function battleRes(attacker, defender){
     damageCalc(attacker, defender);
     if(defender.hp.c == 0){ //Signal unit death event.
         socket.emit("unitDefeated", {x: defender.pos.x, y: defender.pos.y, room: room});
+        let msg = deathMsgRandomizer(attacker, defender);
+        socket.emit("cLog", {msg:msg, room:room});
     };
     unitArray.forEach(u => { //Update unit cards
         if(u.owner == thisUser._id){
@@ -843,6 +855,10 @@ socket.on("userNum", data => { //Declares user number. !UPDATE HERE Send account
 socket.on("newTurn", data => { //Receives new turn data and sets active player var accordingly.
     console.log(`Turn passed to ${data.pass}`);
     activePlayer = data.pass;
+    unitArray.forEach(el => {
+        el.active.atk = true;
+        el.active.mvt = el.stats.mvt;
+    })
     turnLine();
 })
 
@@ -858,7 +874,17 @@ socket.on("unitDefeatedRelay", data => { //Runs unit death function.
     defender.tile().occupied = {isOccupied: false, unit: {}}; //Resets tile proporties.
     if(!unitArray.filter(u => u.hp.c > 0).filter(u => u.owner == defender.owner).length){ //Checks if the defeated unit was the user's last. If so, end game.
         console.log(`Player ${defender.owner} has lost!`);
-        document.getElementById
+        //lossOverlay(defender.owner);
+        let loser, winner;
+        if(defender.owner == thisUser._id){
+            loser = thisUser
+            winner = oppUser
+        }else{
+            winner = thisUser
+            loser = oppUser
+        };
+        let msg = `<div class="combatReport">${winner.name} has defeated ${loser.name}.</div>`;
+        socket.emit("cLog", {msg:msg, room:room});
     }
 });
 
@@ -869,25 +895,29 @@ socket.on("roomFull", function(){ //If room already has two players, redirect us
 
 socket.on("cLogRelay", data=> {
     cLog.insertAdjacentHTML("beforeend", data);
-    for(el of document.getElementsByClassName("cLogUName")){
+    document.querySelectorAll(".cLogUName").forEach(el => {
+        console.log(el.getAttribute("uo"));
         if(el && el.getAttribute("uo") == thisUser._id){
-            el.style.color = "blue";
+            el.style.color = "#16805a";
         }else if(el && el.getAttribute("uo") == oppUser._id){
-            el.style.color = "red";
+            el.style.color = "#9c513a";
         }
-    }
+    });
 });
 
 document.getElementById("turnPass").addEventListener("click", turnPass); //Adds turn pass function to end turn button.
 let dist;
+let color;
 function turnLine(){
     if(thisUser.playerNum == 1){
         switch(activePlayer){
             case 1:
                 dist = "0rem"
+                color = "#16805a"
                 break;
             case 2:
                 dist = "30rem"
+                color = "#c95a38"
                 break;
             default:
                 console.log("TURN LINE DEFAULTING");
@@ -896,13 +926,159 @@ function turnLine(){
         switch(activePlayer){
             case 1:
                 dist = "30rem"
+                color = "#c95a38"
                 break;
             case 2:
                 dist = "0rem"
+                color = "#16805a"
                 break;
             default:
                 console.log("TURN LINE DEFAULTING");
         }
     }
     document.getElementById("underline").style.marginLeft = dist;
+    document.getElementById("underline").style.backgroundColor = color;
 };
+
+function deathMsgRandomizer(attacker, defender){
+    let msg;
+    switch(Math.ceil(Math.random()*11)){
+        case 1:
+            msg = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> has bested <span class="cLogUName" uo="${defender.owner}">${defender.name}</span> in combat!`
+            break;
+        case 2:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> has fallen in combat!`
+            break;
+        case 3:
+            msg = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> has slain <span class="cLogUName" uo="${defender.owner}">${defender.name}.</span>`
+            break;
+        case 4:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> has been forced to retreat...`
+            break;
+        case 5:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> cannot keep fighting.`
+            break;
+        case 6:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> has fought their last...`
+            break;
+        case 7:
+            msg = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> has triumphed over <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>.`
+            break;
+        case 8:
+            msg = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> has emerged victorious!`
+            break;
+        case 9:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> bit off more than they could chew against <span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span>.`
+            break;
+        case 10:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> yeilds to <span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span>.`
+            break;
+        case 11:
+            msg = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span> breathes their last.`
+            break;
+        default:
+            msg = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> has defeated <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>.`
+    }
+    return msg = `<div class="combatReport">${msg}</div>`;
+};
+
+function combatMsgRandomizer(attacker, defender, dmg){
+    let msg;
+    let a = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span>`
+    let b = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span>`
+    let d = `<strong>${dmg}</strong>`
+    switch(Math.ceil(Math.random()*6)){
+        case 1:
+            msg = `${a} attacked ${b} for ${d} damage.`
+            break;
+        case 2:
+            msg = `${a} struck ${b} for ${d} damage.`
+            break;
+        case 3:
+            msg = `${a} did ${d} damage to ${b}.`
+            break;
+        case 4:
+            msg = `${b} took ${d} damage from ${a}.`
+            break;
+        case 5:
+            msg = `${a}'s ${attacker.weapon} dealt ${d} damage to ${b}.`
+            break;
+        case 6:
+            msg = `${a} did ${d} damage to ${b} in combat.`
+            break;
+        default:
+            msg = `${a} attacked ${b} for ${d} damage.`
+    }
+    return msg = `<div class="combatReport">${msg}</div>`;
+};
+
+function critMsgRandomizer(attacker, defender, dmg){
+    let msg;
+    let a = `<span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span>`
+    let b = `<span class="cLogUName" uo="${defender.owner}">${defender.name}</span>`
+    let d = `<strong>${dmg}</strong>`
+    switch(Math.ceil(Math.random()*4)){
+       case 1:
+           msg = `${a} landed a decisive hit on ${b}! It did ${d} damage!`
+           break;
+        case 2:
+            msg = `${b} suffered a crippling blow from ${a}! They sustained ${d} damage.`
+            break;
+        case 3:
+            msg = `${a} landed a critical hit on ${b}! It dealt ${d} damage.`
+            break;
+        case 4:
+            msg = `${a} stikes a weak point in ${d}'s armor with their ${attacker.weapon}! It did ${d} damage.`
+        default:
+            msg = `${a} hit ${b} for ${d} damage. It was a critical hit!`
+            break; 
+    };
+    return msg = `<div class="combatReport">${msg}</div>`;
+};
+
+function turnPassMsgRandomizer(currentPlayer, nextPlayer){
+    let c = currentPlayer.name;
+    let n = nextPlayer.name;
+    let msg;
+    switch(Math.ceil(Math.random()*10)){
+        case 1:
+            msg = `${c} passed the turn to ${n}.`
+            break;
+        case 2:
+            msg = `${c} ends their turn.`
+            break;
+        case 3:
+            msg = `It is now ${n}'s turn.`
+            break;
+        case 4:
+            msg = `Now it's ${n}'s time to strike!`
+            break;
+        case 5:
+            msg = `${c} has made their move. It is now ${n}'s turn.`
+            break;
+        case 6:
+            msg = `${c}'s strategy is in motion. Now it's ${n}'s time to adapt.`
+            break;
+        case 7:
+            msg = `Make your move ${n}!`
+            break;
+        case 8:
+            msg = `${c} has laid their cards out. Now it's ${n}'s turn.`
+            break;
+        case 9:
+            msg = `${c} passes the turn to ${n}.`
+            break;
+        case 10:
+            msg = `${c} has finished their turn. It is now ${n}'s turn.`
+            break
+        default:
+            msg = `${c} has passed the turn to ${n}`
+    }
+    return msg = `<div class="combatReport">${msg}</div>`;
+}
+
+/* function lossOverlay(loserID){
+    document.getElementById("gameOver").style.dsiplay= "block"
+} */
+
+//lossOverlay(1);
