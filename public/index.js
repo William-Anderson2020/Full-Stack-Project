@@ -142,6 +142,15 @@ app.get("/serverIndex", checkAuthenticated, async (req, res) => { //Loads server
   };
 });
 
+app.get("/comingSoon", checkAuthenticated, async (req, res) => { //Loads server index page.
+  try {
+    res.render("comingSoon", {
+      userID: req.user._id
+    })
+  } catch (error) {
+    res.status(500).send();
+  };
+});
 app.get("/game/:id", checkAuthenticated, async(req, res) => { //Loads game board where id is the game's unique id.
   try {
     res.render("map", { //Passes in userID for determining which user is currently on the page.
