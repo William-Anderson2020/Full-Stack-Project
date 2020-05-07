@@ -19,25 +19,61 @@
 
     <div class="servers">
         <a id="newGame" href="#newGamePopup" class=" btn-initial">Create Lobby</a>
+        <a id="unitChange" href="#unitChangePopup" class=" btn-initial">Change Units</a>
         <div id="newGamePopup" class="overlay">
             <div class="popup">
                 <a class="close" href="#">&times;</a>
                 <p class="popup-title">Create Your Battle</p>
                 <div class="content">
-                    <form id="newGamePOST" action="/newGame" method="POST">
+                    <form id="newGamePOST" action={{url}} method="POST">
                         <div class="form-sections">
-                            <label class="form-label" for="id">ID:</label>
-                            <input type="text" value="" id="IdPOST" name="id" required readonly="readonly">
+                            <input type="hidden" value="" id="IdPOST" name="id" required readonly="readonly">
                         </div>
                         <div class="form-sections">
                             <label class="form-label" for="name">Name:</label>
                             <input type="text" value="" id="namePOST" name="name" required>
                         </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u1">First Unit:</label>
+                            <select id="u1POST" class="uList" name="u1"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u2">Second Unit:</label>
+                            <select id="u2POST" class="uList" name="u2"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u3">Third Unit:</label>
+                            <select id="u3POST" class="uList" name="u3"></select>
+                        </div>
+                        <div class="warning">Only one unit will deploy per character.</div>
                         <button id="newServer" class="btn-secondary">Create Game</button>
                     </form>    
                 </div>
-                
             </div>
+        </div>
+        <div id="unitChangePopup" class="overlay">
+            <div class="popup">
+                <a class="close" href="#">&times;</a>
+                <div class="popup-title">Select Your Units</div>
+                <div class="content">
+                    <form id="newGamePOST2" action={{url2}} method="POST">
+                        <div class="form-sections">
+                            <label class="form-label" for="u1">First Unit:</label>
+                            <select id="u1POST2" class="uList" name="u1"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u2">Second Unit:</label>
+                            <select id="u2POST2" class="uList" name="u2"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u3">Third Unit:</label>
+                            <select id="u3POST2" class="uList" name="u3"></select>
+                        </div>
+                        <div class="warning">Only one unit will deploy per character.</div>
+                        <button id="unitChangeBtn"  class="btn-secondary">Confirm Units</button>
+                    </form>
+                </div>
+            </div>   
         </div>
         <input type="text" id="serverSearch" placeholder="Search for a server name...">
         <ul id="serverList"></ul>

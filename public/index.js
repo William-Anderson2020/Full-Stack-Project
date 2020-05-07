@@ -24,6 +24,7 @@ const characterRouter = require("../src/routers/character")
 const itemRouter = require("../src/routers/item");
 const userRouter = require("../src/routers/user");
 const User = require("../src/models/user");
+const Unit = require("../src/models/character");
 
 //Initialize Passport
 const initializePassport = require("../src/config/passport");
@@ -132,7 +133,9 @@ app.delete("/logout", (req, res) => { //Process logout request.
 app.get("/serverIndex", checkAuthenticated, async (req, res) => { //Loads server index page.
   try {
     res.render("serverIndex", {
-      userID: req.user._id
+      userID: req.user._id,
+      url: `/newGame/${req.user._id}`,
+      url2: `/unitChange/${req.user._id}`
     })
   } catch (error) {
     res.status(500).send();
@@ -159,13 +162,46 @@ app.get("/game/:id", checkAuthenticated, async(req, res) => { //Loads game board
   }
 });
 
-app.post("/newGame", checkAuthenticated, async(req, res) => {
+app.get("/store",checkAuthenticated, (req, res) => {
+  res.render("store", {
+    user: req.user.id
+  })
+})
+
+app.post("/newGame/:id", checkAuthenticated, async(req, res) => {
   try {
+    let user = await User.findById(req.params.id);
+    user.activeUnits = [{id:req.body.u1}, {id:req.body.u2}, {id:req.body.u3}];
+    await user.save();
     res.redirect(`/game/${req.body.id}`);
   } catch (error) {
     res.status(500).send(error);
   }
-})
+});
+
+app.post("/unitChange/:id", checkAuthenticated, async(req, res) => {
+  try {
+    let user = await User.findById(req.params.id);
+    user.activeUnits = [{id:req.body.u1}, {id:req.body.u2}, {id:req.body.u3}];
+    await user.save();
+    res.redirect("/serverIndex");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.post("/user/buy/:id", async (req, res) => {
+  try {
+    let user = await User.findById(req.params.id)
+    let unit = await Unit.findOne({name: req.body.name});
+    user.units.push({id:unit._id, item:""});
+    user.currency -= 200;
+    await user.save();
+    res.redirect("/");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 let serverList = [];
 

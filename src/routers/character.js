@@ -13,6 +13,15 @@ router.post("/characters", async(req,res)=>{
     }
 })
 
+router.get("/characters", async(req,res)=>{
+    try{
+        let unit = await Character.find(req.body);
+        res.send(unit);
+    }catch(error){
+        res.status(501).send(error)
+    }
+});
+
 router.get("/characters/:id", async(req,res)=>{
     try{
         let unit = await Character.findById(req.params.id);

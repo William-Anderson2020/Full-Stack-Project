@@ -3,7 +3,7 @@ module.exports = {
   entry: {
     board: "./src/bundles/board.js",
     serverIndex: "./src/bundles/serverIndex.js",
-    registration: "./src/bundles/registration.js"
+    store: "./src/bundles/store.js"
   },
   output: {
     filename: "[name].js",

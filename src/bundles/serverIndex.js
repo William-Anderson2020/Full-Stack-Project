@@ -1,4 +1,5 @@
 import io from "socket.io-client"
+import { Unit } from "./unit";
 const socket = io("/serverIndex");
 let serverList = [];
 
@@ -17,6 +18,33 @@ document.getElementById("newGame").addEventListener("click", function(){
     });
     document.getElementById("IdPOST").value = socket.id.split("#")[1]
     document.getElementById("namePOST").value = `${thisUser.name}'s Game`
+    document.querySelectorAll(".uList").forEach(async l => {
+        thisUser.units.forEach(async u => {
+            let unit = await fetch(`/characters/${u.id}`);
+            unit = await unit.json();
+            unit = new Unit(unit.name, unit.hp, unit.stats, unit._id, unit.weapon);
+            let option = document.createElement("option");
+            option.class = `${unit.Name}Option`
+            option.value = unit.id.unitID;
+            option.text = unit.name;
+            l.add(option);
+        });
+    });
+});
+
+document.getElementById("unitChange").addEventListener("click", () => {
+    document.querySelectorAll(".uList").forEach(async l => {
+        thisUser.units.forEach(async u => {
+            let unit = await fetch(`/characters/${u.id}`);
+            unit = await unit.json();
+            unit = new Unit(unit.name, unit.hp, unit.stats, unit._id, unit.weapon);
+            let option = document.createElement("option");
+            option.class = `${unit.Name}Option`
+            option.value = unit.id.unitID;
+            option.text = unit.name;
+            l.add(option);
+        });
+    });
 })
 
 
