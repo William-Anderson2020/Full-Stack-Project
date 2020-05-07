@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="/css/homepage.css" type="text/css">
     <title>Server List</title>
 </head>
@@ -33,13 +34,15 @@
                             <label class="form-label" for="name">Name:</label>
                             <input type="text" value="" id="namePOST" name="name" required>
                         </div>
+                        <div class="createGamebtn">
                         <button id="newServer" class="btn-secondary">Create Game</button>
+                        </div>
                     </form>    
                 </div>
                 
             </div>
         </div>
-        <input type="text" id="serverSearch" placeholder="Search for a server name...">
+        <input type="text" id="serverSearch" placeholder="Search existing server">
         <ul id="serverList"></ul>
 </body>
 <script src="./js/serverIndex.js"></script>
