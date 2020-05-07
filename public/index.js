@@ -116,8 +116,8 @@ app.get("/auth/steam/callback", checkNotAuthenticated, passport.authenticate("st
 app.post("/register", async (req, res) => { //Post user registration, send new user data to db.
   try {
     const user = new User(req.body);
-    await user.save()
-    req.login(user);
+    await user.save();
+    req.login(user, err => {if(err){return err}});
     res.redirect("/");
   } catch (error) {
     res.status(500).send(error);
