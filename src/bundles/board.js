@@ -277,7 +277,7 @@ let get = { //Initialize get obj for calling items from db.
         unitImport.pos.y = uTile.y;
 
         unitImport.sprite.idle = await fetch(`/characters/image/idle/${id}`).then(im => im.url); //Retrieve unit sprites
-        //unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
+        unitImport.sprite.attack = await fetch(`/characters/image/attack/${id}`).then(im => im.url);
         unitImport.sprite.portrait = await fetch(`/characters/image/portrait/${id}`).then(im => im.url);
 
         unitImport.tile = function(){ //Set location and tile proporties
@@ -556,7 +556,7 @@ function getWeapon(unit){ //Assigns weapon type based on weapon designated on db
             weapon = "t3";
             break;
         case "bow":
-            wepaon = "t3";
+            weapon = "t3";
             break;
         default:
             weapon = "t2";

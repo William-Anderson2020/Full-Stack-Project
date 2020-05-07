@@ -55,6 +55,7 @@ html {
 
 .anim_sprite {
   height: 10rem;
+  padding-right: 1.5rem;
 }
 
 .flip {
