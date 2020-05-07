@@ -347,11 +347,15 @@ body {
 
 .dialogue{
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-evenly;
   height: 15rem;
   width: 50rem;
   align-items: center;
   margin-top: 3rem;
+  overflow-x: hidden;
+  overflow-y: auto;
  
   
   border-radius: 1rem;
@@ -506,7 +510,7 @@ body {
   display:flex;
   display: inline-block;
   margin-top: 2rem;
-  width: 18rem;
+  width: 50rem;
   font-size: 1.5rem;
   
   font-family: 'Sriracha', cursive;
@@ -518,6 +522,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  text-transform: uppercase;
 }
 
 .ptag{
@@ -530,15 +535,64 @@ body {
 }
 
 #playerTagsCont{
+  width: 50rem;
   font-size: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   /* font-family: 'Lemonada', cursive; */
 }
 
 .column-section{
   width: 50rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #turnObj{
   width: 10rem;
   transform: translateY(-5rem) rotate(90deg);
+}
+
+#underline{
+  width: 20rem;
+  height: .1rem;
+  background-color: rgba(100,179,212,1);
+  margin-top: -1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 2rem;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(1, .2, .2, 1);
+}
+
+#underlineCont{
+  width: 50rem;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+#uiCard{
+  width:50rem;
+  height:18rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  /* background-color: red; */
+}
+
+.uiCardColumn{
+  display: flex;
+  flex-direction: column;
+}
+
+.statDisp{
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.combatReport{
+  text-align: left;
+  width: 20rem;
 }

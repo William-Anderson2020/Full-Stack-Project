@@ -28,6 +28,7 @@ let activePlayer = 1;
 let thisUser;
 let oppUser;
 let gameSide;
+let cLog = document.getElementById("dialogue"); //Combat log
 
 /* const amelia = { //Test units.
     "sprite": {
@@ -237,6 +238,7 @@ let get = { //Initialize get obj for calling items from db.
             } */
         }); 
         setTimeout(() => {
+            turnLine();
             unitArray.filter(u=>u.owner == thisUser._id).forEach(u => cardDisplayFunction(u));
             unitArray.forEach(u => {//Apply sprite flip if nessecary
                 if(u.side == "l"){
@@ -304,9 +306,8 @@ let get = { //Initialize get obj for calling items from db.
 //get.user();
 
 function turnPass(){ //Pass turn between players. Determines active user, siwtches them, then emits the event to all others in the room.
-    if(playerNum == activePlayer){
+    if(playerNum != activePlayer || !oppUser ||!thisUser){
         return;
-    ;
     }
     let pass;
     if(playerNum == 1){
@@ -314,12 +315,9 @@ function turnPass(){ //Pass turn between players. Determines active user, siwtch
     }else if(playerNum == 2){
         pass = 1;
     };
-    console.log(`
-    Passing to ${pass}.`)
+    let msg = `<div class="combatReport">${thisUser.name} passed the turn to ${oppUser.name}.</div>`;
     socket.emit("turnPass", {"pass": pass, "room": room});
-
-    
-
+    socket.emit("cLog", {msg:msg, room:room});
 };
 
 
@@ -461,6 +459,7 @@ function moveCheck(unit){ //Determines which tiles a unit can move to.
 
 function uiDisplay(unit){ //Fill ui with information regarding the selected unit.
     document.getElementById("nameDisp").innerHTML = `${unit.name}`;
+    document.getElementById("portraitDisp").innerHTML = `<img class="character-portrait" src="${unit.sprite.portrait}"></img>`;
     Object.keys(unit.stats).forEach(stat => {
         document.getElementById(`${stat}Disp`).innerHTML = `${stat}: ${unit.stats[stat]}`;
     });
@@ -470,6 +469,7 @@ function uiDisplay(unit){ //Fill ui with information regarding the selected unit
 
 function uiClear(){ //Empty the ui
     document.getElementById("nameDisp").innerHTML = "";
+    document.getElementById("portraitDisp").innerHTML = "";
     Array.from(document.getElementById("statCont").children).forEach(disp => disp.innerHTML = "");
 };
 
@@ -627,16 +627,14 @@ function damageCalc(attacker, defender){ //Damage calculation
 
     let dmg = (attacker.cStats.atk + Math.trunc(attacker.cStats.atk * adv) - mit) * crit;
     if(dmg < 0){dmg = 0};
-    console.log(dmg); //!UPDATE HERE
-    defender.hp.c -= dmg;
+    let msg = `<div class="combatReport"><span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> attacked <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>! They did <strong>${dmg}</strong> damage. </div>`;
     if(defender.hp.c < 0){
         defender.hp.c = 0;
     };
-    console.log(`${defender.hp.m} - ${dmg} = ${defender.hp.c}`)
-    console.log(attacker.hp.c, defender.hp.c);
     if(crit > 1){
-        console.log("Critical!");
+        msg = `<div class="combatReport"><span class="cLogUName" uo="${attacker.owner}">${attacker.name}</span> attacked <span class="cLogUName" uo="${defender.owner}">${defender.name}</span>! They did <strong>${dmg}</strong> damage. It was a <strong>critical hit!</strong></div>`
     };
+    socket.emit("cLog", {msg:msg, room:room});
 };
 
 function battleRes(attacker, defender){
@@ -665,7 +663,7 @@ function turnInit(el){
 
     if(activePlayer != playerNum){ //Case if it is not the user's turn. Only allows ui functions to take place.
         if(tile.occupied.isOccupied == true){
-            //uiDisplay(tile.occupied.unit);
+            uiDisplay(tile.occupied.unit);
         }else{
             uiClear();
         };
@@ -677,7 +675,7 @@ function turnInit(el){
             console.log(tile);
             console.log(`BATTLE ${unit.name} VS ${tile.occupied.unit.name}`)
             battleRes(unit, tile.occupied.unit);
-            //uiDisplay(tile.occupied.unit);
+            uiDisplay(tile.occupied.unit);
             unit.active.atk = false;
             //console.log("t1" + unitArray.filter(u => u.owner == playerNum).filter(u => u.active.atk == true).length);
             if(!unitArray.filter(u => u.owner == thisUser._id).filter(u => u.active.atk == true).length){ //Checks if any units can still attack. If not, passes turn. (Unit attack is always the final action of the turn) !UPDATE HERE for CANTO ability on riders.
@@ -685,7 +683,7 @@ function turnInit(el){
             };
         }else{ //If tile is a friendly unit, display select them as current unit.
             unit = tile.occupied.unit;
-            //uiDisplay(tile.occupied.unit);
+            uiDisplay(tile.occupied.unit);
         }
         tileArray.forEach(r => { //Remove all viable markers at the end of action.
             r.dom.classList.remove("viable", "atkViable");
@@ -845,6 +843,7 @@ socket.on("userNum", data => { //Declares user number. !UPDATE HERE Send account
 socket.on("newTurn", data => { //Receives new turn data and sets active player var accordingly.
     console.log(`Turn passed to ${data.pass}`);
     activePlayer = data.pass;
+    turnLine();
 })
 
 socket.on("unitDefeatedRelay", data => { //Runs unit death function.
@@ -868,4 +867,42 @@ socket.on("roomFull", function(){ //If room already has two players, redirect us
     socket.to(socket.id).emit("roomFullErr");
 });
 
+socket.on("cLogRelay", data=> {
+    cLog.insertAdjacentHTML("beforeend", data);
+    for(el of document.getElementsByClassName("cLogUName")){
+        if(el && el.getAttribute("uo") == thisUser._id){
+            el.style.color = "blue";
+        }else if(el && el.getAttribute("uo") == oppUser._id){
+            el.style.color = "red";
+        }
+    }
+});
+
 document.getElementById("turnPass").addEventListener("click", turnPass); //Adds turn pass function to end turn button.
+let dist;
+function turnLine(){
+    if(thisUser.playerNum == 1){
+        switch(activePlayer){
+            case 1:
+                dist = "0rem"
+                break;
+            case 2:
+                dist = "30rem"
+                break;
+            default:
+                console.log("TURN LINE DEFAULTING");
+        }
+    }else{
+        switch(activePlayer){
+            case 1:
+                dist = "30rem"
+                break;
+            case 2:
+                dist = "0rem"
+                break;
+            default:
+                console.log("TURN LINE DEFAULTING");
+        }
+    }
+    document.getElementById("underline").style.marginLeft = dist;
+};

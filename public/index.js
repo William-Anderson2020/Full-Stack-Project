@@ -223,4 +223,9 @@ mapIO.on("connection", socket => { //Game board socket events.
     let room = unitData.room;
     socket.to(room).emit("rT", unitData);
   });
+
+  socket.on("cLog", data => {
+    mapIO.to(data.room).emit("cLogRelay", data.msg);
+  })
+  
 });
