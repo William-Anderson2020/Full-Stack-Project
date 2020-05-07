@@ -166,6 +166,20 @@ let serverList = [];
 serverIndex.on("connection", socket => { //Server index socket events.
   serverIndex.to(socket.id).emit("listRelay", {list: serverList}); //Sends server list to user.
 
+  serverList.forEach(id => {
+    id = id.id
+    if(!io.nsps["/map"].adapter.rooms[id]){
+      serverList.forEach(s => {
+        if(s.id == id){
+          serverList.splice(serverList.indexOf(s));
+          serverIndex.emit("removeListItemRelay", s);
+        }
+      })
+      
+    }
+
+  })
+
   socket.on("serverCreation", data => { //Adds server to list on creation.
     serverList.push(data);
     serverIndex.emit("listRelay", {list: serverList});

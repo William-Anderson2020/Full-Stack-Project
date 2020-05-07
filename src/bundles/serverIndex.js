@@ -23,7 +23,7 @@ document.getElementById("newGame").addEventListener("click", function(){
 socket.on("listRelay", data => {
     data.list.forEach(i => {
         if(!serverList.includes(i.id)){
-            document.getElementById("serverList").insertAdjacentHTML("afterbegin", `<a id="${i.id}" href="/game/${i.id}" class="game btn-initial">${i.name}</a>`);
+            document.getElementById("serverList").insertAdjacentHTML("afterbegin", `<li><a id="${i.id}" href="/game/${i.id}" class="game btn-initial">${i.name}</a></l1>`);
             document.getElementById(i.id).addEventListener("click", () => {
                 socket.emit("removeListItem", {id:i.id});
             })
@@ -40,3 +40,24 @@ socket.on("removeListItemRelay", (data) => {
     })
     document.getElementById(data.id).remove();
 });
+
+document.getElementById("serverSearch").addEventListener("keyup", function(){
+    // Declare variables
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('serverSearch');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("serverList");
+    li = ul.getElementsByTagName('li');
+  
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("a")[0];
+      txtValue = a.textContent || a.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+)
