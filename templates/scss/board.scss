@@ -13,6 +13,7 @@ html{
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
+    align-content: flex-end;
     flex-basis: 10%;
     transition: background-color .1s cubic-bezier(1, .2, .2, 1);
     /* transition-duration: background-color 1s;
@@ -54,8 +55,14 @@ html{
 }
 
 .anim_sprite{
-    height: 10rem;
-    padding-right: 1.5rem;
+    padding-right: 6rem;
+    height: 120px;
+    /* width:10rem; */
+    pointer-events: none;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
 }
 
 .flip{

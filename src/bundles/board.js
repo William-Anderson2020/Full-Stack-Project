@@ -794,8 +794,9 @@ socket.on("rT", (el) => { //Recieves unit data. Compares each unit to unit on bo
     });
     if(el.type == "atk"){ //If update contains an attack, run the attack display function. Damage was already calculated by the other user and updated above.
         let attacker, defender;
-        unitArray.forEach(atk => {if(atk.id.unitID == el.attacker){attacker = atk}});
-        unitArray.forEach(def => {if(def.id.unitID == el.defender){defender = def}});
+        console.log("ATTACKING")
+        unitArray.forEach(atk => {if(atk.id.uniqueID == el.attacker){attacker = atk}});
+        unitArray.forEach(def => {if(def.id.uniqueID == el.defender){defender = def}});
         battleDisp(attacker, defender);
     };
 });
