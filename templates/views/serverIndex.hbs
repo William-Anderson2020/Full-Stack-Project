@@ -2,7 +2,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/board.css">
     <link rel="stylesheet" href="/css/homepage.css" type="text/css">
     <title>Server List</title>
 </head>
@@ -12,15 +11,18 @@
             <button type="submit" class="btn">&larr; Logout</button>
         </form>
         <div id="userTag" class="pTag" uId = {{userID}}></div>
-        <p class="homepage-title">Game</p>
+        <div class="logo">
+            <img class="logo"src="/img/logos/logo_blue_gold.png">
+            <img class="logo_sword"src="/img/logos/sword.png">
+        </div>
     </div>
 
     <div class="servers">
-        <a id="newGame" href="#newGamePopup" class="game btn-initial">Create Lobby</a>
+        <a id="newGame" href="#newGamePopup" class=" btn-initial">Create Lobby</a>
         <div id="newGamePopup" class="overlay">
             <div class="popup">
-                <h2>Game</h2>
-                <a class="close" href="#">&larr;Back</a>
+                <a class="close" href="#">&times;</a>
+                <p class="popup-title">Create Your Battle</p>
                 <div class="content">
                     <form id="newGamePOST" action="/newGame" method="POST">
                         <div class="form-sections">

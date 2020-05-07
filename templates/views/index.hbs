@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Martel&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/homepage.css" type="text/css">
 
     <title>Homepage</title>
@@ -11,11 +12,16 @@
         <form action="/logout?_method=DELETE" method="POST">
             <button type="submit" class="btn">&larr; Logout</button>
         </form>
-        <p class="homepage-title">Game</p>
+        <div class="logo">
+            <img class="logo"src="/img/logos/logo_blue_gold.png">
+        <img class="logo_sword"src="/img/logos/sword.png">
+        </div>
+            
     </div>
      
     <div class="mainBody">
-        <a  class="homepage-title" href="/serverIndex">Join a game</a>       
+        <p class="game-intro"> Welcome {{name}},</p>
+        <a  class="btn-initial" href="/serverIndex">Join a game</a>       
     </div>
     
 </body>
