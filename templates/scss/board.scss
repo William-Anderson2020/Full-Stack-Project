@@ -4,8 +4,8 @@ html{
 }
 
 .tile{
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 5rem;
+    height: 5rem;
     border-width: .1px;
     border-color: black;
     border-style: solid;
@@ -13,7 +13,11 @@ html{
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
+    align-content: flex-end;
     flex-basis: 10%;
+    transition: background-color .1s cubic-bezier(1, .2, .2, 1);
+    /* transition-duration: background-color 1s;
+    transition-timing-function: background-color cubic-bezier(1, .2, .2, 1); */
 }
 
 .viable{
@@ -40,8 +44,8 @@ html{
 }
  */
 .board_sprite{
-    margin-right: .5rem;
-    height: 3rem;
+    padding-right: 1.5rem;
+    height: 10rem;
     width: auto;
     pointer-events: none;
     z-index: 1;
@@ -51,13 +55,19 @@ html{
 }
 
 .anim_sprite{
-    height: 3rem;
-    margin-right: 1rem;
-    //transform: scaleX(-1);
+    padding-right: 6rem;
+    height: 120px;
+    /* width:10rem; */
+    pointer-events: none;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
 }
 
 .flip{
     transform: scaleX(-1);
+    transition-duration: 0s;
 }
 
 #newServer{
@@ -79,4 +89,9 @@ html{
     to{
         opacity: 0;
     }
+}
+
+#character-cards{
+    display: flex;
+    flex-direction: column;
 }

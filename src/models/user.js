@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     },
     currency:{
         type: Number,
-        default: 0,
+        default: 500,
         required: true
     },
     profilePic: {

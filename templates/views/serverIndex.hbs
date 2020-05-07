@@ -2,12 +2,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/board.css">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="/css/homepage.css" type="text/css">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <title>Server List</title>
 </head>
 <body>
-    <div id="newServer">New Server</div>
-    <div id="serverList"></div>
+    <div class="nav" >
+        <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit" class="btn">&larr; Logout</button>
+        </form>
+        <div id="userTag" class="pTag" uId = {{userID}}></div>
+        <div class="logo">
+            <img class="logo"src="/img/logos/logo_blue_gold.png">
+            <img class="logo_sword"src="/img/logos/sword.png">
+        </div>
+    </div>
+
+    <div class="servers">
+        <a id="newGame" href="#newGamePopup" class=" btn-initial">Create Lobby</a>
+        <a id="unitChange" href="#unitChangePopup" class=" btn-initial">Change Units</a>
+        <div id="newGamePopup" class="overlay">
+            <div class="popup">
+                <a class="close" href="#">&times;</a>
+                <p class="popup-title">Create Your Battle</p>
+                <div class="content">
+                    <form id="newGamePOST" action={{url}} method="POST">
+                        <div class="form-sections">
+                            <input type="hidden" value="" id="IdPOST" name="id" required readonly="readonly">
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="name">Name:</label>
+                            <input type="text" value="" id="namePOST" name="name" required>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u1">First Unit:</label>
+                            <select id="u1POST" class="uList" name="u1"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u2">Second Unit:</label>
+                            <select id="u2POST" class="uList" name="u2"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u3">Third Unit:</label>
+                            <select id="u3POST" class="uList" name="u3"></select>
+                        </div>
+                        <div class="warning">Only one unit will deploy per character.</div>
+                        <div class="createGamebtn">
+                        <button id="newServer" class="btn-secondary">Create Game</button>
+                        </div>
+                    </form>    
+                </div>
+            </div>
+        </div>
+        <div id="unitChangePopup" class="overlay">
+            <div class="popup">
+                <a class="close" href="#">&times;</a>
+                <div class="popup-title">Select Your Units</div>
+                <div class="content">
+                    <form id="newGamePOST2" action={{url2}} method="POST">
+                        <div class="form-sections">
+                            <label class="form-label" for="u1">First Unit:</label>
+                            <select id="u1POST2" class="uList" name="u1"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u2">Second Unit:</label>
+                            <select id="u2POST2" class="uList" name="u2"></select>
+                        </div>
+                        <div class="form-sections">
+                            <label class="form-label" for="u3">Third Unit:</label>
+                            <select id="u3POST2" class="uList" name="u3"></select>
+                        </div>
+                        <div class="warning">Only one unit will deploy per character.</div>
+                        <button id="unitChangeBtn"  class="btn-secondary">Confirm Units</button>
+                    </form>
+                </div>
+            </div>   
+        </div>
+        <input type="text" id="serverSearch" placeholder="Search for a server name...">
+        <ul id="serverList"></ul>
 </body>
 <script src="./js/serverIndex.js"></script>
 </html>

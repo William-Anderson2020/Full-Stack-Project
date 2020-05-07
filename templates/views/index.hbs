@@ -1,15 +1,32 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME PAGE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Martel&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/homepage.css" type="text/css">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+
+    <title>Homepage</title>
 </head>
 <body>
-    henlo {{ name }}
-    <form action="/logout?_method=DELETE" method="POST">
-        <button type="submit">Logout</button>
-    </form>
-    <a href="/serverIndex">Join a Game</a>
+    <div class="nav" >
+        <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit" class="btn">&larr; Logout</button>
+        </form>
+        <div class="logo">
+            <img class="logo"src="/img/logos/logo_blue_gold.png">
+        <img class="logo_sword"src="/img/logos/sword.png">
+        </div>
+            
+    </div>
+     
+    <div class="mainBody">
+        <p class="game-intro"> Welcome {{name}},</p>
+        <a  class="btn-initial" href="/serverIndex">Join a game</a>   
+        <a  class="btn-initial" href="/store">Store</a>  
+        <a  class="btn-initial" href="/comingSoon">Inventory</a>
+        <a  class="btn-initial" href="/comingSoon">Connect With Friends</a>  
+    </div>
+    
 </body>
 </html>

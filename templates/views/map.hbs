@@ -4,40 +4,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/css/board.css">
-    <link rel="icon" href="/img/icon.png">
+    <link rel="stylesheet" href="/css/map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Sofia&family=Sriracha&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
        <title>Map of Game</title>
 </head>
 
 
+
 <body> 
-    <header>
-         Board Logic WIP
-    </header>
-    <div id="playerbar">
-        <div id="userTag" class="pTag" uId = {{userID}}></div>
-        <div id="oppTag" class="pTag"></div>
-    </div>
-   <div id="container"></div>
-   <div id="turnPass">PASS THE TURN</div>
-   <div id="charDisplay">
-       <div id="nameDisp"></div>
-       <div id="statCont">
-            <div id="hpDisp" class="statDisp"></div>
-            <div id="atkDisp" class="statDisp"></div>
-            <div id="defDisp" class="statDisp"></div>
-            <div id="resDisp" class="statDisp"></div>
-            <div id="spdDisp" class="statDisp"></div>
-            <div id="mvtDisp" class="statDisp"></div>
-            <div id="rngDisp" class="statDisp"></div>
-            <div id="lckDisp" class="statDisp"></div>
-            <div id="dexDisp" class="statDisp"></div>
-       </div>
-       <div id="spAtkCont"></div>
-   </div>
-   <a href="/">Back to home page</a>
+
+<div class="logo"><img class="logo"src="/img/logos/logo_blue_gold.png">
+<img class="logo_sword"src="/img/logos/sword.png">
+</div>
+
+{{!-- <div id="gameOver" class="popup">
+
+        <div class="gameOverCont">
+        
+                        <div id="gameOverText"><span class="lost">&#9886; </span>GAME OVER <span class="lost">&#9887;</span></div> 
+            
+               
+         </div>
+</div> --}}
+
+
+
+
+</div> 
+
+
+
+<div id="game-container" class="gameboard">
+        
+        {{!-- <div id="playerTags">
+                <div id="userTag" class="pTag" uId = {{userID}}></div>
+                VS
+                <div id="oppTag" class="pTag"></div>
+        </div> --}}
+
+
+        <div id="column-cont">
+                <div class="map-dialogue-section column-section">
+
+                        <div id="playerTagsCont">
+                                <div id="playerTags">
+                                        <div id="userTag" class="pTag" uId = {{userID}}></div>VS<div id="oppTag" class="pTag"></div>
+                                </div>
+                                {{!-- <img id="turnObj" class="turnObj" src="/img/logos/sword.png">    --}}     
+                        </div>
+                        <div id="underlineCont">
+                                <div id="underline"></div>        
+                        </div>
+                        
+                        
+                        <div id="container"></div>
+
+                        <button id="turnPass" class="btn">PASS THE TURN</button>
+
+                        <div id="dialogue" class="dialogue">
+                                {{!-- <img class="chibi" src="/img/characters/chibi/ephraim.png">
+                                <div class="text">
+                                                " I won't falter! I am Ephraim, bringer of the light!"
+                                </div> --}}
+                        </div>
+                </div>   
+
+
+                
+                <section class= "party-section column-section">
+
+                <h2 class="party-header"> Party Members</h2>
+                <img class="party-divider" src="/img/dividers/elegant-divider.png">
+
+
+                <div class= "character-cards">
+                        <div class="info">
+                                <div id="charDisplay"></div>
+                        </div>
+                </div>
+
+                <div id="uiCard">
+                        <div class="uiCardColumn">
+                                <div id="portraitDisp"></div>        
+                        </div>
+                        <div class="uiCardColumn">
+                                <div id="statCont">
+                                        <div id="hpDisp" class="statDisp"></div>
+                                        <div id="atkDisp" class="statDisp"></div>
+                                        <div id="defDisp" class="statDisp"></div>
+                                        <div id="resDisp" class="statDisp"></div>
+                                        <div id="mvtDisp" class="statDisp"></div>
+                                        <div id="spdDisp" class="statDisp"></div>
+                                        <div id="rngDisp" class="statDisp"></div>
+                                        <div id="lckDisp" class="statDisp"></div>
+                                        <div id="dexDisp" class="statDisp"></div>
+                                </div>           
+                        </div>
+                             
+                </div>
+        </div>        
+</div>
+
+
+
+</section>
+
+
+
+
+
+{{!--     <section class="battle">
+
+        <div="popup">
+            <div class="character1">
+              
+                <div class="character-name1 btn">   <img src="/img/card/decor_left_large.png" class="decor-left"> Ephraim  <img src="/img/card/decor_right_large.png" class="decor-right"></div>
+               
+
+                
+                <img src="/img/characters/battle/Ep.png">
+                <div class="battle-overlay"> <div class="battle-text">Trust me, I don't pick fights I can't win.</div></div>
+                
+             </div>
+
+              <div class="character2">
+               
+                <div class="character-name2 btn"> <img src="/img/card/decor_left_large.png" class="decor-left"> Lucia  <img src="/img/card/decor_right_large.png" class="decor-right"></div>
+                
+             <img class="img-character2" src="/img/characters/battle/Eir.png">
+              <div>
+
+    </section>
+ --}}
 
 </body>
-
 
 {{!-- <script src="./js/board.js"></script> --}}
 <script src="../js/board.js"></script>
