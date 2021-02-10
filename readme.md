@@ -7,3 +7,6 @@ A clone of the battlefield mechanics from the popular rpg seires Fire Emblem. Pa
 - Winny Chan @Fluffycat9999
 - Kai Tong Gao @kaitonggao
 - Laurence Tung @LT-LT-LT
+
+## Link
+- https://full-stack-game.herokuapp.com/login
