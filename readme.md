@@ -1,5 +1,5 @@
 # Full Stack Project
-A clone of the battlefield mechanics from the popular rpg seires Fire Emblem. Part of an AP Computer Science end-of-year competition.
+A clone of the battlefield mechanics from the popular rpg seires Fire Emblem. Part of an AP Computer Science end-of-year competition. Play it [here](https://full-stack-game.herokuapp.com/login).
 
 ## Authors
 - Sarah Abdel Fatah @sabdelfatah04
@@ -7,6 +7,3 @@ A clone of the battlefield mechanics from the popular rpg seires Fire Emblem. Pa
 - Winny Chan @Fluffycat9999
 - Kai Tong Gao @kaitonggao
 - Laurence Tung @LT-LT-LT
-
-## Link
-- https://full-stack-game.herokuapp.com/login
