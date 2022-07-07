@@ -43,7 +43,7 @@
     "passport-local": "^1.0.0",
     "passport-steam": "^1.0.14",
     "sass": "^1.25.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^2.3.0",
     "validator": "^13.7.0",
     "webpack-cli": "^3.3.10"
